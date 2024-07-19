@@ -6,3 +6,19 @@ from django.http import HttpResponse
 
 def index(request):
     return render(request, "index.html")
+
+
+def about(request):
+    return render(request, "about.html")
+
+
+def login(request):
+    return render(request, "login.html")
+
+
+def settings(request):
+    return render(request, "settings.html")
+
+
+def logout(request):
+    pass
