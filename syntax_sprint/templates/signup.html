@@ -56,7 +56,7 @@
                 <a class="nav-link" href="login.html">Iniciar sesión</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="singup.html">Registrarse</a>
+                <a class="nav-link" href="signup.html">Registrarse</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="settings.html">Ajustes</a>
@@ -87,6 +87,18 @@
                             Registrarse
                           </p>
 
+                          <!-- mensaje de error-->
+                          <div class="d-flex flex-row align-items-center mb-4">
+                            <style>
+                              h5 {
+                                color: red;
+                              }
+                            </style>
+                            {% if messages %} {% for message in messages %}
+                            <h5 class="text-center">{{ message }}</h5>
+                            {% endfor %} {% endif %}
+                          </div>
+
                           <form action="" method="POST" class="mx-1 mx-md-4">
                             {% csrf_token %}
                             <div
@@ -99,12 +111,10 @@
                               >
                                 <input
                                   type="text"
-                                  name="name"
+                                  name="username"
                                   class="form-control"
+                                  placeholder="Nombre de usuario"
                                 />
-                                <label class="form-label" for="form3Example1c"
-                                  >Usuario</label
-                                >
                               </div>
                             </div>
 
@@ -120,10 +130,8 @@
                                   type="email"
                                   name="email"
                                   class="form-control"
+                                  placeholder="Email"
                                 />
-                                <label class="form-label" for="form3Example3c"
-                                  >Email</label
-                                >
                               </div>
                             </div>
 
@@ -139,10 +147,8 @@
                                   type="password"
                                   name="password"
                                   class="form-control"
+                                  placeholder="Contraseña"
                                 />
-                                <label class="form-label" for="form3Example4c"
-                                  >Contraseña</label
-                                >
                               </div>
                             </div>
 
@@ -158,10 +164,8 @@
                                   type="password"
                                   name="password2"
                                   class="form-control"
+                                  placeholder="Repetir contraseña"
                                 />
-                                <label class="form-label" for="form3Example4cd"
-                                  >Verificar contraseña</label
-                                >
                               </div>
                             </div>
 
@@ -178,15 +182,6 @@
                               </button>
                             </div>
                           </form>
-                        </div>
-                        <div
-                          class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2"
-                        >
-                          <img
-                            src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
-                            class="img-fluid"
-                            alt="Sample image"
-                          />
                         </div>
                       </div>
                     </div>
