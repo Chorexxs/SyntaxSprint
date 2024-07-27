@@ -10,6 +10,23 @@
  * Copyright 2011-2022 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+
+/* Estilo para centrar el contenido del resultado */
+#gist-content {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#gist-content h2 {
+  margin-bottom: 20px;
+}
+
+#gist-content pre {
+  display: inline-block;
+  text-align: left;
+}
+
+
 :root {
   --bs-blue: #1e30f3;
   --bs-indigo: #6610f2;
