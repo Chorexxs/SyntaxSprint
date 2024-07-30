@@ -26,6 +26,42 @@
     />
     <link href="{% static 'styles.css' %}" rel="stylesheet" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+      #gist-content {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      #gist-content pre {
+        display: inline-block;
+        text-align: left;
+        padding: 10px;
+        border: 1px solid #ccc;
+        background-color: #f8f8f8;
+        white-space: pre-wrap;
+      }
+
+      .editable {
+        width: 100%;
+        height: auto;
+        border: none;
+        padding: 0;
+        margin: 0;
+        background: transparent;
+        color: inherit;
+        font-size: inherit;
+        font-family: inherit;
+        resize: none;
+        outline: none;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+      }
+
+      .stats {
+        margin-top: 20px;
+      }
+    </style>
   </head>
   <body class="d-flex flex-column h-100">
     <main class="flex-shrink-0">
@@ -97,14 +133,22 @@
                     </button>
                   </div>
                   <div id="gist-content" class="mt-5"></div>
+                  <div class="stats">
+                    <p id="wpm"></p>
+                    <p id="accuracy"></p>
+                    <p id="errors"></p>
+                  </div>
                 </div>
 
                 <script>
                   $(document).ready(function () {
+                    let startTime;
+                    let testText = "";
+
                     $("#start-test").click(function () {
                       console.log("Botón 'Iniciar Test' clickeado");
                       $.ajax({
-                        url: "{% url 'get_python_gist' %}",
+                        url: "{% url 'get_python_function' %}",
                         method: "GET",
                         success: function (data) {
                           console.log("Respuesta recibida:", data);
@@ -116,12 +160,12 @@
                             );
                           } else {
                             $("#gist-content").html(
-                              "<h2>Función: " +
-                                data.name +
-                                "</h2><pre>" +
+                              "<pre id='test-text' contenteditable='true' class='editable'>" +
                                 data.code +
                                 "</pre>"
                             );
+                            testText = data.code;
+                            startTime = new Date().getTime();
                           }
                         },
                         error: function (xhr, status, error) {
@@ -133,6 +177,28 @@
                           );
                         },
                       });
+                    });
+
+                    $(document).on("blur", "#test-text", function () {
+                      const inputText = $(this).text();
+                      const elapsedTime =
+                        (new Date().getTime() - startTime) / 60000; // minutos
+                      const wordsTyped = inputText.split(/\s+/).length;
+                      const wpm = Math.round(wordsTyped / elapsedTime);
+
+                      const correctChars = testText.slice(0, inputText.length);
+                      const errors = inputText
+                        .split("")
+                        .reduce((acc, char, idx) => {
+                          return acc + (char !== correctChars[idx] ? 1 : 0);
+                        }, 0);
+                      const accuracy = Math.round(
+                        ((inputText.length - errors) / inputText.length) * 100
+                      );
+
+                      $("#wpm").text(`WPM: ${wpm}`);
+                      $("#accuracy").text(`Precisión: ${accuracy}%`);
+                      $("#errors").text(`Errores: ${errors}`);
                     });
                   });
                 </script>

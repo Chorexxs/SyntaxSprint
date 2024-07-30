@@ -9,7 +9,7 @@ from django.http import JsonResponse
 # Create your views here.
 
 
-def get_python_function():
+def get_python_function(request):
     functions = [
         {
             "name": "func1",
@@ -23,24 +23,8 @@ def get_python_function():
             "name": "func3",
             "code": "def func3():\n    return 'Hello from func3!'"
         },
-        {
-            "name": "func4",
-            "code": "def func4(x, y):\n    return x + y"
-        },
-        {
-            "name": "func5",
-            "code": "def func5(name):\n    return f'Hello, {name}!'"
-        },
-        {
-            "name": "func6",
-            "code": "def func6(n):\n    if n == 0:\n        return 1\n    else:\n        return n * func6(n-1)"
-        },
     ]
-    return random.choice(functions)
-
-
-def get_python_gist(request):
-    selected_function = get_python_function()
+    selected_function = random.choice(functions)
     return JsonResponse(selected_function)
 
 
