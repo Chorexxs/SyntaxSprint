@@ -8,25 +8,135 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
     <title>SyntaxSprint - Carrera de código</title>
-    <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-    <!-- Custom Google font-->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;200;300;400;500;600;700;800;900&amp;display=swap"
-      rel="stylesheet"
-    />
-    <!-- Bootstrap icons-->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"
-      rel="stylesheet"
-    />
-    <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="{% static 'styles.css' %}" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
+
+    <style>
+      :root {
+        --green: #00b755;
+        --yellow: #daaf38;
+        --red: #ca4754;
+        --black: #222;
+        --gray: #999;
+      }
+
+      /* Mantén el fondo de la página */
+      body {
+        font-family: Menlo, monospace;
+        padding: 32px;
+        background: var(--black);
+        color: white;
+      }
+
+      section {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      time {
+        color: var(--yellow);
+      }
+
+      input {
+        z-index: -999;
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        opacity: 0;
+      }
+
+      p {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px 8px;
+        margin: 0;
+      }
+
+      letter {
+        color: var(--gray);
+        position: relative;
+      }
+
+      letter.active::before {
+        content: "|";
+        color: var(--yellow);
+        font-size: 14px;
+        position: absolute;
+        left: -65%;
+        animation: 1s blink infinite ease-in-out;
+      }
+
+      letter.active.is-last::before {
+        left: 65%;
+      }
+
+      letter.correct {
+        color: var(--green);
+      }
+
+      letter.incorrect {
+        color: var(--red);
+      }
+
+      word {
+        border-bottom: 1.5px solid transparent;
+        transition: border-color 0.3s ease-in-out;
+      }
+
+      word.marked {
+        border-color: var(--red);
+      }
+
+      #game {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #results {
+        display: none;
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      h2 {
+        font-weight: 400;
+        opacity: 0.4;
+        margin: 0;
+        font-size: 16px;
+      }
+
+      h3 {
+        font-weight: 400;
+        margin: 0;
+        font-size: 24px;
+        color: var(--yellow);
+      }
+
+      button {
+        background: transparent;
+        border: 0;
+        margin-top: 32px;
+        padding: 8px;
+        opacity: 0.4;
+        display: inline-block;
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        cursor: pointer;
+        border-radius: 16px;
+      }
+
+      button:hover {
+        background: #444;
+        opacity: 1;
+        scale: 110%;
+      }
+    </style>
   </head>
   <body class="d-flex flex-column h-100">
     <main class="flex-shrink-0">

@@ -9,57 +9,132 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <title>SyntaxSprint - Carrera de código</title>
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="{% static 'assets/favicon.ico' %}"
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@100;200;300;400;500;600;700;800;900&amp;display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"
-      rel="stylesheet"
-    />
-    <link href="{% static 'styles.css' %}" rel="stylesheet" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
 
     <style>
-      #gist-content {
+      :root {
+        --green: #00b755;
+        --yellow: #daaf38;
+        --red: #ca4754;
+        --black: #222;
+        --gray: #999;
+      }
+
+      /* Mantén el fondo de la página */
+      body {
+        font-family: Menlo, monospace;
+        padding: 32px;
+        background: var(--black);
+        color: white;
+      }
+
+      section {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        max-width: 500px;
+        margin: 0 auto;
+      }
+
+      time {
+        color: var(--yellow);
+      }
+
+      input {
+        z-index: -999;
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        opacity: 0;
+      }
+
+      p {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 3px 8px;
+        margin: 0;
+      }
+
+      letter {
+        color: var(--gray);
+        position: relative;
+      }
+
+      letter.active::before {
+        content: "|";
+        color: var(--yellow);
+        font-size: 14px;
+        position: absolute;
+        left: -65%;
+        animation: 1s blink infinite ease-in-out;
+      }
+
+      letter.active.is-last::before {
+        left: 65%;
+      }
+
+      letter.correct {
+        color: var(--green);
+      }
+
+      letter.incorrect {
+        color: var(--red);
+      }
+
+      word {
+        border-bottom: 1.5px solid transparent;
+        transition: border-color 0.3s ease-in-out;
+      }
+
+      word.marked {
+        border-color: var(--red);
+      }
+
+      #game {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #results {
+        display: none;
         text-align: center;
         margin-top: 20px;
       }
 
-      #gist-content pre {
-        display: inline-block;
-        text-align: left;
-        padding: 10px;
-        border: 1px solid #ccc;
-        background-color: #f8f8f8;
-        white-space: pre-wrap;
-      }
-
-      .editable {
-        width: 100%;
-        height: auto;
-        border: none;
-        padding: 0;
+      h2 {
+        font-weight: 400;
+        opacity: 0.4;
         margin: 0;
-        background: transparent;
-        color: inherit;
-        font-size: inherit;
-        font-family: inherit;
-        resize: none;
-        outline: none;
-        white-space: pre-wrap;
-        overflow-wrap: break-word;
+        font-size: 16px;
       }
 
-      .stats {
-        margin-top: 20px;
+      h3 {
+        font-weight: 400;
+        margin: 0;
+        font-size: 24px;
+        color: var(--yellow);
+      }
+
+      button {
+        background: transparent;
+        border: 0;
+        margin-top: 32px;
+        padding: 8px;
+        opacity: 0.4;
+        display: inline-block;
+        transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        cursor: pointer;
+        border-radius: 16px;
+      }
+
+      button:hover {
+        background: #444;
+        opacity: 1;
+        scale: 110%;
       }
     </style>
   </head>
@@ -113,14 +188,14 @@
         <div class="container-fluid px-5 pb-5">
           <div class="row gx-5 align-items-center h-100">
             <div class="col-xxl-5 mx-auto">
-              <div>
+              <div id="header-content">
                 <h1 class="display-2 fw-bolder mb-8">
                   <span
                     class="text-gradient row d-flex justify-content-center align-items-center h-100"
-                    >¿Qué tan rápido eres escribiendo código?</span
                   >
+                    ¿Qué tan rápido eres escribiendo código?
+                  </span>
                 </h1>
-
                 <div class="container mt-5">
                   <div
                     class="d-grid gap-3 d-sm-flex justify-content-sm-center mb-3"
@@ -132,81 +207,221 @@
                       Iniciar Test
                     </button>
                   </div>
-                  <div id="gist-content" class="mt-5"></div>
-                  <div class="stats">
-                    <p id="wpm"></p>
-                    <p id="accuracy"></p>
-                    <p id="errors"></p>
-                  </div>
                 </div>
-
-                <script>
-                  $(document).ready(function () {
-                    let startTime;
-                    let testText = "";
-
-                    $("#start-test").click(function () {
-                      console.log("Botón 'Iniciar Test' clickeado");
-                      $.ajax({
-                        url: "{% url 'get_python_function' %}",
-                        method: "GET",
-                        success: function (data) {
-                          console.log("Respuesta recibida:", data);
-                          if (data.error) {
-                            $("#gist-content").html(
-                              '<div class="alert alert-danger" role="alert">' +
-                                data.error +
-                                "</div>"
-                            );
-                          } else {
-                            $("#gist-content").html(
-                              "<pre id='test-text' contenteditable='true' class='editable'>" +
-                                data.code +
-                                "</pre>"
-                            );
-                            testText = data.code;
-                            startTime = new Date().getTime();
-                          }
-                        },
-                        error: function (xhr, status, error) {
-                          console.log("Error en la solicitud AJAX:", error);
-                          $("#gist-content").html(
-                            '<div class="alert alert-danger" role="alert">Error al obtener el Gist: ' +
-                              error +
-                              "</div>"
-                          );
-                        },
-                      });
-                    });
-
-                    $(document).on("blur", "#test-text", function () {
-                      const inputText = $(this).text();
-                      const elapsedTime =
-                        (new Date().getTime() - startTime) / 60000; // minutos
-                      const wordsTyped = inputText.split(/\s+/).length;
-                      const wpm = Math.round(wordsTyped / elapsedTime);
-
-                      const correctChars = testText.slice(0, inputText.length);
-                      const errors = inputText
-                        .split("")
-                        .reduce((acc, char, idx) => {
-                          return acc + (char !== correctChars[idx] ? 1 : 0);
-                        }, 0);
-                      const accuracy = Math.round(
-                        ((inputText.length - errors) / inputText.length) * 100
-                      );
-
-                      $("#wpm").text(`WPM: ${wpm}`);
-                      $("#accuracy").text(`Precisión: ${accuracy}%`);
-                      $("#errors").text(`Errores: ${errors}`);
-                    });
-                  });
-                </script>
+              </div>
+              <div id="test-area">
+                <!-- Aquí es donde se cargará la prueba -->
               </div>
             </div>
           </div>
         </div>
       </header>
+
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script>
+        $(document).ready(function () {
+          $("#start-test").click(function () {
+            const testHTML = `
+                  <main id="game">
+                      <section>
+                          <time>30</time>
+                          <p id="code-area"></p>
+                          <input autofocus>
+                      </section>
+                      <section id="results">
+                          <h2>WPM</h2>
+                          <h3 id="results-wpm"></h3>
+                          <h2>Precisión</h2>
+                          <h3 id="results-accuracy"></h3>
+                      </section>
+                  </main>
+              `;
+
+            $("#test-area").html(testHTML).show();
+
+            fetch("{% url 'get_python_function' %}")
+              .then((response) => response.json())
+              .then((data) => {
+                const code = data.code;
+                const codeArea = document.getElementById("code-area");
+
+                const words = code.split(/\s+/);
+                codeArea.innerHTML = words
+                  .map((word) => {
+                    return `<word>${word
+                      .split("")
+                      .map((letter) => `<letter>${letter}</letter>`)
+                      .join("")}</word>`;
+                  })
+                  .join(" ");
+
+                initGame();
+              });
+
+            function initGame() {
+              const $time = document.querySelector("time");
+              const $paragraph = document.querySelector("p");
+              const $input = document.querySelector("input");
+              const $results = document.querySelector("#results");
+              const $wpm = $results.querySelector("#results-wpm");
+              const $accuracy = $results.querySelector("#results-accuracy");
+
+              let playing = false;
+              let currentTime = 30;
+              let intervalId;
+              $time.textContent = currentTime;
+
+              const $firstWord = $paragraph.querySelector("word");
+              $firstWord.classList.add("active");
+              $firstWord.querySelector("letter").classList.add("active");
+
+              document.addEventListener("keydown", () => {
+                $input.focus();
+                if (!playing) {
+                  playing = true;
+                  intervalId = setInterval(() => {
+                    currentTime--;
+                    $time.textContent = currentTime;
+
+                    if (currentTime === 0) {
+                      clearInterval(intervalId);
+                      gameOver();
+                    }
+                  }, 1000);
+                }
+              });
+
+              $input.addEventListener("keydown", onKeyDown);
+              $input.addEventListener("keyup", onKeyUp);
+
+              function onKeyDown(event) {
+                const $currentWord = $paragraph.querySelector("word.active");
+                const $currentLetter =
+                  $currentWord.querySelector("letter.active");
+
+                const { key } = event;
+                if (key === " ") {
+                  event.preventDefault();
+                  const $nextWord = $currentWord.nextElementSibling;
+                  const $nextLetter = $nextWord?.querySelector("letter");
+
+                  $currentWord.classList.remove("active", "marked");
+                  $currentLetter.classList.remove("active");
+
+                  if ($nextWord) {
+                    $nextWord.classList.add("active");
+                    $nextLetter.classList.add("active");
+                  }
+
+                  $input.value = "";
+
+                  const hasMissedLetters =
+                    $currentWord.querySelectorAll("letter:not(.correct)")
+                      .length > 0;
+                  $currentWord.classList.add(
+                    hasMissedLetters ? "marked" : "correct"
+                  );
+
+                  if (!$nextWord) {
+                    clearInterval(intervalId); // Detener el temporizador si termina de escribir todas las palabras
+                    gameOver();
+                  }
+                  return;
+                }
+
+                if (key === "Backspace") {
+                  const $prevWord = $currentWord.previousElementSibling;
+                  const $prevLetter = $currentLetter.previousElementSibling;
+
+                  if (!$prevWord && !$prevLetter) {
+                    event.preventDefault();
+                    return;
+                  }
+
+                  const $wordMarked = $paragraph.querySelector("word.marked");
+                  if ($wordMarked && !$prevLetter) {
+                    event.preventDefault();
+                    $prevWord.classList.remove("marked");
+                    $prevWord.classList.add("active");
+
+                    const $letterToGo =
+                      $prevWord.querySelector("letter:last-child");
+
+                    $currentLetter.classList.remove("active");
+                    $letterToGo.classList.add("active");
+
+                    $input.value = [
+                      ...$prevWord.querySelectorAll(
+                        "letter.correct, letter.incorrect"
+                      ),
+                    ]
+                      .map(($el) => {
+                        return $el.classList.contains("correct")
+                          ? $el.innerText
+                          : "*";
+                      })
+                      .join("");
+                  }
+                }
+              }
+
+              function onKeyUp() {
+                const $currentWord = $paragraph.querySelector("word.active");
+                const $currentLetter =
+                  $currentWord.querySelector("letter.active");
+
+                const currentWord = $currentWord.innerText.trim();
+                $input.maxLength = currentWord.length;
+
+                const $allLetters = $currentWord.querySelectorAll("letter");
+
+                $allLetters.forEach(($letter) =>
+                  $letter.classList.remove("correct", "incorrect")
+                );
+
+                $input.value.split("").forEach((char, index) => {
+                  const $letter = $allLetters[index];
+                  const isCorrect = char === currentWord[index];
+                  $letter.classList.add(isCorrect ? "correct" : "incorrect");
+                });
+
+                $currentLetter.classList.remove("active", "is-last");
+                const inputLength = $input.value.length;
+                const $nextActiveLetter = $allLetters[inputLength];
+
+                if ($nextActiveLetter) {
+                  $nextActiveLetter.classList.add("active");
+                } else {
+                  $currentLetter.classList.add("active", "is-last");
+                  if (!$currentWord.nextElementSibling) {
+                    clearInterval(intervalId); // Detener el temporizador si el usuario termina de escribir
+                    gameOver();
+                  }
+                }
+              }
+
+              function gameOver() {
+                const correctWords =
+                  $paragraph.querySelectorAll("word.correct").length;
+                const correctLetter =
+                  $paragraph.querySelectorAll("letter.correct").length;
+                const incorrectLetter =
+                  $paragraph.querySelectorAll("letter.incorrect").length;
+
+                const totalLetters = correctLetter + incorrectLetter;
+                const accuracy =
+                  totalLetters > 0 ? (correctLetter / totalLetters) * 100 : 0;
+                const wpm = (correctWords * 60) / 30;
+
+                $wpm.textContent = wpm;
+                $accuracy.textContent = `${accuracy.toFixed(2)}%`;
+
+                $results.style.display = "block";
+              }
+            }
+          });
+        });
+      </script>
 
       <section class="bg-light py-5">
         <div class="container px-5">
