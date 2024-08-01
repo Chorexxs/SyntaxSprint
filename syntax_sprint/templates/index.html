@@ -9,22 +9,30 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <title>SyntaxSprint - Carrera de código</title>
+
+    <!-- Enlace al favicon -->
     <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
+
+    <!-- Enlace al CSS de Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Enlace a styles.css, asegurándote de que se carga después de Bootstrap -->
+    <link href="{% static 'styles.css' %}" rel="stylesheet" />
 
     <style>
       :root {
         --green: #00b755;
-        --yellow: #daaf38;
+        --yellow: #fdcb40;
         --red: #ca4754;
         --black: #222;
         --gray: #999;
       }
 
-      /* Mantén el fondo de la página */
       body {
         font-family: Menlo, monospace;
-        padding: 32px;
-        background: var(--black);
         color: white;
       }
 
@@ -136,15 +144,20 @@
         opacity: 1;
         scale: 110%;
       }
+
+      .text-gradient {
+        font-size: 30px;
+        color: #222;
+      }
     </style>
   </head>
   <body class="d-flex flex-column h-100">
     <main class="flex-shrink-0">
       <nav class="navbar navbar-expand-lg navbar-light bg-white py-3">
         <div class="container px-5">
-          <a class="navbar-brand" href="{% url 'index' %}"
-            ><span class="fw-bolder text-primary">SyntaxSprint</span></a
-          >
+          <a class="navbar-brand" href="{% url 'index' %}">
+            <span class="fw-bolder text-primary">SyntaxSprint</span>
+          </a>
           <button
             class="navbar-toggler"
             type="button"
@@ -189,13 +202,14 @@
           <div class="row gx-5 align-items-center h-100">
             <div class="col-xxl-5 mx-auto">
               <div id="header-content">
-                <h1 class="display-2 fw-bolder mb-8">
+                <div class="text-container">
                   <span
-                    class="text-gradient row d-flex justify-content-center align-items-center h-100"
+                    class="text-gradient row d-flex justify-content-center align-items-center h-400 text-black"
                   >
                     ¿Qué tan rápido eres escribiendo código?
                   </span>
-                </h1>
+                </div>
+
                 <div class="container mt-5">
                   <div
                     class="d-grid gap-3 d-sm-flex justify-content-sm-center mb-3"
@@ -237,7 +251,18 @@
                   </main>
               `;
 
+            // Inserta el HTML dinámico en el DOM
             $("#test-area").html(testHTML).show();
+
+            // Asegúrate de que el CSS se aplique correctamente
+            // Verifica si ya se ha cargado styles.css, y si no, lo carga
+            if (!$("link[href$='css/styles.css']").length) {
+              $("<link/>", {
+                rel: "stylesheet",
+                type: "text/css",
+                href: "{% static 'css/styles.css' %}",
+              }).appendTo("head");
+            }
 
             fetch("{% url 'get_python_function' %}")
               .then((response) => response.json())
@@ -429,9 +454,9 @@
             <div class="col-xxl-8">
               <div class="text-center my-5">
                 <h2 class="display-5 fw-bolder">
-                  <span class="text-gradient d-inline"
-                    >Sobre este proyecto</span
-                  >
+                  <span class="text-gradient d-inline">
+                    Sobre este proyecto
+                  </span>
                 </h2>
                 <p class="lead fw-light mb-4">
                   Proyecto inspirado en la página web monkeytype.com
