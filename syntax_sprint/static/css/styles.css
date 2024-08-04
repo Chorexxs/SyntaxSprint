@@ -1,11 +1,15 @@
 :root {
     color-scheme: light dark;
     --green: #00b755;
-    --yellow: #daaf38;
+    --yellow: #f4d10d;
     --red: #ca4754;
-    --black: #222;
+    --black: #2b2d30;
     --gray: #999;
+    --white: #fff;
+    --sky: #17e7ea;
   }
+
+  
 
   body {
     background: var(--black);
@@ -13,7 +17,9 @@
     display: grid;
     padding: 32px;
     justify-content: center;
+    align-items: center;
     margin-top: 32px;
+    margin: 100px;
     padding: 16px;
   }
 
@@ -94,10 +100,16 @@
 
   #game {
     display: flex;
+    flex-direction: column; /* Cambia la dirección de los elementos a columna */
+    align-items: center; /* Alinea los elementos al centro */
+    gap: 20px; /* Espacio entre el área de test y los resultados */
   }
 
   #results {
-    display: none;
+    display: none; /* Asegúrate de que esté visible */
+    text-align: center;
+    color: var(--white); /* Puedes cambiar este color para que coincida con tu diseño */
+    margin-top: 16px; /* Espacio entre el test y los resultados */
   }
 
   h2 {
@@ -131,3 +143,109 @@
       scale: 110%;
     }
   }
+
+
+ 
+  nav {
+    display: flex;
+    justify-content: space-between; /* Distribuye espacio entre el logo y el menú */
+    align-items: center; /* Alinea verticalmente al centro */
+    padding: 24px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--black); /* Color de fondo de la navbar */
+    z-index: 1000; /* Asegura que la navbar esté por encima de otros elementos */
+}
+
+.navbar {
+    color: var(--gray);
+    text-decoration: none;
+    font-size: 16px; /* Tamaño del texto para los elementos del menú */
+    font-weight: bold;
+}
+
+.navbar-brand {
+    font-size: 26px; /* Tamaño del texto específico para 'SyntaxSprint' */
+    text-decoration: none;
+    font-weight: bold; /* Mantén el texto en negrita */
+}
+
+.syntax {
+  color: var(--white);
+}
+
+.sprint {
+  color: var(--yellow);
+}
+
+.navbar-nav {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 2px;
+}
+
+.navbar-nav li {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-nav a {
+    color: var(--gray);
+    text-decoration: none;
+    padding: 2px 16px;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav a:hover {
+    color: var(--yellow);
+}
+
+
+div {
+  text-align: center;
+}
+
+.text {
+  font-size: 30px;
+  color: var(--yellow);
+  margin-bottom: 16px;
+  font-weight: bolder;
+  display: block;
+}
+
+
+
+
+button#start-test {
+  background-color: var(--yellow); /* Color de fondo del botón */
+  color: var(--black); /* Color del texto del botón */
+  border: none;
+  padding: 12px 24px;
+  font-size: 18px; /* Tamaño del texto del botón */
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, transform 0.2s ease-in-out;
+  display: block;
+  margin: 20px auto 0 auto; /* Espacio arriba del botón y centrado horizontalmente */
+}
+
+button#start-test:hover {
+  background-color: var(--yellow); /* Fondo al pasar el cursor */
+  color: var(--black); /* Texto al pasar el cursor */
+  transform: scale(1.03); /* Pequeño efecto de aumento en el hover */
+}
+
+/* Centrado del área de test */
+#test-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 32px; /* Espacio entre el botón y el área de test */
+  width: 100%; /* Asegura que ocupe el ancho disponible */
+  max-width: 800px; /* Limita el ancho máximo del área de test */
+}
