@@ -28,36 +28,40 @@
   </head>
   <body>
     <main>
+      
       <nav>
-        <a class="navbar" href="{% url 'index' %}">
-          <span>SyntaxSprint</span>
-        </a>
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'index' %}">Inicio</a>
+        <a class="navbar-brand" href="{% url 'index' %}">
+          <span class="syntax">Syntax</span><span class="sprint">Sprint</span>
+      </a>
+      
+        <div class="navbar">
+        <ul class="navbar-nav">
+          <li>
+            <a href="{% url 'index' %}">Inicio</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'settings' %}">Ajustes</a>
+          <li>
+            <a href="{% url 'settings' %}">Ajustes</a>
           </li>
           {% if user.is_authenticated %}
-          <li class="nav-item">
-            <span class="nav-link">Hola, {{ user.username }}</span>
+          <li>
+            <span>Hola, {{ user.username }}</span>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
+          <li>
+            <a  href="{% url 'logout' %}">Cerrar sesión</a>
           </li>
           {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a>
+          <li>
+            <a  href="{% url 'login' %}">Iniciar sesión</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'signup' %}">Registrarse</a>
+          <li>
+            <a  href="{% url 'signup' %}">Registrarse</a>
           </li>
           {% endif %}
         </ul>
       </nav>
+    </div>
       <div>
-        <span> ¿Qué tan rápido eres escribiendo código? </span>
+        <span class="text"> ¿Qué tan rápido eres escribiendo código? </span>
         <button id="start-test">Iniciar Test</button>
       </div>
 
