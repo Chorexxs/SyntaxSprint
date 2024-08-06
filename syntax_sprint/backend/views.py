@@ -17,11 +17,11 @@ def get_python_function(request):
         },
         {
             "name": "func2",
-            "code": "def func2():\n    return 'Hello from func2!'"
+            "code": "import win32api\n\nprint(win32api.GetSystemMetrics(0))  # Width of the screen\nprint(win32api.GetSystemMetrics(1))  # Height of the screen"
         },
         {
             "name": "func3",
-            "code": "def func3():\n    return 'Hello from func3!'"
+            "code": "def func3():\n    print('Hello from func3!')\n    for i in range(10):\n        print(i)"
         },
     ]
     selected_function = random.choice(functions)
