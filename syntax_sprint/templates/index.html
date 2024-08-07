@@ -22,44 +22,44 @@
     <!-- Enlace a script.js -->
     <script src="{% static 'js/script.js' %}" defer></script>
 
+    <!-- Definir la variable apiUrl -->
     <script>
       const apiUrl = "{% url 'get_python_function' %}";
     </script>
   </head>
   <body>
     <main>
-      
       <nav>
         <a class="navbar-brand" href="{% url 'index' %}">
           <span class="syntax">Syntax</span><span class="sprint">Sprint</span>
-      </a>
-      
+        </a>
+
         <div class="navbar">
-        <ul class="navbar-nav">
-          <li>
-            <a href="{% url 'index' %}">Inicio</a>
-          </li>
-          <li>
-            <a href="{% url 'settings' %}">Ajustes</a>
-          </li>
-          {% if user.is_authenticated %}
-          <li>
-            <span>Hola, {{ user.username }}</span>
-          </li>
-          <li>
-            <a  href="{% url 'logout' %}">Cerrar sesión</a>
-          </li>
-          {% else %}
-          <li>
-            <a  href="{% url 'login' %}">Iniciar sesión</a>
-          </li>
-          <li>
-            <a  href="{% url 'signup' %}">Registrarse</a>
-          </li>
-          {% endif %}
-        </ul>
+          <ul class="navbar-nav">
+            <li>
+              <a href="{% url 'index' %}">Inicio</a>
+            </li>
+            <li>
+              <a href="{% url 'settings' %}">Ajustes</a>
+            </li>
+            {% if user.is_authenticated %}
+            <li>
+              <span>Hola, {{ user.username }}</span>
+            </li>
+            <li>
+              <a href="{% url 'logout' %}">Cerrar sesión</a>
+            </li>
+            {% else %}
+            <li>
+              <a href="{% url 'login' %}">Iniciar sesión</a>
+            </li>
+            <li>
+              <a href="{% url 'signup' %}">Registrarse</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
       </nav>
-    </div>
       <div>
         <span class="text"> ¿Qué tan rápido eres escribiendo código? </span>
         <button id="start-test">Iniciar Test</button>
@@ -68,7 +68,9 @@
       <div id="test-area"></div>
     </main>
     <footer>
-      <div class="copyright">Copyright &copy; Crédito a los respectivos autores</div>
+      <div class="copyright">
+        Copyright &copy; Crédito a los respectivos autores
+      </div>
       <div class="links">
         <a href="#!">LinkedIn</a>
         <span class="mx-1">&middot;</span>

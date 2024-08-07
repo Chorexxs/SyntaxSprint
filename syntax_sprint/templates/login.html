@@ -28,42 +28,63 @@
   </head>
   <body>
     <main>
-      
       <nav>
         <a class="navbar-brand" href="{% url 'index' %}">
           <span class="syntax">Syntax</span><span class="sprint">Sprint</span>
-      </a>
-      
+        </a>
         <div class="navbar">
-        <ul class="navbar-nav">
-          <li>
-            <a href="{% url 'index' %}">Inicio</a>
-          </li>
-          <li>
-            <a href="{% url 'settings' %}">Ajustes</a>
-          </li>
-          {% if user.is_authenticated %}
-          <li>
-            <span>Hola, {{ user.username }}</span>
-          </li>
-          <li>
-            <a  href="{% url 'logout' %}">Cerrar sesión</a>
-          </li>
-          {% else %}
-          <li>
-            <a  href="{% url 'login' %}">Iniciar sesión</a>
-          </li>
-          <li>
-            <a  href="{% url 'signup' %}">Registrarse</a>
-          </li>
-          {% endif %}
-        </ul>
+          <ul class="navbar-nav">
+            <li><a href="{% url 'index' %}">Inicio</a></li>
+            <li><a href="{% url 'settings' %}">Ajustes</a></li>
+            {% if user.is_authenticated %}
+            <li><span>Hola, {{ user.username }}</span></li>
+            <li><a href="{% url 'logout' %}">Cerrar sesión</a></li>
+            {% else %}
+            <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
+            <li><a href="{% url 'signup' %}">Registrarse</a></li>
+            {% endif %}
+          </ul>
+        </div>
       </nav>
-    </div>
-     
+
+      <div class="container">
+        <h1>Iniciar sesión</h1>
+
+        <!-- Mensaje de error -->
+        <div class="error-message">
+          {% if messages %} {% for message in messages %}
+          <h5 class="error-msg">{{ message }}</h5>
+          {% endfor %} {% endif %}
+        </div>
+
+        <!-- Formulario -->
+        <form action="" method="POST" class="login-form">
+          {% csrf_token %}
+          <div class="form-group">
+            <input
+              type="text"
+              name="username"
+              placeholder="Nombre de usuario"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <input
+              type="password"
+              name="password"
+              placeholder="Contraseña"
+              required
+            />
+          </div>
+          <button type="submit">Conectarse</button>
+        </form>
+      </div>
     </main>
+
     <footer>
-      <div class="copyright">Copyright &copy; Crédito a los respectivos autores</div>
+      <div class="copyright">
+        Copyright &copy; Crédito a los respectivos autores
+      </div>
       <div class="links">
         <a href="#!">LinkedIn</a>
         <span class="mx-1">&middot;</span>
