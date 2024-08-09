@@ -26,7 +26,7 @@
       const apiUrl = "{% url 'get_python_function' %}";
     </script>
   </head>
-  <body>
+  <body class="login-page">
     <main>
       <nav>
         <a class="navbar-brand" href="{% url 'index' %}">
@@ -48,7 +48,7 @@
       </nav>
 
       <div class="container">
-        <h1>Iniciar sesión</h1>
+        <span class="text">Iniciar sesión</span>
 
         <!-- Mensaje de error -->
         <div class="error-message">
@@ -60,23 +60,33 @@
         <!-- Formulario -->
         <form action="" method="POST" class="login-form">
           {% csrf_token %}
-          <div class="form-group">
+          <div class="input-container">
+            <i class="fas fa-user fa-lg icon"></i>
             <input
               type="text"
               name="username"
+              class="form-control"
               placeholder="Nombre de usuario"
               required
             />
           </div>
-          <div class="form-group">
+
+          <div class="input-container">
+            <i class="fas fa-lock fa-lg icon"></i>
             <input
               type="password"
               name="password"
+              class="form-control"
               placeholder="Contraseña"
               required
             />
           </div>
-          <button type="submit">Conectarse</button>
+
+          <div class="button-container">
+            <button type="submit" class="btn btn-primary btn-lg">
+              Conectarse
+            </button>
+          </div>
         </form>
       </div>
     </main>
