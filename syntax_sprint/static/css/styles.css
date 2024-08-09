@@ -8,6 +8,10 @@
     --white: #fff;
   }
 
+  main {
+    padding-top: 80px; /* Ajusta según la altura de tu nav */
+  }
+  
   
 
   body {
@@ -19,7 +23,7 @@
     justify-content: center;
     align-items: center;
     margin-top: 32px;
-    margin: 100px;
+    margin: 0;
     padding: 16px;
   }
 
@@ -36,7 +40,7 @@
     font-size: 25px;
   }
 
-  input {
+  .index-page input {
     z-index: -999;
     position: absolute;
     top: 0;
@@ -160,6 +164,7 @@
     right: 0;
     background-color: var(--black); /* Color de fondo de la navbar */
     z-index: 1000; /* Asegura que la navbar esté por encima de otros elementos */
+    max-width: 100%;
 }
 
 .navbar {
@@ -255,7 +260,7 @@ button#start-test:hover {
 }
 
 
-
+/* footer */
 
 
 footer {
@@ -298,68 +303,84 @@ footer {
   margin: 0 4px;
 }
 
-/* login */
+/* login.html */
 
-.container {
-  text-align: center;
-    width: 100%;
-    max-width: 400px; /* Ancho máximo del formulario */
-    padding: 20px;
-    background-color: var(--black); /* Fondo blanco para el formulario */
-
-
-}
-
-
-h1 {
-  margin: 0;
-  padding: 0;
-  font-size: 30px;
-  color: var(--yellow); 
-}
-
-/* Estilos para el mensaje de error */
-.error-message {
-  margin-bottom: 20px;
-}
-
-#error-msg {
-  color: red; /* Color del mensaje de error */
-  font-size: 1rem;
-}
-
-/* Estilos para el formulario */
+/* Estilo general para el formulario */
 .login-form {
+  width: 300px;
+  margin: 0 auto;
+  margin-top: 30px;
+  padding: 40px;
+  background: var(--black);
+  border-radius: 8px;
+  box-shadow:  var(--gray);
+}
+
+/* Estilo para los contenedores de entrada */
+.input-container {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  margin-bottom: 20px;
+  position: relative;
 }
 
-.form-group {
-  margin-bottom: 15px;
-  width: 100%;
-}
-
-.form-group input {
-  width: 100%;
+/* Estilo para los iconos */
+.icon {
+  color: var(--gray);
   padding: 10px;
-  font-size: 1rem;
-  border: 1px solid var(--gray);
-  border-radius: 4px;
+  min-width: 40px;
+  text-align: center;
+  position: absolute;
 }
 
-button {
+/* Estilo para los campos de entrada */
+.form-control {
+  width: 100%;
+  padding: 10px 10px 10px 50px;
+  border: 1px solid var(--gray);
+  border-radius: 5px;
+  background: var(--black);
+  font-size: 16px;
+  outline: none;
+}
+
+/* Efecto de enfoque en los campos de entrada */
+.form-control:focus {
+  border-color: var(--gray);
+  box-shadow: 0px 0px 5px var(--gray);
+}
+
+/* Estilo para el botón de enviar */
+.button-container {
+  text-align: center;
+}
+
+.btn-primary {
+  background-color: var(--yellow);
+  border: none;
+  color: var(--black);
   padding: 10px 20px;
   font-size: 18px;
-  color: var(--black);
-  background-color: var(--yellow); /* Color de fondo del botón */
-  border: none;
-  border-radius: 8px;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, transform 0.2s ease-in-out;
+  transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: var(--yellow); /* Color del botón en hover */
-  transform: scale(1.03);
+.btn-primary:hover {
+  background-color: var(--yellow);
+}
+
+.error-message {
+  position: relative; /* Necesario para que el mensaje de error esté posicionado correctamente dentro de este contenedor */
+}
+
+/* Estilo para el mensaje de error en rojo */
+.error-msg {
+  color: var(--red);
+  font-weight: bold;
+  position: absolute;
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  text-align: center;
 }
