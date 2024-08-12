@@ -35,9 +35,11 @@
         <div class="navbar">
           <ul class="navbar-nav">
             <li><a href="{% url 'index' %}">Inicio</a></li>
-            <li><a href="{% url 'settings' %}">Ajustes</a></li>
+
             {% if user.is_authenticated %}
-            <li><span>Hola, {{ user.username }}</span></li>
+            <li>
+              <a href="{% url 'profile' %}">Hola, {{ user.username }}</a>
+            </li>
             <li><a href="{% url 'logout' %}">Cerrar sesión</a></li>
             {% else %}
             <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
@@ -96,11 +98,15 @@
         Copyright &copy; Crédito a los respectivos autores
       </div>
       <div class="links">
-        <a href="#!">LinkedIn</a>
+        <a
+          href="https://www.linkedin.com/in/oswaldo-fonseca-gonzalez/"
+          target="_blank"
+          >LinkedIn</a
+        >
         <span class="mx-1">&middot;</span>
-        <a href="#!">GitHub</a>
+        <a href="https://github.com/Chorexxs" target="_blank">GitHub</a>
         <span class="mx-1">&middot;</span>
-        <a href="#!">Portfolio</a>
+        <a href="https://chorexxs-portfolio.dev/" target="_blank">Portfolio</a>
       </div>
     </footer>
   </body>

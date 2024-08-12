@@ -239,7 +239,7 @@ button#start-test {
   border-radius: 8px;
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, transform 0.2s ease-in-out;
   display: block;
-  margin: 20px auto 0 auto; /* Espacio arriba del botón y centrado horizontalmente */
+  margin: 60px auto 0 auto; /* Espacio arriba del botón y centrado horizontalmente */
 }
 
 button#start-test:hover {
@@ -254,9 +254,9 @@ button#start-test:hover {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin-top: 32px; /* Espacio entre el botón y el área de test */
+  margin-top: 20px; /* Espacio entre el botón y el área de test */
   width: 100%; /* Asegura que ocupe el ancho disponible */
-  max-width: 10000px; /* Limita el ancho máximo del área de test */
+  max-width: 800px; /* Limita el ancho máximo del área de test */
 }
 
 
@@ -341,6 +341,7 @@ footer {
   border-radius: 5px;
   background: var(--black);
   font-size: 16px;
+  color: var(--white);
   outline: none;
 }
 
@@ -363,11 +364,12 @@ footer {
   font-size: 18px;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
 .btn-primary:hover {
   background-color: var(--yellow);
+  transform: scale(1.03);
 }
 
 .error-message {
@@ -383,4 +385,11 @@ footer {
   left: 0; 
   width: 100%; 
   text-align: center;
+}
+
+
+/* profile.html */
+
+.profile-page .navbar span {
+  display: none;
 }
