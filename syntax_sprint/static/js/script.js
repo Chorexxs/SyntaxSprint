@@ -189,16 +189,58 @@ $(document).ready(function () {
           const correctWords = $paragraph.querySelectorAll("word.correct").length;
           const correctLetter = $paragraph.querySelectorAll("letter.correct").length;
           const incorrectLetter = $paragraph.querySelectorAll("letter.incorrect").length;
-  
+      
           const totalLetters = correctLetter + incorrectLetter;
           const accuracy = totalLetters > 0 ? (correctLetter / totalLetters) * 100 : 0;
           const wpm = (correctWords * 60) / 30;
-  
+      
           $wpm.textContent = wpm;
           $accuracy.textContent = `${accuracy.toFixed(2)}%`;
-  
+      
           $results.style.display = "block";
-        }
+      
+          // Enviar resultados al servidor
+          fetch("{% url 'save_typing_test_result' %}", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+                  "X-CSRFToken": getCookie('csrftoken')  // Necesitarás asegurarte de enviar el token CSRF
+              },
+              body: JSON.stringify({
+                  wpm: wpm,
+                  accuracy: accuracy.toFixed(2)
+              })
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.message) {
+                  console.log("Resultados guardados exitosamente");
+              } else {
+                  console.error("Error al guardar los resultados:", data.error);
+              }
+          })
+          .catch(error => {
+              console.error("Error al guardar los resultados:", error);
+          });
+      }
+      
+      // Función para obtener el token CSRF
+      function getCookie(name) {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+              const cookies = document.cookie.split(';');
+              for (let i = 0; i < cookies.length; i++) {
+                  const cookie = cookies[i].trim();
+                  // Does this cookie string begin with the name we want?
+                  if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
+      
       }
     });
   });

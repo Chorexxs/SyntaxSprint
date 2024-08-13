@@ -50,6 +50,29 @@
       </nav>
       <div>
         <span class="text"> {{ user.username }} </span>
+
+        <h1>Historial de Resultados</h1>
+        <p>Promedio de WPM: {{ avg_wpm }}</p>
+        <p>Promedio de Precisión: {{ avg_accuracy }}%</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>WPM</th>
+              <th>Precisión</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for result in results %}
+            <tr>
+              <td>{{ result.date }}</td>
+              <td>{{ result.wpm }}</td>
+              <td>{{ result.accuracy }}%</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </main>
 
