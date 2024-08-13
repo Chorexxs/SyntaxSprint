@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 import requests
 import random
 from django.http import JsonResponse
+from .models import TypingTestResult
+from django.db.models import Avg
 # Create your views here.
 
 
@@ -515,10 +517,40 @@ def logout(request):
     return redirect("/")
 
 
-def profile(request):
-    context = {
-        'on_profile_page': True,
-    }
-    return render(request, 'profile.html', context)
+@login_required
+def save_typing_test_result(request):
+    if request.method == 'POST':
+        wpm = float(request.POST.get('wpm', 0))
+        accuracy = float(request.POST.get('accuracy', 0))
 
-    return render(request, "profile.html")
+        # Guardar el resultado en la base de datos
+        TypingTestResult.objects.create(
+            user=request.user,
+            wpm=wpm,
+            accuracy=accuracy
+        )
+
+        return JsonResponse({"message": "Resultado guardado exitosamente"})
+    return JsonResponse({"error": "Método no permitido"}, status=405)
+
+
+@login_required
+def profile(request):
+    # Filtrar los resultados del usuario autenticado, ordenados por fecha descendente
+    results = TypingTestResult.objects.filter(
+        user=request.user).order_by('-date')
+
+    # Calcular los promedios de WPM y precisión
+    avg_wpm = results.aggregate(Avg('wpm'))['wpm__avg']
+    avg_accuracy = results.aggregate(Avg('accuracy'))['accuracy__avg']
+
+    # Preparar el contexto para pasar a la plantilla
+    context = {
+        'on_profile_page': True,  # Este campo puede ser útil para personalizar la navegación
+        'results': results,
+        'avg_wpm': avg_wpm,
+        'avg_accuracy': avg_accuracy,
+    }
+
+    # Renderizar la plantilla con el contexto
+    return render(request, 'profile.html', context)
