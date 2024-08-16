@@ -8,6 +8,7 @@ import random
 from django.http import JsonResponse
 from .models import TypingTestResult
 from django.db.models import Avg
+import json
 # Create your views here.
 
 
@@ -520,37 +521,39 @@ def logout(request):
 @login_required
 def save_typing_test_result(request):
     if request.method == 'POST':
-        wpm = float(request.POST.get('wpm', 0))
-        accuracy = float(request.POST.get('accuracy', 0))
+        data = json.loads(request.body)  # Asegúrate de cargar los datos JSON
+        wpm = data.get('wpm')
+        accuracy = data.get('accuracy')
 
-        # Guardar el resultado en la base de datos
-        TypingTestResult.objects.create(
-            user=request.user,
-            wpm=wpm,
-            accuracy=accuracy
-        )
-
-        return JsonResponse({"message": "Resultado guardado exitosamente"})
+        if wpm is not None and accuracy is not None:
+            TypingTestResult.objects.create(
+                user=request.user,
+                wpm=wpm,
+                accuracy=accuracy
+            )
+            return JsonResponse({"message": "Resultado guardado exitosamente"})
+        return JsonResponse({"error": "Datos no válidos"}, status=400)
     return JsonResponse({"error": "Método no permitido"}, status=405)
 
 
 @login_required
 def profile(request):
-    # Filtrar los resultados del usuario autenticado, ordenados por fecha descendente
     results = TypingTestResult.objects.filter(
         user=request.user).order_by('-date')
 
-    # Calcular los promedios de WPM y precisión
-    avg_wpm = results.aggregate(Avg('wpm'))['wpm__avg']
-    avg_accuracy = results.aggregate(Avg('accuracy'))['accuracy__avg']
+    # Verifica que existan resultados antes de calcular los promedios
+    if results.exists():
+        avg_wpm = results.aggregate(Avg('wpm'))['wpm__avg']
+        avg_accuracy = results.aggregate(Avg('accuracy'))['accuracy__avg']
+    else:
+        avg_wpm = 0
+        avg_accuracy = 0
 
-    # Preparar el contexto para pasar a la plantilla
     context = {
-        'on_profile_page': True,  # Este campo puede ser útil para personalizar la navegación
+        'on_profile-page': True,
         'results': results,
-        'avg_wpm': avg_wpm,
-        'avg_accuracy': avg_accuracy,
+        'avg_wpm': avg_wpm or 0,
+        'avg_accuracy': avg_accuracy or 0,
     }
 
-    # Renderizar la plantilla con el contexto
     return render(request, 'profile.html', context)
