@@ -17,7 +17,7 @@
   body {
     background: var(--black);
     font-family: Menlo, monospace;
-    display: grid;
+    display: flex;
     flex-direction: column;
     padding: 32px;
     justify-content: center;
@@ -393,3 +393,50 @@ footer {
 .profile-page .navbar span {
   display: none;
 }
+
+
+.historial {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: var(--white);
+}
+
+.promedio {
+  font-size: 18px;
+  margin: 10px 0;
+  text-align: center;
+  color: var(--gray);
+}
+
+.promedio-valor {
+  color: var(--yellow);
+  font-weight: bold;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.tabla th,
+.tabla td {
+  padding: 12px;
+  border: 1px solid var(--white);
+  text-align: center;
+}
+
+.tabla th {
+  background-color: var(--black);
+  color: var(--yellow);
+}
+
+.tabla td {
+  color: var(--gray);
+}
+
+.tabla td:first-child {
+  text-align: left;
+}
+

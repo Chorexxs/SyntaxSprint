@@ -52,11 +52,17 @@
       <div>
         <span class="text"> {{ user.username }} </span>
 
-        <h1>Historial de Resultados</h1>
-        <p>Promedio de WPM: {{ avg_wpm }}</p>
-        <p>Promedio de Precisión: {{ avg_accuracy }}%</p>
+        <h1 class="historial">Historial de resultados</h1>
+        <p class="promedio">
+          Promedio de WPM:
+          <span class="promedio-valor">{{ avg_wpm|floatformat:2 }}</span>
+        </p>
+        <p class="promedio">
+          Promedio de Precisión:
+          <span class="promedio-valor">{{ avg_accuracy|floatformat:2 }}%</span>
+        </p>
 
-        <table>
+        <table class="tabla">
           <thead>
             <tr>
               <th>Fecha</th>
