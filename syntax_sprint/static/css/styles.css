@@ -25,6 +25,7 @@
     margin-top: 32px;
     margin: 0;
     padding: 16px;
+    min-height: 96vh;
   }
 
   section {
@@ -39,6 +40,9 @@
     color: var(--yellow);
     font-size: 25px;
   }
+
+  /* index.html */
+
 
   .index-page input {
     z-index: -999;
@@ -264,6 +268,7 @@ button#start-test:hover {
 
 
 footer {
+  margin-top: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -271,7 +276,7 @@ footer {
   color: var(--gray);
   width: 100%;
   box-sizing: border-box;
-  position: absolute;
+  position: relative;
   bottom: 0;
   left: 0;
   right: 0;
@@ -280,12 +285,12 @@ footer {
 
 .copyright {
   text-align: left;
-  margin-left: 58px;
+  margin-left: 40px;
 }
 
 .links {
   text-align: right;
-  margin-right: 16px;
+  margin-right: 10px;
 }
 
 .links a {
@@ -304,6 +309,8 @@ footer {
 }
 
 /* login.html */
+
+
 
 /* Estilo general para el formulario */
 .login-form {
@@ -390,8 +397,12 @@ footer {
 
 /* profile.html */
 
+.profile-page {
+  display: flex;
+}
+
 .profile-page .navbar span {
-  display: none;
+  display: flex;
 }
 
 
@@ -400,6 +411,7 @@ footer {
   font-size: 24px;
   margin-bottom: 20px;
   color: var(--white);
+
 }
 
 .promedio {
@@ -407,6 +419,7 @@ footer {
   margin: 10px 0;
   text-align: center;
   color: var(--gray);
+
 }
 
 .promedio-valor {
@@ -425,6 +438,7 @@ footer {
   padding: 12px;
   border: 1px solid var(--white);
   text-align: center;
+  
 }
 
 .tabla th {
