@@ -550,7 +550,7 @@ def profile(request):
         avg_accuracy = 0
 
     context = {
-        'on_profile-page': True,
+        'on_profile_page': True,
         'results': results,
         'avg_wpm': avg_wpm or 0,
         'avg_accuracy': avg_accuracy or 0,
