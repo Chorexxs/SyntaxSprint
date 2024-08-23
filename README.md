@@ -21,7 +21,7 @@ SyntaxSprint es una aplicación web diseñada para ayudar a los usuarios a mejor
 
    ```bash
    git clone https://github.com/tu_usuario/syntaxsprint.git
-   cd syntaxsprint
+   cd syntax_sprint
    ```
 
 2. **Crea un entorno virtual y actívalo:**
@@ -88,7 +88,7 @@ Si deseas contribuir al proyecto:
 
 ## Licencia
 
-Este proyecto está licenciado bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+Este proyecto está licenciado bajo la Licencia MIT
 
 ## Contacto
 
@@ -97,3 +97,5 @@ Para preguntas o soporte, puedes contactarme en [oswaldofonseca159@gmail.com](ma
 - [LinkedIn](https://www.linkedin.com/in/oswaldo-fonseca-gonzalez/)
 - [GitHub](https://github.com/Chorexxs)
 - [Portfolio](https://chorexxs-portfolio.dev/)
+
+## _Proyecto inspirado en [monkeytype.com](https://monkeytype.com/)_
