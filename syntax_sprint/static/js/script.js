@@ -198,13 +198,16 @@ $(document).ready(function () {
           $accuracy.textContent = `${accuracy.toFixed(2)}%`;
       
           $results.style.display = "block";
+
+           // Deshabilitar el campo de entrada para evitar que el usuario siga escribiendo
+          $input.setAttribute("disabled", "disabled");
       
           // Enviar resultados al servidor
           fetch(saveResultUrl, {
               method: "POST",
               headers: {
                   "Content-Type": "application/json",
-                  "X-CSRFToken": getCookie('csrftoken')  // Necesitarás asegurarte de enviar el token CSRF
+                  "X-CSRFToken": getCookie('csrftoken')
               },
               body: JSON.stringify({
                   wpm: wpm,
