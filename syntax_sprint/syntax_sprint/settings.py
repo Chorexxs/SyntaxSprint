@@ -70,6 +70,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'syntax_sprint.wsgi.application'
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'syntax_sprint.settings')
 
 
 # Database
