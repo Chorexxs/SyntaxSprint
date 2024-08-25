@@ -27,8 +27,7 @@ SECRET_KEY = config("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool)
 
-ALLOWED_HOSTS = ["0.0.0.0", "localhost",
-                 "https://syntaxsprint.onrender.com/"]
+ALLOWED_HOSTS = config("ALLOWED_HOSTS").split(",")
 
 
 # Application definition
@@ -70,9 +69,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'syntax_sprint.wsgi.application'
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'syntax_sprint.settings')
 
 
 # Database
