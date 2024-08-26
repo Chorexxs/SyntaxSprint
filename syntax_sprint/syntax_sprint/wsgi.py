@@ -11,6 +11,7 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'syntax_sprint.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE',
+                      'syntax_sprint.syntax_sprint.settings')
 
 application = get_wsgi_application()
