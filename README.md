@@ -2,6 +2,8 @@
 
 SyntaxSprint es una aplicación web diseñada para ayudar a los usuarios a mejorar su velocidad de escritura en código. Los usuarios pueden realizar tests de escritura de código y registrar su rendimiento (palabras por minuto y precisión) en su perfil. La aplicación proporciona un historial de resultados y calcula los promedios de rendimiento.
 
+![alt text](381shots_so.png)
+
 ## Características
 
 - **Test de escritura de código:** Los usuarios pueden realizar tests de velocidad escribiendo fragmentos de código en Python.
