@@ -1,456 +1,282 @@
+/* ==========================================
+   SyntaxSprint - Minimalist Typing Test
+   Inspired by MonkeyType
+   ========================================== */
+
+/* CSS Custom Properties - Theme Variables */
 :root {
-    color-scheme: light dark;
-    --green: #00b755;
-    --yellow: #f4d10d;
-    --red: #ca4754;
-    --black: #2b2d30;
-    --gray: #999;
-    --white: #fff;
-  }
-
-  main {
-    padding-top: 80px; /* Ajusta según la altura de tu nav */
-  }
+  /* Dark Theme (Default - MonkeyType style) */
+  --bg-primary: #323437;
+  --bg-secondary: #2d3135;
+  --text-main: #d1d0c5;
+  --text-sub: #646669;
+  --text-active: #d1d0c5;
+  --caret: #d1d0c5;
+  --success: #9ece9a;
+  --error: #ca4754;
+  --error-sub: #7e3838;
   
-  
-
-  body {
-    background: var(--black);
-    font-family: Menlo, monospace;
-    display: flex;
-    flex-direction: column;
-    padding: 32px;
-    justify-content: center;
-    align-items: center;
-    margin-top: 32px;
-    margin: 0;
-    padding: 16px;
-    min-height: 96vh;
-  }
-
-  section {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    max-width: 500px;
-  }
-
-  time {
-    color: var(--yellow);
-    font-size: 25px;
-  }
-
-  /* index.html */
-
-
-  .index-page input {
-    z-index: -999;
-    position: absolute;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    opacity: 0;
-  }
-
-  p {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 3px 8px;
-    margin: 0;
-  }
-
-  letter {
-    color: var(--gray);
-    position: relative;
-
-    &.active::before {
-      content: '|';
-      color: var(--yellow);
-      font-size: 14px;
-      position: absolute;
-      left: -65%;
-      animation: 1s blink infinite ease-in-out;
-    }
-
-    &.active.is-last::before {
-      left: 65%;
-    }
-
-    &.correct {
-      color: var(--green);
-    }
-
-    &.incorrect {
-      color: var(--red);
-    }
-  }
-
-  word {
-    border-bottom: 1.5px solid transparent;
-    transition: border-color 0.3s ease-in-out;
-
-    &.marked {
-      border-color: var(--red);
-    }
-  }
-
-  @keyframes blink {
-
-    0%,
-    25% {
-      opacity: 1;
-    }
-
-    75% {
-      opacity: 0;
-    }
-  }
-
-  #game {
-    display: flex;
-    flex-direction: column; /* Cambia la dirección de los elementos a columna */
-    align-items: center; /* Alinea los elementos al centro */
-    gap: 20px; /* Espacio entre el área de test y los resultados */
-  }
-
-  #results {
-    display: none; /* Asegúrate de que esté visible */
-    text-align: center;
-    color: var(--white); /* Puedes cambiar este color para que coincida con tu diseño */
-    margin-top: 16px; /* Espacio entre el test y los resultados */
-  }
-
-
-
-  h2 {
-    font-weight: 400;
-    opacity: .4;
-    margin: 0;
-    font-size: 16px;
-  }
-
-  h3 {
-    font-weight: 400;
-    margin: 0;
-    font-size: 24px;
-    color: var(--yellow);
-  }
-
-  button {
-    background: transparent;
-    border: 0;
-    margin-top: 32px;
-    padding: 8px;
-    opacity: .4;
-    display: inline-block;
-    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-    cursor: pointer;
-    border-radius: 16px;
-
-    &:hover {
-      background: #444;
-      opacity: 1;
-      scale: 110%;
-    }
-  }
-
-
- 
-  nav {
-    display: flex;
-    justify-content: space-between; /* Distribuye espacio entre el logo y el menú */
-    align-items: center; /* Alinea verticalmente al centro */
-    padding: 24px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: var(--black); /* Color de fondo de la navbar */
-    z-index: 1000; /* Asegura que la navbar esté por encima de otros elementos */
-    max-width: 100%;
+  /* Spacing */
+  --header-height: 60px;
 }
 
-.navbar {
-    color: var(--gray);
-    text-decoration: none;
-    font-size: 16px; /* Tamaño del texto para los elementos del menú */
-    font-weight: bold;
+/* Light Theme */
+[data-theme="light"] {
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #e8e8e8;
+  --text-main: #323437;
+  --text-sub: #a0a0a0;
+  --text-active: #323437;
+  --caret: #323437;
+  --success: #44a844;
+  --error: #d95050;
+  --error-sub: #e8b4b4;
 }
 
-.navbar-brand {
-    font-size: 26px; /* Tamaño del texto específico para 'SyntaxSprint' */
-    text-decoration: none;
-    font-weight: bold; /* Mantén el texto en negrita */
-    margin-left: 50px;
-}
-
-.syntax {
-  color: var(--white);
-}
-
-.sprint {
-  color: var(--yellow);
-}
-
-.navbar-nav {
-    display: flex;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    gap: 2px;
-}
-
-.navbar-nav li {
-    display: flex;
-    align-items: center;
-}
-
-.navbar-nav a {
-    color: var(--gray);
-    text-decoration: none;
-    padding: 2px 16px;
-    transition: color 0.3s ease;
-}
-
-.navbar-nav a:hover {
-    color: var(--yellow);
-}
-
-
-div {
-  text-align: center;
-}
-
-.text {
-  font-size: 30px;
-  color: var(--yellow);
-  margin-bottom: 16px;
-  font-weight: bolder;
-  display: block;
-}
-
-
-
-
-button#start-test {
-  background-color: var(--yellow); /* Color de fondo del botón */
-  color: var(--black); /* Color del texto del botón */
-  border: none;
-  padding: 12px 24px;
-  font-size: 18px; /* Tamaño del texto del botón */
-  cursor: pointer;
-  border-radius: 8px;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, transform 0.2s ease-in-out;
-  display: block;
-  margin: 60px auto 0 auto; /* Espacio arriba del botón y centrado horizontalmente */
-}
-
-button#start-test:hover {
-  background-color: var(--yellow); /* Fondo al pasar el cursor */
-  color: var(--black); /* Texto al pasar el cursor */
-  transform: scale(1.03); /* Pequeño efecto de aumento en el hover */
-}
-
-/* Centrado del área de test */
-#test-area {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  margin-top: 20px; /* Espacio entre el botón y el área de test */
-  width: 100%; /* Asegura que ocupe el ancho disponible */
-  max-width: 800px; /* Limita el ancho máximo del área de test */
-}
-
-
-/* footer */
-
-
-footer {
-  margin-top: auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  color: var(--gray);
-  width: 100%;
+/* Global Styles */
+* {
   box-sizing: border-box;
-  position: relative;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000; /* Asegura que el footer esté encima de otros elementos */
 }
 
-.copyright {
-  text-align: left;
-  margin-left: 40px;
-}
-
-.links {
-  text-align: right;
-  margin-right: 10px;
-}
-
-.links a {
-  color: var(--gray);
-  text-decoration: none;
-  margin: 0 8px;
-  transition: color 0.3s ease;
-}
-
-.links a:hover {
-  color: var(--yellow);
-}
-
-.mx-1 {
-  margin: 0 4px;
-}
-
-/* login.html */
-
-
-
-/* Estilo general para el formulario */
-.login-form {
-  width: 300px;
-  margin: 0 auto;
-  margin-top: 30px;
-  padding: 40px;
-  background: var(--black);
-  border-radius: 8px;
-  box-shadow:  var(--gray);
-}
-
-/* Estilo para los contenedores de entrada */
-.input-container {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-  position: relative;
-}
-
-/* Estilo para los iconos */
-.icon {
-  color: var(--gray);
-  padding: 10px;
-  min-width: 40px;
-  text-align: center;
-  position: absolute;
-}
-
-/* Estilo para los campos de entrada */
-.form-control {
-  width: 100%;
-  padding: 10px 10px 10px 50px;
-  border: 1px solid var(--gray);
-  border-radius: 5px;
-  background: var(--black);
+html {
   font-size: 16px;
-  color: var(--white);
+}
+
+/* Remove default focus outline */
+*:focus {
   outline: none;
 }
 
-/* Efecto de enfoque en los campos de entrada */
-.form-control:focus {
-  border-color: var(--gray);
-  box-shadow: 0px 0px 5px var(--gray);
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
 }
 
-/* Estilo para el botón de enviar */
-.button-container {
-  text-align: center;
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
 }
 
-.btn-primary {
-  background-color: var(--yellow);
-  border: none;
-  color: var(--black);
-  padding: 10px 20px;
-  font-size: 18px;
-  border-radius: 5px;
+::-webkit-scrollbar-thumb {
+  background: var(--text-sub);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-active);
+}
+
+/* ==========================================
+   Header
+   ========================================== */
+header {
+  backdrop-filter: blur(8px);
+  background: rgba(50, 52, 55, 0.8);
+}
+
+[data-theme="light"] header {
+  background: rgba(245, 245, 245, 0.8);
+}
+
+/* ==========================================
+   Typography
+   ========================================== */
+.font-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ==========================================
+   Buttons
+   ========================================== */
+button {
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out, transform 0.2s ease-in-out;
+  transition: all 0.15s ease;
 }
 
-.btn-primary:hover {
-  background-color: var(--yellow);
-  transform: scale(1.03);
+button:active {
+  transform: scale(0.98);
 }
 
-.error-message {
-  position: relative; /* Necesario para que el mensaje de error esté posicionado correctamente dentro de este contenedor */
+/* ==========================================
+   Test Area
+   ========================================== */
+#prompt-display {
+  min-height: 200px;
+  padding: 20px;
+  border-radius: 8px;
 }
 
-/* Estilo para el mensaje de error en rojo */
-.error-msg {
-  color: var(--red);
-  font-weight: bold;
+/* Letter styling */
+#prompt-display letter {
+  position: relative;
+  color: var(--text-sub);
+  transition: color 0.1s ease;
+}
+
+#prompt-display letter.correct {
+  color: var(--success);
+}
+
+#prompt-display letter.incorrect {
+  color: var(--error);
+}
+
+/* Caret / Active cursor */
+#prompt-display letter.active {
+  color: var(--text-active);
+}
+
+#prompt-display letter.active::after {
+  content: '';
   position: absolute;
-  top: 0; 
-  left: 0; 
-  width: 100%; 
-  text-align: center;
-}
-
-
-/* profile.html */
-
-.profile-page {
-  display: flex;
-}
-
-.profile-page .navbar span {
-  display: flex;
-}
-
-
-.historial {
-  text-align: center;
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: var(--white);
-
-}
-
-.promedio {
-  font-size: 18px;
-  margin: 10px 0;
-  text-align: center;
-  color: var(--gray);
-
-}
-
-.promedio-valor {
-  color: var(--yellow);
-  font-weight: bold;
-}
-
-.tabla {
+  left: 0;
+  bottom: -2px;
   width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
+  height: 2px;
+  background: var(--caret);
+  animation: blink 1s infinite;
 }
 
-.tabla th,
-.tabla td {
-  padding: 12px;
-  border: 1px solid var(--white);
-  text-align: center;
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+/* Active line highlight */
+#prompt-display letter.active {
+  background: rgba(209, 208, 197, 0.1);
+}
+
+[data-theme="light"] #prompt-display letter.active {
+  background: rgba(50, 52, 55, 0.05);
+}
+
+/* ==========================================
+   Focus Hint
+   ========================================== */
+#focus-hint {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+#focus-hint.visible {
+  opacity: 0.5;
+}
+
+/* ==========================================
+   Hidden Input
+   ========================================== */
+#words-input {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+/* ==========================================
+   Results
+   ========================================== */
+#results-section {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================
+    Language Select
+    ========================================== */
+#language-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23646669'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+[data-theme="light"] #language-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23a0a0a0'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+}
+
+/* Language Scroll Buttons */
+#language-scroll {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+#language-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.lang-btn {
+  color: var(--text-sub);
+  border: 1px solid transparent;
+}
+
+.lang-btn:hover {
+  color: var(--text-main);
+  border-color: var(--text-sub)/20;
+}
+
+.lang-btn.active {
+  background-color: var(--caret) !important;
+  color: var(--bg-primary) !important;
+}
+
+/* ==========================================
+   Utility Classes
+   ========================================== */
+.hidden {
+  display: none !important;
+}
+
+.pointer-events-none {
+  pointer-events: none;
+}
+
+/* ==========================================
+   Responsive
+   ========================================== */
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
   
+  #prompt-display {
+    font-size: 1rem !important;
+  }
+  
+  .grid-cols-2 {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
 }
 
-.tabla th {
-  background-color: var(--black);
-  color: var(--yellow);
+/* ==========================================
+   Animations
+   ========================================== */
+.pulse {
+  animation: pulse 2s infinite;
 }
 
-.tabla td {
-  color: var(--gray);
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
-.tabla td:first-child {
-  text-align: left;
+/* Shake animation for errors */
+.shake {
+  animation: shake 0.3s ease;
 }
 
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}

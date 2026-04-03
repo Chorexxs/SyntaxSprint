@@ -1,113 +1,133 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <title>SyntaxSprint - Carrera de código</title>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - SyntaxSprint</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'icon/icon.svg' %}">
+  
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'bg-primary': 'var(--bg-primary)',
+            'bg-secondary': 'var(--bg-secondary)',
+            'text-main': 'var(--text-main)',
+            'text-sub': 'var(--text-sub)',
+            'text-active': 'var(--text-active)',
+            'caret': 'var(--caret)',
+            'success': 'var(--success)',
+            'error': 'var(--error)',
+          }
+        }
+      }
+    }
+  </script>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body class="bg-[var(--bg-primary)] text-[var(--text-sub)] font-mono min-h-screen flex flex-col transition-colors duration-200">
+  
+  <!-- Header -->
+  <header class="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center">
+    <a href="{% url 'index' %}" class="text-2xl font-semibold tracking-tight">
+      <span class="text-[var(--text-active)]">Syntax</span><span class="text-[var(--caret)]">Sprint</span>
+    </a>
+    
+    <button id="theme-toggle" class="p-2 rounded-lg hover:bg-[var(--bg-secondary)] transition-colors" title="Toggle theme">
+      <svg id="sun-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+      </svg>
+      <svg id="moon-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+      </svg>
+    </button>
+  </header>
 
-    <!-- Enlace al favicon -->
-    <link rel="icon" type="image/x-icon" href="{% static 'icon/icon.svg' %}" />
-
-    <!-- Enlace a styles.css -->
-    <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
-
-    <!-- Enlace a jQuery antes de tu script.js -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Enlace a script.js -->
-    <script src="{% static 'js/script.js' %}" defer></script>
-
-    <script>
-      const apiUrl = "{% url 'get_python_function' %}";
-    </script>
-  </head>
-  <body class="login-page">
-    <main>
-      <nav>
-        <a class="navbar-brand" href="{% url 'index' %}">
-          <span class="syntax">Syntax</span><span class="sprint">Sprint</span>
-        </a>
-        <div class="navbar">
-          <ul class="navbar-nav">
-            <li><a href="{% url 'index' %}">Inicio</a></li>
-
-            {% if user.is_authenticated %}
-            <li>
-              <a href="{% url 'profile' %}">Hola, {{ user.username }}</a>
-            </li>
-            <li><a href="{% url 'logout' %}">Cerrar sesión</a></li>
-            {% else %}
-            <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
-            <li><a href="{% url 'signup' %}">Registrarse</a></li>
-            {% endif %}
-          </ul>
+  <!-- Main Content -->
+  <main class="flex-1 flex items-center justify-center px-4 pt-16">
+    <div class="w-full max-w-md">
+      <h1 class="text-3xl font-semibold text-[var(--text-active)] text-center mb-8">login</h1>
+      
+      <form method="POST" class="space-y-6">
+        {% csrf_token %}
+        
+        <div>
+          <input 
+            type="text" 
+            name="username" 
+            placeholder="username"
+            required
+            class="w-full px-4 py-3 bg-[var(--bg-secondary)] text-[var(--text-main)] rounded-lg border border-[var(--text-sub)]/20 focus:border-[var(--caret)] focus:outline-none transition-colors"
+          >
         </div>
-      </nav>
-
-      <div class="container">
-        <span class="text">Iniciar sesión</span>
-
-        <!-- Mensaje de error -->
-        <div class="error-message">
-          {% if messages %} {% for message in messages %}
-          <h5 class="error-msg">{{ message }}</h5>
-          {% endfor %} {% endif %}
+        
+        <div>
+          <input 
+            type="password" 
+            name="password" 
+            placeholder="password"
+            required
+            class="w-full px-4 py-3 bg-[var(--bg-secondary)] text-[var(--text-main)] rounded-lg border border-[var(--text-sub)]/20 focus:border-[var(--caret)] focus:outline-none transition-colors"
+          >
         </div>
-
-        <!-- Formulario -->
-        <form action="" method="POST" class="login-form">
-          {% csrf_token %}
-          <div class="input-container">
-            <i class="fas fa-user fa-lg icon"></i>
-            <input
-              type="text"
-              name="username"
-              class="form-control"
-              placeholder="Nombre de usuario"
-              required
-            />
+        
+        {% if messages %}
+          <div class="text-[var(--error)] text-sm">
+            {% for message in messages %}
+              <p>{{ message }}</p>
+            {% endfor %}
           </div>
-
-          <div class="input-container">
-            <i class="fas fa-lock fa-lg icon"></i>
-            <input
-              type="password"
-              name="password"
-              class="form-control"
-              placeholder="Contraseña"
-              required
-            />
-          </div>
-
-          <div class="button-container">
-            <button type="submit" class="btn btn-primary btn-lg">
-              Conectarse
-            </button>
-          </div>
-        </form>
-      </div>
-    </main>
-
-    <footer>
-      <div class="copyright">
-        Copyright &copy; Crédito a los respectivos autores
-      </div>
-      <div class="links">
-        <a
-          href="https://www.linkedin.com/in/oswaldo-fonseca-gonzalez/"
-          target="_blank"
-          >LinkedIn</a
+        {% endif %}
+        
+        <button 
+          type="submit"
+          class="w-full px-6 py-3 bg-[var(--caret)] text-[var(--bg-primary)] font-semibold rounded-lg hover:opacity-90 transition-opacity"
         >
-        <span class="mx-1">&middot;</span>
-        <a href="https://github.com/Chorexxs" target="_blank">GitHub</a>
-        <span class="mx-1">&middot;</span>
-        <a href="https://chorexxs-portfolio.dev/" target="_blank">Portfolio</a>
-      </div>
-    </footer>
-  </body>
+          login
+        </button>
+      </form>
+      
+      <p class="mt-6 text-center text-sm">
+        <span class="text-[var(--text-sub)]">don't have an account?</span>
+        <a href="{% url 'signup' %}" class="text-[var(--caret)] hover:underline ml-1">create one</a>
+      </p>
+    </div>
+  </main>
+
+  <script>
+    // Theme toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    
+    function updateThemeIcon(theme) {
+      const sunIcon = document.getElementById('sun-icon');
+      const moonIcon = document.getElementById('moon-icon');
+      if (theme === 'dark') {
+        sunIcon.classList.remove('hidden');
+        moonIcon.classList.add('hidden');
+      } else {
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+      }
+    }
+    updateThemeIcon(savedTheme);
+    
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+    });
+  </script>
+</body>
 </html>

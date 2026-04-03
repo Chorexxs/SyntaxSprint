@@ -1,103 +1,149 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <title>SyntaxSprint - Carrera de código</title>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - SyntaxSprint</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'icon/icon.svg' %}">
+  
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'bg-primary': 'var(--bg-primary)',
+            'bg-secondary': 'var(--bg-secondary)',
+            'text-main': 'var(--text-main)',
+            'text-sub': 'var(--text-sub)',
+            'text-active': 'var(--text-active)',
+            'caret': 'var(--caret)',
+            'success': 'var(--success)',
+            'error': 'var(--error)',
+          }
+        }
+      }
+    }
+  </script>
+  
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body class="bg-[var(--bg-primary)] text-[var(--text-sub)] font-mono min-h-screen flex flex-col transition-colors duration-200">
+  
+  <!-- Header -->
+  <header class="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center">
+    <a href="{% url 'index' %}" class="text-2xl font-semibold tracking-tight">
+      <span class="text-[var(--text-active)]">Syntax</span><span class="text-[var(--caret)]">Sprint</span>
+    </a>
+    
+    <nav class="flex items-center gap-4">
+      <a href="{% url 'index' %}" class="text-sm hover:text-[var(--text-active)] transition-colors">test</a>
+      <a href="{% url 'logout' %}" class="text-sm hover:text-[var(--text-active)] transition-colors">logout</a>
+      
+      <button id="theme-toggle" class="p-2 rounded-lg hover:bg-[var(--bg-secondary)] transition-colors" title="Toggle theme">
+        <svg id="sun-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+        </svg>
+        <svg id="moon-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+        </svg>
+      </button>
+    </nav>
+  </header>
 
-    <!-- Enlace al favicon -->
-    <link rel="icon" type="image/x-icon" href="{% static 'icon/icon.svg' %}" />
-
-    <!-- Enlace a styles.css -->
-    <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
-
-    <!-- Enlace a jQuery antes de tu script.js -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <!-- Enlace a script.js -->
-    <script src="{% static 'js/script.js' %}" defer></script>
-
-    <script>
-      const apiUrl = "{% url 'get_python_function' %}";
-      const saveResultUrl = "{% url 'save_typing_test_result' %}";
-    </script>
-  </head>
-  <body class="profile-page">
-    <main>
-      <nav>
-        <a class="navbar-brand" href="{% url 'index' %}">
-          <span class="syntax">Syntax</span><span class="sprint">Sprint</span>
-        </a>
-
-        <div class="navbar">
-          <ul class="navbar-nav">
-            <li><a href="{% url 'index' %}">Inicio</a></li>
-
-            {% if user.is_authenticated %} {% if not on_profile_page %}
-            <li><span>Hola, {{ user.username }}</span></li>
-            {% endif %}
-            <li><a href="{% url 'logout' %}">Cerrar sesión</a></li>
-            {% else %}
-            <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
-            <li><a href="{% url 'signup' %}">Registrarse</a></li>
-            {% endif %}
-          </ul>
-        </div>
-      </nav>
-      <div>
-        <span class="text"> {{ user.username }} </span>
-
-        <h1 class="historial">Historial de resultados</h1>
-        <p class="promedio">
-          Promedio de WPM:
-          <span class="promedio-valor">{{ avg_wpm|floatformat:2 }}</span>
-        </p>
-        <p class="promedio">
-          Promedio de Precisión:
-          <span class="promedio-valor">{{ avg_accuracy|floatformat:2 }}%</span>
-        </p>
-
-        <table class="tabla">
+  <!-- Main Content -->
+  <main class="flex-1 px-4 pt-24 pb-8 max-w-4xl mx-auto w-full">
+    <!-- Profile Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-semibold text-[var(--text-active)] mb-2">{{ user.username }}</h1>
+      <p class="text-[var(--text-sub)]">your stats</p>
+    </div>
+    
+    <!-- Stats -->
+    <div class="grid grid-cols-2 gap-8 mb-12">
+      <div class="text-center p-6 bg-[var(--bg-secondary)] rounded-lg">
+        <div class="text-5xl font-semibold text-[var(--text-active)] mb-2">{{ avg_wpm|floatformat:0 }}</div>
+        <div class="text-sm text-[var(--text-sub)]">average wpm</div>
+      </div>
+      <div class="text-center p-6 bg-[var(--bg-secondary)] rounded-lg">
+        <div class="text-5xl font-semibold text-[var(--text-active)] mb-2">{{ avg_accuracy|floatformat:0 }}<span class="text-lg">%</span></div>
+        <div class="text-sm text-[var(--text-sub)]">average accuracy</div>
+      </div>
+    </div>
+    
+    <!-- History -->
+    <div>
+      <h2 class="text-xl font-semibold text-[var(--text-active)] mb-6">history</h2>
+      
+      {% if results %}
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
           <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>WPM</th>
-              <th>Precisión</th>
+            <tr class="text-[var(--text-sub)] border-b border-[var(--text-sub)]/20">
+              <th class="text-left py-3 px-4 font-normal">date</th>
+              <th class="text-right py-3 px-4 font-normal">wpm</th>
+              <th class="text-right py-3 px-4 font-normal">accuracy</th>
             </tr>
           </thead>
           <tbody>
             {% for result in results %}
-            <tr>
-              <td>{{ result.date }}</td>
-              <td>{{ result.wpm }}</td>
-              <td>{{ result.accuracy }}%</td>
+            <tr class="border-b border-[var(--text-sub)]/10">
+              <td class="py-3 px-4 text-[var(--text-sub)]">{{ result.date|date:"M j, Y H:i" }}</td>
+              <td class="py-3 px-4 text-right text-[var(--text-active)]">{{ result.wpm|floatformat:0 }}</td>
+              <td class="py-3 px-4 text-right text-[var(--text-sub)]">{{ result.accuracy|floatformat:0 }}%</td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
-    </main>
+      {% else %}
+      <div class="text-center py-12">
+        <p class="text-[var(--text-sub)] mb-6">no results yet</p>
+        <a href="{% url 'index' %}" class="inline-block px-6 py-2 bg-[var(--caret)] text-[var(--bg-primary)] font-semibold rounded-lg hover:opacity-90 transition-opacity">
+          take a test
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </main>
 
-    <footer>
-      <div class="copyright">
-        Copyright &copy; Crédito a los respectivos autores
-      </div>
-      <div class="links">
-        <a
-          href="https://www.linkedin.com/in/oswaldo-fonseca-gonzalez/"
-          target="_blank"
-          >LinkedIn</a
-        >
-        <span class="mx-1">&middot;</span>
-        <a href="https://github.com/Chorexxs" target="_blank">GitHub</a>
-        <span class="mx-1">&middot;</span>
-        <a href="https://chorexxs-portfolio.dev/" target="_blank">Portfolio</a>
-      </div>
-    </footer>
-  </body>
+  <!-- Footer -->
+  <footer class="py-6 text-center text-sm text-[var(--text-sub)]/60">
+    <a href="https://github.com/Chorexxs" target="_blank" class="hover:text-[var(--text-sub)] transition-colors">GitHub</a>
+    <span class="mx-2">·</span>
+    <a href="https://www.linkedin.com/in/oswaldo-fonseca-gonzalez/" target="_blank" class="hover:text-[var(--text-sub)] transition-colors">LinkedIn</a>
+  </footer>
+
+  <script>
+    // Theme toggle
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    
+    function updateThemeIcon(theme) {
+      const sunIcon = document.getElementById('sun-icon');
+      const moonIcon = document.getElementById('moon-icon');
+      if (theme === 'dark') {
+        sunIcon.classList.remove('hidden');
+        moonIcon.classList.add('hidden');
+      } else {
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+      }
+    }
+    updateThemeIcon(savedTheme);
+    
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+    });
+  </script>
+</body>
 </html>
