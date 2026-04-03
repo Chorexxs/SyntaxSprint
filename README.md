@@ -6,15 +6,22 @@ SyntaxSprint es una aplicación web diseñada para ayudar a los usuarios a mejor
 
 ## Características
 
-- **Test de escritura de código:** Los usuarios pueden realizar tests de velocidad escribiendo fragmentos de código en Python.
-- **Registro de resultados:** Los resultados se guardan automáticamente en el perfil del usuario , incluyendo palabras por minuto (WPM) y precisión.
+- **Test de escritura de código:** Los usuarios pueden realizar tests de velocidad escribiendo fragmentos de código en múltiples lenguajes (Python, JavaScript, TypeScript, HTML, CSS, SQL, Java, Go).
+- **Sistema de input avanzado:** Implementación inspirada en MonkeyType con:
+  - Tracking de timing de teclas (tiempo entre pulsaciones, duración de cada tecla)
+  - Detección de AFK (Away From Keyboard)
+  - Tracking de errores por segundo
+  - Manejo de atajos de teclado y teclas especiales
+  - Soporte para IME (Input Method Editor)
+- **Registro de resultados:** Los resultados se guardan automáticamente en el perfil del usuario, incluyendo palabras por minuto (WPM), precisión y tiempo.
 - **Historial de resultados:** Los usuarios pueden ver un historial de sus resultados anteriores.
 - **Promedio de rendimiento:** Se calcula y muestra el promedio de WPM y precisión en el perfil del usuario.
+- **Tema claro/oscuro:** Los usuarios pueden alternar entre tema oscuro y claro.
 
 ## Requisitos
 
 - Python 3.x
-- Django 4.x o superior
+- Django 5.0.7
 - jQuery 3.x
 
 ## Instalación (Para desplegarlo en local)
@@ -59,11 +66,16 @@ SyntaxSprint es una aplicación web diseñada para ayudar a los usuarios a mejor
 
 ## Estructura del Proyecto
 
-- **backend/**: Contiene los archivos de la aplicación Django, incluyendo modelos, vistas y URLs.
-- **static/**: Archivos estáticos como CSS y JavaScript.
-- **templates/**: Plantillas HTML para la interfaz de usuario.
-- **js/**: Archivos JavaScript que manejan la lógica del cliente.
-- **css/**: Archivos CSS que definen el estilo de la aplicación.
+```
+syntax_sprint/
+├── syntax_sprint/          # Configuración de Django
+├── backend/                # Aplicación principal (modelos, vistas, URLs, tests)
+├── templates/              # Plantillas HTML
+├── static/                 # Archivos estáticos
+│   ├── css/               # Estilos CSS
+│   └── js/                # JavaScript
+└── manage.py
+```
 
 ## Uso
 
@@ -73,9 +85,11 @@ SyntaxSprint es una aplicación web diseñada para ayudar a los usuarios a mejor
 
 2. **Realizar un Test:**
 
-   - Después de iniciar sesión, los usuarios pueden iniciar un test de escritura de código. Los resultados se guardarán automáticamente en su perfil.
+   - Después de iniciar sesión, los usuarios pueden seleccionar un lenguaje de programación y comenzar un test de escritura de código.
+   - Los resultados se guardarán automáticamente en su perfil.
 
 3. **Ver Resultados:**
+
    - Los usuarios pueden ver su historial de resultados y sus promedios de WPM y precisión en la página de perfil.
 
 ## Contribución
