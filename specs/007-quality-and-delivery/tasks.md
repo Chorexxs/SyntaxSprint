@@ -96,10 +96,16 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
   - Evidencia: 130 estáticos, `check --deploy` con `DEBUG=False` → 0 issues, 26 tests OK.
   - DoD: 0 issues, 26 tests y estáticos encontrados.
 
-- [ ] **T007-21** Aplicar el blueprint en Render, rotar `SECRET_KEY`, migrar a PostgreSQL y verificar la URL.
+- [x] **T007-21** Aplicar la configuración en Render, rotar `SECRET_KEY` y verificar la URL.
   - Requisito: `RF-007-07`
-  - Bloqueada por: acceso al dashboard de Render y backup de la base actual.
+  - Evidencia: live en `https://syntaxsprint.onrender.com` (commit `eae7d68`); `/` 200,
+    `/login` 200, `/static/css/styles.css` 200, `/admin/` 302; HSTS y cookies `Secure`.
+  - Nota: sigue usando SQLite efímero; PostgreSQL queda en T007-22.
   - DoD: `/`, `/login`, `/static/css/styles.css` y `/admin/` responden; logs sin 500.
+
+- [ ] **T007-22** Crear Render PostgreSQL y configurar `DATABASE_URL` para persistencia.
+  - Requisito: `RF-007-07`
+  - DoD: la base sobrevive a un redeploy y `migrate`/`loaddata` funcionan.
 
 ## Deuda técnica / Backlog
 

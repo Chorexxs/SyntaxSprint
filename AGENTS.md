@@ -345,6 +345,7 @@ cd syntax_sprint && python manage.py check --deploy
 | --- | --- |
 | Hosting | Render Web Service |
 | URL | `https://syntaxsprint.onrender.com/` |
+| Estado | Live verificado (2026-11-10) |
 | Región | `gcp-us-west1` (Oregón) |
 | Base de datos | PostgreSQL vía `DATABASE_URL` (recomendado) o SQLite con `DB_PATH` + disco |
 | Estáticos | WhiteNoise + `collectstatic` |

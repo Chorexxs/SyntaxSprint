@@ -14,7 +14,7 @@
 | Remoto | `https://github.com/Chorexxs/SyntaxSprint.git` |
 | Visibilidad | **PÚBLICA** (`private=false`) |
 | Herramientas | `scan_secrets.py`, `check --deploy`, `pip-audit`, git, sqlite3, GitHub API |
-| Resultado global | **CRÍTICO contenido — historial purgado, repo privado y Pages despublicado** |
+| Resultado global | **Contenido — historial purgado, repo privado, Pages 404 y producción verificada** |
 
 ## 1. Alcance y método
 
@@ -313,5 +313,33 @@ Sigue pendiente (requiere acceso a producción o decisión):
 > configuración y contraseñas de ejemplo dentro de fragmentos de código. No son
 > credenciales reales ni datos personales.
 
-> Informe interno. Se commitea tras contener la exposición pública; la rotación de
-> producción sigue pendiente.
+> Informe interno. Producción verificada el 2026-11-10.
+
+## 14. Producción verificada (2026-11-10)
+
+| Control | Resultado |
+| --- | --- |
+| URL | `https://syntaxsprint.onrender.com` |
+| Commit desplegado | `eae7d68` |
+| `/` | 200 |
+| `/login` | 200 |
+| `/static/css/styles.css` | 200 |
+| `/admin/` | 302 |
+| `/profile` sin sesión | 302 → `/login?next=/profile` |
+| `/get_python_function` | 200 JSON `{name, code}` |
+| 404 | 404 sin trazas |
+| HTTP → HTTPS | 301 |
+| HSTS | `max-age=3600; includeSubDomains; preload` |
+| Cookies | `Secure`; CSRF `HttpOnly=False` (necesario para JS) |
+| `DEBUG` | `False` |
+| `SECRET_KEY` | rotada en Render (86 caracteres) |
+| `ALLOWED_HOSTS` | `syntaxsprint.onrender.com` |
+| `CSRF_TRUSTED_ORIGINS` | `https://syntaxsprint.onrender.com` |
+| `TRUST_PROXY_HEADERS` | `True` |
+| Base de datos | SQLite efímero; PostgreSQL pendiente (`T007-22`) |
+
+> El plan free puede dormir la instancia; la primera petición tras inactividad puede
+> tardar ~50 s.
+>
+> La API key de Render compartida durante la sesión se eliminó del entorno local y debe
+> revocarse en el dashboard.
