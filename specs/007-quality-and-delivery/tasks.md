@@ -71,10 +71,14 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
 
 ## Fase 4 — Automatización
 
-- [ ] **T007-11** Crear `.github/workflows/ci.yml` con lint, check, migraciones y tests.
+- [x] **T007-11** Crear `.github/workflows/ci.yml` con lint, check, migraciones y tests.
   - Requisitos: `RF-007-11`, `RF-007-03`
   - DoD: el workflow pasa en `main` y falla ante un test roto.
-  - Estado: pendiente. No existe `.github/workflows/`.
+  - Evidencia: `.github/workflows/ci.yml` en push/PR a `main` con
+    `isort --check-only --diff .`, `manage.py check`, `makemigrations --check --dry-run`
+    y `manage.py test`. Los cuatro pasos se ejecutaron en local con el mismo entorno
+    (`DEBUG=True`, `DATABASE_URL=""`) y terminaron con código 0. `pylint` se ejecuta
+    como informativo (`continue-on-error`) hasta cerrar `T008-09`/`T008-10`.
 
 - [ ] **T007-12** Añadir `coverage` (y opcionalmente `pytest-django`) a `requirements.txt`.
   - Requisito: `RNF-007-02`
@@ -157,3 +161,4 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
 | --- | --- |
 | 2026-11-10 | Plan inicial; suite de tests vacía detectada |
 | 2026-11-10 | Verificación contra código: 26 tests en verde, `check` 0 issues, `isort` limpio; `T007-01`…`T007-03`, `T007-06`…`T007-10` y `T007-14`…`T007-16` cerradas |
+| 2026-11-10 | CI en GitHub Actions con isort, check, migraciones y tests (`T007-11`) |

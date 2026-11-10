@@ -289,20 +289,19 @@ cerrada.
 | Prioridad | Deuda | Feature | Tarea |
 | --- | --- | --- | --- |
 | 1 | `views.py` (183 líneas) mezcla auth, validación y perfil | 008 | T008-11 |
-| 2 | Sin CI: los 26 tests no protegen `main` | 007/008 | T007-11, T008-16 |
-| 3 | Header/tema duplicado en 4 plantillas; no existe `base.html` | 006 | T006-05, T006-06, T006-07 |
-| 4 | `outline: none` global y controles sin nombre accesible | 006 | T006-08, T006-09, T006-10, T006-11 |
-| 5 | Historial del perfil sin paginación | 005 | T005-08 |
-| 6 | Faltan tests de promedios, cascada, estado vacío y `ProfileTests` | 005/007 | T005-12, T007-04 |
-| 7 | Cobertura sin medir; `coverage` no está en `requirements.txt` | 007 | T007-05, T007-12 |
-| 8 | 53 líneas > 100 en `snippets.py`, 7 en `script.js` y 7 funciones sin tipar | 008 | T008-09, T008-10 |
-| 9 | Pérdida de contadores al pegar y reinicio sin limpiar intervalo | 004 | T004-10, T004-13 |
-| 10 | Mensajes de registro divergentes de la spec (genéricos a propósito) | 002 | RF-002-02, RF-002-03 |
-| 11 | `TEMPLATES[0]["DIRS"]` conserva la ruta heredada del padre | 001 | T001-04 |
-| 12 | **`db.sqlite3` versionada con 6 usuarios y 31 resultados (PII)** | 009 | T009-05…T009-08 |
-| 13 | **`SECRET_KEY` y 2 contraseñas hardcodeadas en el historial** | 009 | T009-06, T009-07 |
+| 2 | Header/tema duplicado en 4 plantillas; no existe `base.html` | 006 | T006-05, T006-06, T006-07 |
+| 3 | `outline: none` global y controles sin nombre accesible | 006 | T006-08, T006-09, T006-10, T006-11 |
+| 4 | Historial del perfil sin paginación | 005 | T005-08 |
+| 5 | Faltan tests de promedios, cascada, estado vacío y `ProfileTests` | 005/007 | T005-12, T007-04 |
+| 6 | Cobertura sin medir; `coverage` no está en `requirements.txt` | 007 | T007-05, T007-12 |
+| 7 | 53 líneas > 100 en `snippets.py`, 7 en `script.js` y 7 funciones sin tipar | 008 | T008-09, T008-10 |
+| 8 | Pérdida de contadores al pegar y reinicio sin limpiar intervalo | 004 | T004-10, T004-13 |
+| 9 | Mensajes de registro divergentes de la spec (genéricos a propósito) | 002 | RF-002-02, RF-002-03 |
+| 10 | `TEMPLATES[0]["DIRS"]` conserva la ruta heredada del padre | 001 | T001-04 |
+| 11 | **`db.sqlite3` versionada con 6 usuarios y 31 resultados (PII)** | 009 | T009-05…T009-08 |
+| 12 | **`SECRET_KEY` y 2 contraseñas hardcodeadas en el historial** | 009 | T009-06, T009-07 |
 
-> Los puntos 12 y 13 son **CRÍTICOS**. Están documentados en
+> Los puntos 11 y 12 son **CRÍTICOS**. Están documentados en
 > `audits/security/2026-11-10-linea-base.md` y requieren autorización para la purga del
 > historial.
 

@@ -99,6 +99,9 @@ Referencia: `specs/008-code-audit/spec.md`
 - [ ] **T008-16** Añadir `code_metrics.py`, `isort` y `pylint` como quality gate en CI.
   - Requisitos: `RNF-008-02`, `RF-008-06`
   - Coordina con: `T007-11`
+  - Estado: parcial. `isort` ya es bloqueante en CI; `pylint` se ejecuta como
+    informativo (`continue-on-error`) y `code_metrics.py` aún no está en el workflow.
+    Será bloqueante al cerrar `T008-09` y `T008-10`.
 
 ## Fase 4 — Reauditoría
 
