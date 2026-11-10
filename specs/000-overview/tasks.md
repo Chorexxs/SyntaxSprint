@@ -11,6 +11,8 @@ Referencia: `specs/000-overview/spec.md`
 - [x] **T000-04** Inventariar deuda técnica transversal.
 - [ ] **T000-05** Revisar y aprobar el roadmap con el responsable del proyecto.
 - [ ] **T000-06** Definir métricas de éxito medibles en analítica (requiere 007).
+- [x] **T000-07** Definir el procedimiento de auditoría de código (spec 008).
+- [x] **T000-08** Definir el procedimiento de auditoría de seguridad (spec 009).
 
 ## Milestones
 
@@ -21,6 +23,7 @@ Referencia: `specs/000-overview/spec.md`
 | **M3 — Correcciones funcionales** | CSRF en portada, validación de resultados, redirects de login | [ ] |
 | **M4 — Accesibilidad y UI** | Nombres accesibles, contraste, deduplicar tema | [ ] |
 | **M5 — Producción** | Settings seguros, CI, estáticos, README alineado | [ ] |
+| **M6 — Gobernanza** | Auditorías de código y seguridad bajo demanda + línea base | [x] |
 
 ## Mapa de dependencias entre funcionalidades
 
@@ -32,6 +35,9 @@ Referencia: `specs/000-overview/spec.md`
    │             └── 005-results-and-profile
    └── 006-ui-and-theming
              └── 007-quality-and-delivery (transversal)
+
+008-code-audit      ── transversal (calidad)
+009-cybersecurity   ── transversal (seguridad)
 ```
 
 ## Orden de ejecución sugerido (sprints de 1 semana)

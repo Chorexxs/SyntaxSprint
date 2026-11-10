@@ -14,7 +14,11 @@ specs/
 ├── templates/                 # Plantillas para nuevas funcionalidades
 │   ├── spec.md
 │   ├── plan.md
-│   └── tasks.md
+│   ├── tasks.md
+│   └── audit-report.md        # Plantilla de informes de auditoría
+├── tools/                     # Herramientas de verificación sin dependencias
+│   ├── code_metrics.py        # Métricas de calidad y complejidad
+│   └── scan_secrets.py        # Escáner de secretos y archivos sensibles
 ├── 000-overview/              # Visión de producto y arquitectura global
 │   ├── spec.md
 │   ├── plan.md
@@ -25,7 +29,18 @@ specs/
 ├── 004-typing-engine/         # Motor de typing test (frontend)
 ├── 005-results-and-profile/   # Persistencia de resultados e historial
 ├── 006-ui-and-theming/        # Sistema visual, temas, responsividad
-└── 007-quality-and-delivery/  # Pruebas, lint, seguridad, despliegue
+├── 007-quality-and-delivery/  # Pruebas, lint, seguridad, despliegue
+├── 008-code-audit/            # Auditoría de código y arquitectura bajo demanda
+└── 009-cybersecurity/         # Auditoría de seguridad y filtraciones bajo demanda
+```
+
+Los informes generados por las auditorías viven fuera de `specs/`:
+
+```text
+audits/
+├── code/                      # Un informe por auditoría de código
+└── security/                  # Un informe por auditoría de seguridad
+```
 ```
 
 Cada carpeta de funcionalidad contiene exactamente tres documentos:
@@ -112,3 +127,29 @@ pylint .
 4. Si el código y la spec divergen, **detente** y reporta la divergencia.
 5. Mantener el estilo y las dependencias existentes; cualquier dependencia nueva
    requiere un requisito explícito.
+
+## 9. Auditorías bajo demanda
+
+Las auditorías **no se ejecutan solas**: se activan cuando el usuario lo indica.
+
+| Si el usuario dice… | Ejecutar |
+| --- | --- |
+| "audita el código", "revisa la arquitectura", "¿esto es espagueti?" | `specs/008-code-audit/spec.md` |
+| "audita la seguridad", "revisa filtraciones", "¿hay API keys?" | `specs/009-cybersecurity/spec.md` |
+
+Reglas comunes:
+
+1. **Solo lectura**: la auditoría no modifica código; los arreglos van en tareas aparte.
+2. **Evidencia obligatoria**: cada hallazgo lleva `archivo:línea` o comando reproducible.
+3. **Nunca imprimir secretos**: usar `<redacted>`; ni en el chat ni en el informe.
+4. **Informe versionado** en `audits/<tipo>/AAAA-MM-DD-<alcance>.md`.
+5. **Trazabilidad**: cada hallazgo se convierte en tarea (`T*`) o en un spec nuevo.
+6. **Idioma**: el informe se escribe en español.
+
+Herramientas disponibles:
+
+```bash
+python specs/tools/code_metrics.py
+python specs/tools/scan_secrets.py
+python specs/tools/scan_secrets.py --history
+```

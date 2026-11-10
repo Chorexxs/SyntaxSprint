@@ -295,6 +295,12 @@ Al terminar:
 | 10 | Sin settings de producción ni CI | 007 | T007-08, T007-11 |
 | 11 | README y versión de Django desalineados | 001/007 | T001-05, T007-14 |
 | 12 | `AGENTS.md` está en `.gitignore` | 007 | T007-16 |
+| 13 | **`db.sqlite3` versionada con 6 usuarios y 31 resultados (PII)** | 009 | T009-05…T009-08 |
+| 14 | **`SECRET_KEY` y 2 contraseñas hardcodeadas en el historial** | 009 | T009-06, T009-07 |
+
+> Los puntos 13 y 14 son **CRÍTICOS**. Están documentados en
+> `audits/security/2026-11-10-linea-base.md` y requieren autorización para la purga del
+> historial.
 
 ## 9. Seguridad — reglas rápidas
 
@@ -304,10 +310,41 @@ Al terminar:
 4. Los mensajes de error no revelan si un usuario existe.
 5. En producción: HTTPS, cookies `Secure`, HSTS y `DEBUG=False`.
 
-## 10. Referencias
+## 10. Auditorías bajo demanda
+
+Las auditorías se ejecutan **solo cuando el usuario lo pide**. No son automáticas.
+
+| Disparador | Spec a ejecutar | Herramienta |
+| --- | --- | --- |
+| "audita el código", "revisa la arquitectura", "¿esto es espagueti?" | `specs/008-code-audit/spec.md` | `specs/tools/code_metrics.py` |
+| "audita la seguridad", "revisa filtraciones", "¿hay API keys?" | `specs/009-cybersecurity/spec.md` | `specs/tools/scan_secrets.py` |
+
+Reglas obligatorias:
+
+1. **Solo lectura**: no se corrige código durante la auditoría; los arreglos van en tareas.
+2. **Evidencia**: cada hallazgo requiere `archivo:línea` o comando reproducible.
+3. **Nunca imprimir secretos**: ni en consola, ni en el chat, ni en el informe. Usar
+   `<redacted>`.
+4. **Informe en español** en `audits/code/` o `audits/security/`.
+5. **Trazabilidad**: cada hallazgo se convierte en tarea (`T*`) o en un spec nuevo.
+6. Si hay una fuga activa, **no publicar el informe** hasta rotar el secreto.
+
+```bash
+python specs/tools/code_metrics.py
+python specs/tools/scan_secrets.py
+python specs/tools/scan_secrets.py --history
+cd syntax_sprint && python manage.py check --deploy
+```
+
+> Línea base: `audits/code/2026-11-10-linea-base.md` (3.8/10, F) y
+> `audits/security/2026-11-10-linea-base.md` (CRÍTICO). Ver la sección 8.
+
+## 11. Referencias
 
 - `README.md` — descripción funcional e instalación.
 - `specs/README.md` — manual de SDD.
 - `specs/constitution.md` — principios no negociables.
 - `specs/traceability.md` — requisito → tarea → verificación.
 - `specs/000-overview/plan.md` — arquitectura y ADRs.
+- `specs/templates/audit-report.md` — plantilla de informes de auditoría.
+- `audits/README.md` — histórico de auditorías.

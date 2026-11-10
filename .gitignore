@@ -5,3 +5,10 @@
 LICENSE.txt
 SKILL.md
 skills-lock.json
+
+# Bases de datos locales y bytecode (nunca versionar)
+*.sqlite3
+*.sqlite
+syntax_sprint/db.sqlite3
+__pycache__/
+*.py[cod]

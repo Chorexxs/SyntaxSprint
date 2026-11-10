@@ -53,6 +53,8 @@ usuario para medir su progreso.
 | C5 | Persistencia de resultados, perfil e historial | `005-results-and-profile` | Implementada parcialmente |
 | C6 | Sistema visual, temas y responsividad | `006-ui-and-theming` | Implementada |
 | C7 | Calidad, pruebas, seguridad y despliegue | `007-quality-and-delivery` | Pendiente |
+| C8 | Auditoría de código y arquitectura bajo demanda | `008-code-audit` | Implementada (procedimiento) |
+| C9 | Auditoría de ciberseguridad y filtraciones bajo demanda | `009-cybersecurity` | Implementada (procedimiento) |
 
 ## 5. Requisitos funcionales de producto
 
@@ -66,6 +68,8 @@ usuario para medir su progreso.
 | RF-000-06 | El sistema debe mostrar historial y promedios en el perfil. | Alta |
 | RF-000-07 | El sistema debe recordar el tema claro/oscuro elegido. | Media |
 | RF-000-08 | El sistema debe ser usable en escritorio y móvil. | Media |
+| RF-000-09 | Cuando el usuario lo solicite, el sistema debe auditar el código y la arquitectura con evidencia verificable. | Media |
+| RF-000-10 | Cuando el usuario lo solicite, el sistema debe auditar la seguridad y detectar filtraciones sin revelar secretos. | Alta |
 
 ## 6. Requisitos no funcionales globales
 
