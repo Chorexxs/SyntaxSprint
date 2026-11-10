@@ -6,7 +6,10 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'syntax_sprint.settings')
+    # The project lives inside the nested ``syntax_sprint`` directory.
+    # Override the value from Render so ``manage.py`` always resolves the
+    # inner settings module, even if DJANGO_SETTINGS_MODULE is set globally.
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'syntax_sprint.settings'
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
