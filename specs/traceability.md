@@ -194,7 +194,8 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | Sistema | `manage.py check` | 0 issues |
 | Pruebas | `manage.py test` | 26 tests OK (18,4 s) |
 | Imports | `isort --check-only syntax_sprint/` | Sin avisos |
-| Lint | `pylint backend` | 5,29/10 (incluye migraciones; informativo) |
+| Lint | `pylint backend` | 5,88/10 (incluye migraciones; informativo) |
+| Arquitectura | `specs/tools/code_metrics.py` | 0 funciones fuera de umbral; vistas por dominio |
 | Cobertura | `coverage report` | No medido: `coverage` no está en el `venv` |
 | Dependencias | `specs/tools/check_dependencies.py --strict` | OK (0 sin uso, runtime coherente) |
 | Vulnerabilidades | `pip-audit -r requirements.txt` | 0 avisos |
@@ -216,9 +217,8 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 5. **RF-004-15**: las métricas avanzadas (`spacing`, `duration`, `afkHistory`,
    `errorHistory`) se calculan pero no se usan; su destino sigue sin decidir
    (`T004-15`).
-6. **T003-05**: el catálogo ya no está en `views.py`, pero el DoD de "< 60 líneas" no
-   se cumple (183) porque allí siguen las vistas de auth, guardado y perfil. Esa
-   reducción queda en `T008-11` (≤ 120 líneas).
+6. **T003-05**: cerrado. El catálogo vive en `snippets.py` y `views.py` quedó en 7
+   líneas tras `T008-11` (DoD de "< 60 líneas" cumplido).
 
 ## Resumen
 

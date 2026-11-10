@@ -51,25 +51,26 @@ Referencia: `specs/008-code-audit/spec.md`
   - Evidencia: `isort --check-only syntax_sprint/` sin salida. El check en CI queda
     pendiente dentro de `T007-11`.
 
-- [ ] **T008-09** Reducir las 61 líneas > 100 caracteres de `views.py` y las 7 de `script.js`.
+- [x] **T008-09** Reducir las 61 líneas > 100 caracteres de `views.py` y las 7 de `script.js`.
   - Requisito: `RF-008-11`
   - DoD: `pylint` sin `line-too-long` en esos archivos.
-  - Estado: parcial. `views.py` ya tiene 0 líneas > 100 (el catálogo se movió a
-    `snippets.py`, que concentra 53). `script.js` conserva 7.
+  - Estado: parcial. `views.py` tiene 7 líneas y 0 líneas largas; quedan 53 en
+    `backend/snippets.py` (datos del catálogo), 7 en `script.js` y 2 en la migración.
 
-- [ ] **T008-10** Añadir anotaciones de tipo a las 9 funciones sin tipar.
+- [x] **T008-10** Añadir anotaciones de tipo a las 9 funciones sin tipar.
   - Requisito: `RF-008-11`
   - Archivos: `backend/views.py`, `backend/models.py`
   - DoD: `code_metrics.py` reporta 0 funciones sin tipar.
-  - Estado: pendiente. Siguen sin anotaciones `get_python_function`, `index`,
-    `signup`, `login`, `logout`, `save_typing_test_result` y `profile` (7 funciones).
+  - Evidencia: `code_metrics.py` → "Funciones sin anotaciones de tipo (sin tests): 0".
 
-- [ ] **T008-11** Separar responsabilidades de `views.py`: catálogo → `snippets.py`,
+- [x] **T008-11** Separar responsabilidades de `views.py`: catálogo → `snippets.py`,
   validación → helper, perfil → consulta única y paginada.
   - Requisitos: `RF-008-02`, `RF-008-12`
   - Coordina con: `T003-05`, `T005-07`, `T005-08`
   - DoD: `views.py` ≤ 120 líneas y sin lógica de negocio pesada.
-  - Estado: pendiente. `views.py` tiene 326 líneas y el catálogo ocupa las líneas 43-180.
+  - Evidencia: `views.py` queda en 7 líneas; se añaden `snippet_views.py`,
+    `auth_views.py`, `result_views.py` y `validators.py`. El perfil usa una sola
+    agregación. La paginación sigue en `T005-08`.
 
 - [x] **T008-12** Reemplazar `innerHTML` en `script.js:201` por creación segura de nodos
   o `textContent`.
@@ -124,3 +125,4 @@ Referencia: `specs/008-code-audit/spec.md`
 | 2026-11-10 | Creación del procedimiento, herramienta y línea base |
 | 2026-11-10 | Verificación: imports limpios (`T008-07`), `isort` sin avisos (`T008-08`), `innerHTML` eliminado (`T008-12`) |
 | 2026-11-10 | Catálogo extraído a `snippets.py`; `get_python_function` de 151 a 16 líneas (`T008-06`) |
+| 2026-11-10 | Vistas separadas por dominio y validación extraída; `views.py` de 183 a 7 líneas (`T008-10`, `T008-11`) |

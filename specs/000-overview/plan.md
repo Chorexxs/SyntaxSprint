@@ -25,8 +25,13 @@ Navegador
         ▼
 Django (syntax_sprint/)
 ├── syntax_sprint/urls.py   → admin/ + backend.urls
-├── backend/urls.py         → 6 rutas de aplicación
-├── backend/views.py        → vistas función + catálogo de snippets
+├── backend/urls.py         → 8 rutas de aplicación
+├── backend/views.py        → portada pública
+├── backend/snippet_views.py → endpoint de fragmentos
+├── backend/auth_views.py   → registro, login y logout
+├── backend/result_views.py → guardado de resultados y perfil
+├── backend/validators.py   → validación de JSON y rangos
+├── backend/snippets.py     → catálogo de fragmentos
 ├── backend/models.py       → TypingTestResult
 └── db.sqlite3              → persistencia
 ```
@@ -48,6 +53,8 @@ SyntaxSprint/
 ├── AGENTS.md
 ├── README.md
 ├── requirements.txt
+├── requirements-dev.txt
+├── .python-version
 ├── specs/
 └── syntax_sprint/              # BASE_DIR
     ├── manage.py
@@ -55,6 +62,11 @@ SyntaxSprint/
     ├── backend/
     │   ├── models.py
     │   ├── views.py
+    │   ├── snippet_views.py
+    │   ├── auth_views.py
+    │   ├── result_views.py
+    │   ├── validators.py
+    │   ├── snippets.py
     │   ├── urls.py
     │   ├── admin.py
     │   ├── tests.py
@@ -73,32 +85,32 @@ SyntaxSprint/
         └── icon/icon.svg
 ```
 
-> Desviación conocida: `README.md` describe `templates/` y `static/` en la raíz del
-> repositorio, pero viven dentro de `syntax_sprint/`. Ver tarea `T007-08`.
+> Desviación resuelta: `README.md` ya describe la estructura real (ver `T007-14`).
 
 ## 5. Decisiones de arquitectura (ADR resumidos)
 
 | ID | Decisión | Motivo | Consecuencia |
 | --- | --- | --- | --- |
 | ADR-01 | Vistas función en lugar de CBV | Simplicidad y tamaño del proyecto | Repetición de `login_required` |
-| ADR-02 | Catálogo de snippets en memoria (`views.py`) | Evitar BD para contenido estático | Archivo grande; difícil de mantener |
+| ADR-02 | Catálogo de snippets en memoria (`backend/snippets.py`) | Evitar BD para contenido estático | Un módulo de datos grande; se mantiene aparte de las vistas |
 | ADR-03 | Cálculo de WPM en cliente | Feedback en tiempo real | Resultado manipulable; validar en servidor |
 | ADR-04 | SQLite | Simplicidad y despliegue barato | Límites de concurrencia |
-| ADR-05 | Tailwind por CDN | Sin paso de build | Dependencia de red y warning de producción |
+| ADR-05 | Tailwind por CDN | Sin paso de build | Dependencia de red; versión fijada en 3.4.19 |
 | ADR-06 | Sesiones de Django | Stack nativo | Sin API tokens |
 
 ## 6. Deuda técnica transversal
 
 | Deuda | Ubicación | Feature que la resuelve |
 | --- | --- | --- |
-| Suite de pruebas vacía | `backend/tests.py` | 007 |
-| Modelo no registrado en admin | `backend/admin.py` | 001 |
-| Imports duplicados y sin usar | `backend/views.py` | 001 |
-| Sin validación de rango de WPM/accuracy | `backend/views.py` | 005 |
-| CSRF no inicializado en portada | `templates/index.html` | 004 |
-| Sin settings de seguridad de producción | `settings.py` | 007 |
-| README desactualizado | `README.md` | 007 |
-| Código de tema duplicado en 4 plantillas | `templates/*.html` | 006 |
+| Header y tema duplicados en 4 plantillas | `templates/*.html` | 006 |
+| Foco no visible y controles sin nombre accesible | `templates/*.html`, `static/css/styles.css` | 006 |
+| Historial del perfil sin paginación | `backend/result_views.py` | 005 |
+| Faltan tests de perfil, promedios y cascada | `backend/tests.py` | 005/007 |
+| Líneas > 100 en el catálogo y en `script.js` | `backend/snippets.py`, `static/js/script.js` | 008 |
+| Contadores al pegar y reinicio del intervalo | `static/js/script.js` | 004 |
+| Mensajes de registro divergentes de la spec | `backend/auth_views.py` | 002 |
+| Ruta heredada en `TEMPLATES` | `settings.py` | 001 |
+| PII y secretos en el historial | `db.sqlite3`, historial de Git | 009 |
 
 ## 7. Estrategia de pruebas global
 

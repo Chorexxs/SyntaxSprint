@@ -29,11 +29,10 @@ Referencia: `specs/003-snippet-service/spec.md`
   - Archivos: `backend/snippets.py`, `backend/views.py`
   - DoD: `views.py` < 60 líneas y la vista importa el helper.
   - Evidencia: `snippets.py` con `CODE_SNIPPETS` (8 lenguajes × 15 fragmentos) y
-    `pick_snippet()`; `get_python_function` baja a 16 líneas y `views.py` de 326 a 183.
-  - Nota: el DoD de "< 60 líneas" no se cumple porque `views.py` aún aloja el resto de
-    vistas (auth, guardado, perfil). Esa reducción corresponde a `T008-11`
-    (`views.py` ≤ 120 líneas). El catálogo extraído es idéntico al original
-    (verificado con `ast`); los 26 tests siguen en verde.
+    `pick_snippet()`; `get_python_function` en `snippet_views.py` (16 líneas) y
+    `views.py` reducido a 7 líneas tras `T008-11`.
+  - Nota: el DoD de "< 60 líneas" se cumple tras `T008-11`. El catálogo extraído es
+    idéntico al original (verificado con `ast`); los 26 tests siguen en verde.
 
 - [x] **T003-06** Envolver `json.loads` en `try/except` y responder 400 con `{"error": "Cuerpo JSON inválido"}`.
   - Requisito: `RF-003-07`

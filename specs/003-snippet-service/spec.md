@@ -5,7 +5,7 @@
 | Estado | Implementada |
 | Versión | 1.0 |
 | Depende de | 001-foundation |
-| Archivos principales | `backend/views.py` → `get_python_function`, `backend/urls.py` |
+| Archivos principales | `backend/snippet_views.py`, `backend/snippets.py`, `backend/urls.py` |
 
 ## 1. Contexto y problema
 
@@ -115,13 +115,14 @@ puede fallar con JSON malformado.
 
 | Riesgo | Impacto | Mitigación |
 | --- | --- | --- |
-| Catálogo dentro de `views.py` (≈145 líneas) | Mantenibilidad | T003-04 |
+| Catálogo con 53 líneas > 100 caracteres en `snippets.py` | Legibilidad | T008-09 |
 | Validación solo en cliente | Lenguaje inválido cae a Python silenciosamente | Documentado en RF-003-03 |
-| `json.loads` sin `try/except` | 500 ante cuerpo inválido | T003-03 |
 | Nombre del endpoint confuso | Deuda de nomenclatura | Mantener por compatibilidad; documentar alias en backlog |
 
 ## 11. Referencias de código
 
-- `backend/views.py` líneas 31–181
+- `backend/snippet_views.py` → `get_python_function`
+- `backend/snippets.py` → `CODE_SNIPPETS` y `pick_snippet`
+- `backend/validators.py` → `read_json`, `parse_language`
 - `backend/urls.py` línea 6
 - `static/js/script.js` → `startTest`, `apiUrl`
