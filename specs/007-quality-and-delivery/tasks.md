@@ -103,8 +103,11 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
   - Nota: sigue usando SQLite efímero; PostgreSQL queda en T007-22.
   - DoD: `/`, `/login`, `/static/css/styles.css` y `/admin/` responden; logs sin 500.
 
-- [ ] **T007-22** Crear Render PostgreSQL y configurar `DATABASE_URL` para persistencia.
+- [x] **T007-22** Conectar InsForge PostgreSQL y configurar `DATABASE_URL`.
   - Requisito: `RF-007-07`
+  - Evidencia: 11 tablas Django en InsForge; signup de prueba en producción visible
+    en `auth_user`; `/` 200.
+  - Nota: requiere CLI >= 0.2.8 (`npx -y @insforge/cli@latest db connection-string`).
   - DoD: la base sobrevive a un redeploy y `migrate`/`loaddata` funcionan.
 
 ## Deuda técnica / Backlog

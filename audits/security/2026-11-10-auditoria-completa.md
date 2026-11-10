@@ -301,14 +301,18 @@ curl -s -o NUL -w "%{http_code}" https://api.github.com/repos/Chorexxs/SyntaxSpr
 | Rate limiting | test `test_login_rate_limit` | ✅ |
 | `innerHTML` eliminado | `code_metrics.py` sin riesgos JS | ✅ |
 | Enumeración de usuarios | mensaje genérico en registro | ✅ |
+| Base de datos de producción | InsForge PostgreSQL; 11 tablas Django; probe de producción OK | ✅ |
 
-Sigue pendiente (requiere acceso a producción o decisión):
+Sigue pendiente:
 
-- Rotar `SECRET_KEY`, borrar sesiones y resetear contraseñas en **producción**.
-- Verificar que el despliegue real use `DEBUG=False`.
 - Activar Secret Scanning y Dependabot.
 - Añadir CSP.
+- Revocar las API keys expuestas (Render e InsForge).
 
+> La CLI de InsForge 0.1.x devolvía una contraseña inválida; con 0.2.8+
+> `db connection-string` funciona. El probe de producción se creó vía Render,
+> se verificó en `auth_user` y se eliminó.
+>
 > Los 3 avisos ALTOS que quedan en el historial son falsos positivos: `DEBUG` de
 > configuración y contraseñas de ejemplo dentro de fragmentos de código. No son
 > credenciales reales ni datos personales.
@@ -336,7 +340,7 @@ Sigue pendiente (requiere acceso a producción o decisión):
 | `ALLOWED_HOSTS` | `syntaxsprint.onrender.com` |
 | `CSRF_TRUSTED_ORIGINS` | `https://syntaxsprint.onrender.com` |
 | `TRUST_PROXY_HEADERS` | `True` |
-| Base de datos | SQLite efímero; PostgreSQL pendiente (`T007-22`) |
+| Base de datos | InsForge PostgreSQL (`eu-central`); 11 tablas Django; probe de producción OK |
 
 > El plan free puede dormir la instancia; la primera petición tras inactividad puede
 > tardar ~50 s.

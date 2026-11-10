@@ -11,7 +11,7 @@ se ejecuta en **Render** como Web Service.
 | Región | `gcp-us-west1` (Oregón) |
 | Runtime | Python 3.12 |
 | Servidor | Gunicorn |
-| Base de datos | PostgreSQL de Render (recomendado) o SQLite con disco |
+| Base de datos | InsForge PostgreSQL (`eu-central`) |
 | Estáticos | WhiteNoise + `collectstatic` |
 | Repositorio | `Chorexxs/SyntaxSprint` (privado) |
 | Plan | Free (la instancia se duerme por inactividad) |
@@ -31,9 +31,8 @@ Render Dashboard → servicio `syntaxsprint` → **Environment**.
 | `ALLOWED_HOSTS` | `syntaxsprint.onrender.com` | Sí |
 | `CSRF_TRUSTED_ORIGINS` | `https://syntaxsprint.onrender.com` | Sí |
 | `TRUST_PROXY_HEADERS` | `True` | Sí |
-| `DATABASE_URL` | Cadena de conexión de Render Postgres | Recomendada |
+| `DATABASE_URL` | Cadena Postgres de InsForge (`sslmode=require`) | Sí |
 | `PYTHON_VERSION` | `3.12.1` | Opcional |
-| `DB_PATH` | `/var/data/db.sqlite3` | Solo SQLite con disco |
 
 Reglas:
 
@@ -58,38 +57,43 @@ Reglas:
 La `SECRET_KEY` invalida tokens firmados, pero **no** borra las sesiones guardadas
 en la base de datos: hay que eliminarlas aparte.
 
-## 4. Base de datos
+## 4. Base de datos (InsForge PostgreSQL)
 
-### Opción A — PostgreSQL de Render (recomendada)
+La base de datos es un proyecto de **InsForge** en la región `eu-central`.
 
-Ventajas: persistente, backups, no se pierde en cada deploy.
+1. Obtén la cadena de conexión con la CLI actualizada (>= 0.2.8):
 
-1. Render Dashboard → **New** → **Postgres** (o aplica `render.yaml`).
-2. Copia la **Internal Database URL**.
-3. Añádela como `DATABASE_URL` en el Web Service.
-4. Ejecuta migraciones:
+   ```bash
+   npx -y @insforge/cli@latest db connection-string
+   ```
+
+   > La versión 0.1.x devolvía una contraseña inválida para `postgres`.
+   > Si no conecta, actualiza la CLI o copia la cadena desde el dashboard de
+   > InsForge (Database → Connect).
+
+2. Añádela en Render → servicio `syntaxsprint` → **Environment** como
+   `DATABASE_URL`. Debe incluir `?sslmode=require`.
+
+3. El Start Command ejecuta `migrate` en cada deploy. También puedes hacerlo a mano:
 
    ```bash
    python syntax_sprint/manage.py migrate --noinput
    ```
 
-### Opción B — SQLite con disco persistente (plan de pago)
+4. Verifica las tablas:
 
-1. Render → servicio → **Disks** → añade un disco de 1 GB en `/var/data`.
-2. Añade `DB_PATH=/var/data/db.sqlite3`.
-3. Redeploy.
-4. Sin disco, el SQLite es efímero y **se pierde en cada deploy**.
+   ```bash
+   npx -y @insforge/cli@latest db tables
+   ```
 
-### Migrar los datos actuales de SQLite a PostgreSQL
-
-Hazlo **antes** de cambiar `DATABASE_URL` en producción:
+### Migrar datos desde SQLite
 
 ```bash
-# 1. Backup local (o desde Render Shell)
+# 1. Backup local
 python syntax_sprint/manage.py dumpdata --natural-foreign --natural-primary \
   -e contenttypes -e auth.Permission > backup.json
 
-# 2. Configura DATABASE_URL y aplica migraciones
+# 2. Configura DATABASE_URL (InsForge) y aplica migraciones
 python syntax_sprint/manage.py migrate --noinput
 
 # 3. Carga los datos
@@ -97,6 +101,11 @@ python syntax_sprint/manage.py loaddata backup.json
 ```
 
 > `backup.json` contiene usuarios y hashes de contraseña. No lo subas a GitHub.
+> La app también puede usar SQLite en local (`DB_PATH`), pero producción usa
+> InsForge.
+
+> Latencia: Render está en `oregon` e InsForge en `eu-central`. Si importa,
+> mueve el Web Service a una región europea.
 
 ## 5. Build y arranque
 
@@ -168,7 +177,7 @@ Si devuelve 404:
 - [ ] `ALLOWED_HOSTS` sin esquema ni barra final.
 - [ ] `CSRF_TRUSTED_ORIGINS` con `https://`.
 - [ ] `TRUST_PROXY_HEADERS=True`.
-- [ ] `DATABASE_URL` (Postgres) o `DB_PATH` + disco.
+- [ ] `DATABASE_URL` de InsForge.
 - [ ] `collectstatic` en el build.
 - [ ] Migraciones aplicadas.
 - [ ] Sesiones borradas.
@@ -187,8 +196,9 @@ Si devuelve 404:
 | `CSRF verification failed` | Origen no confiable | `CSRF_TRUSTED_ORIGINS=https://...` |
 | Bucle de redirección HTTPS | Proxy no reconocido | `TRUST_PROXY_HEADERS=True` |
 | CSS/JS 404 | Sin `collectstatic` o sin WhiteNoise | Revisar build y middleware |
-| Datos desaparecen tras deploy | SQLite efímero | Postgres o disco persistente |
-| `connection refused` a Postgres | `DATABASE_URL` incorrecta | Usar la Internal URL de Render |
+| Datos desaparecen tras deploy | `DATABASE_URL` no configurada | Configurar InsForge |
+| `connection refused` a InsForge | `DATABASE_URL` incorrecta | Usar la cadena de `db connection-string` (CLI >= 0.2.8) |
+| `password authentication failed` | Credenciales InsForge obsoletas | Actualizar la CLI a 0.2.8+, re-link o copiar la cadena del dashboard |
 | Servicio no responde | Free dormido, crash o suspendido | Revisar Logs/Events |
 
 ## 10. Rollback
@@ -199,7 +209,7 @@ Si devuelve 404:
 
 ## 11. Seguridad
 
-- No versionar `.env`, `db.sqlite3`, `staticfiles/` ni `backup.json`.
+- No versionar `.env`, `db.sqlite3`, `staticfiles/`, `backup.json` ni `.insforge/`.
 - Rotar cualquier secreto que haya estado en un repo público.
 - Mantener el repositorio privado hasta que la rotación esté completa.
 - Revisar `audits/security/` antes de cada despliegue grande.

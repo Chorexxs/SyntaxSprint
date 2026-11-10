@@ -2,23 +2,9 @@
 # Uso: Render Dashboard -> New -> Blueprint -> selecciona este repositorio.
 # Si el servicio ya existe, revisa que estas variables coincidan con el dashboard.
 #
-# La base de datos es PostgreSQL gestionada por Render (plan free).
-# Si prefieres SQLite con disco persistente (plan de pago), elimina `databases`
-# y la variable DATABASE_URL, y añade:
-#   disk:
-#     name: syntaxsprint-data
-#     mountPath: /var/data
-#     sizeGB: 1
-#   envVars:
-#     - key: DB_PATH
-#       value: /var/data/db.sqlite3
-
-databases:
-  - name: syntaxsprint-db
-    plan: free
-    databaseName: syntaxsprint
-    user: syntaxsprint
-    region: oregon
+# La base de datos es PostgreSQL de InsForge. Configura DATABASE_URL con:
+#   npx -y @insforge/cli@latest db connection-string
+# No la guardes en el repositorio: usa la variable de entorno de Render.
 
 services:
   - type: web
@@ -43,6 +29,4 @@ services:
       - key: PYTHON_VERSION
         value: "3.12.1"
       - key: DATABASE_URL
-        fromDatabase:
-          name: syntaxsprint-db
-          property: connectionString
+        sync: false

@@ -15,7 +15,7 @@ historial del usuario y calcula promedios.
 | Aspecto | Valor |
 | --- | --- |
 | Framework | Django 5.x (MVT) |
-| Base de datos | SQLite3 (`syntax_sprint/db.sqlite3`) |
+| Base de datos | InsForge PostgreSQL (`DATABASE_URL`) |
 | Frontend | Plantillas Django + Tailwind CDN + CSS propio |
 | JavaScript | Vanilla ES6+ (clase `TypingTest`); jQuery 3.x permitido |
 | Servidor | Gunicorn (`syntax_sprint.wsgi`) |
@@ -347,7 +347,7 @@ cd syntax_sprint && python manage.py check --deploy
 | URL | `https://syntaxsprint.onrender.com/` |
 | Estado | Live verificado (2026-11-10) |
 | Región | `gcp-us-west1` (Oregón) |
-| Base de datos | PostgreSQL vía `DATABASE_URL` (recomendado) o SQLite con `DB_PATH` + disco |
+| Base de datos | InsForge PostgreSQL (`eu-central`) vía `DATABASE_URL` |
 | Estáticos | WhiteNoise + `collectstatic` |
 | Build | `pip install -r requirements.txt && python syntax_sprint/manage.py collectstatic --noinput` |
 | Start | `python syntax_sprint/manage.py migrate --noinput && gunicorn --chdir syntax_sprint syntax_sprint.wsgi:application --bind 0.0.0.0:$PORT` |

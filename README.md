@@ -82,7 +82,7 @@ syntax_sprint/
 La aplicación está preparada para Render:
 
 - Web Service con Gunicorn.
-- PostgreSQL mediante `DATABASE_URL` (recomendado) o SQLite con disco persistente (`DB_PATH`).
+- PostgreSQL de InsForge mediante `DATABASE_URL`.
 - Estáticos con WhiteNoise y `collectstatic`.
 - Variables de entorno para `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`,
   `CSRF_TRUSTED_ORIGINS` y `TRUST_PROXY_HEADERS`.
