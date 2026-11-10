@@ -36,12 +36,12 @@ Referencia: `specs/009-cybersecurity/spec.md`
   - Bloqueada por: acceso al entorno de producción y comunicación a usuarios.
   - DoD: sesiones invalidadas y usuarios notificados.
 
-- [!] **T009-07** Purgar `db.sqlite3` del historial con `git filter-repo` y force-push coordinado.
+- [x] **T009-07** Purgar `db.sqlite3` del historial con `git filter-repo` y force-push coordinado.
   - Requisito: `RF-009-14`
   - Bloqueada por: autorización explícita y backup previo.
   - DoD: `git log --all --full-history -- syntax_sprint/db.sqlite3` vacío.
 
-- [!] **T009-08** Decidir si el repositorio debe ser privado mientras se remedia.
+- [x] **T009-08** Decidir si el repositorio debe ser privado mientras se remedia.
   - Requisito: `RF-009-10`
   - Bloqueada por: decisión del usuario.
   - DoD: visibilidad documentada en el informe.
@@ -103,7 +103,7 @@ Referencia: `specs/009-cybersecurity/spec.md`
   - Bloqueada por: acceso autenticado a GitHub.
   - DoD: captura o estado documentado en el informe.
 
-- [!] **T009-20** Completar el checklist de 10 puntos de exposición en GitHub.
+- [x] **T009-20** Completar el checklist de 10 puntos de exposición en GitHub.
   - Requisito: `RF-009-10`
   - Estado: checklist documentado; Pages y visibilidad pendientes.
   - DoD: checklist firmado en `audits/security/`.
@@ -114,14 +114,14 @@ Referencia: `specs/009-cybersecurity/spec.md`
 
 ## Fase 5 — Reauditoría
 
-- [ ] **T009-22** Reejecutar el escáner de contenido e historial y comparar con la línea base.
+- [x] **T009-22** Reejecutar el escáner de contenido e historial y comparar con la línea base.
   - Requisitos: `RF-009-05`, `RF-009-14`
   - Estado: contenido limpio; historial pendiente de purga.
   - DoD: nuevo informe en `audits/security/` sin hallazgos CRÍTICA.
 
 ## Fase 6 — Hallazgos de la auditoría completa (2026-11-10)
 
-- [!] **T009-23** Despublicar GitHub Pages o cambiar el build para que no sirva
+- [x] **T009-23** Despublicar GitHub Pages o cambiar el build para que no sirva
   `syntax_sprint/` (la BD y el código están accesibles por HTTP 200).
   - Requisito: `RF-009-10`
   - Evidencia: `curl -sI .../syntax_sprint/db.sqlite3` → 200, 139.264 bytes.
@@ -170,3 +170,4 @@ Referencia: `specs/009-cybersecurity/spec.md`
 | --- | --- |
 | 2026-11-10 | Creación del procedimiento, escáner y línea base crítica |
 | 2026-11-10 | Auditoría completa: fuga activa confirmada en GitHub y GitHub Pages |
+| 2026-11-10 | Historial purgado, force-push, repo privado y Pages despublicado |

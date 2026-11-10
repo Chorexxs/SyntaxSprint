@@ -30,7 +30,7 @@ audits/
 | --- | --- | --- | --- |
 | 2026-11-10 | Código | `code/2026-11-10-linea-base.md` | 3.8/10 (F) |
 | 2026-11-10 | Seguridad | `security/2026-11-10-linea-base.md` | CRÍTICO |
-| 2026-11-10 | Seguridad | `security/2026-11-10-auditoria-completa.md` | CRÍTICO — contención local aplicada |
+| 2026-11-10 | Seguridad | `security/2026-11-10-auditoria-completa.md` | Contenido — historial purgado |
 
-> El informe de auditoría completa **no debe publicarse ni commitearse** hasta completar
-> la rotación de credenciales y la purga del historial (`RNF-009-05`).
+> Informe interno; no exponer fuera del repositorio. El historial ya está purgado, el
+> repositorio es privado y Pages devuelve 404. La rotación de producción sigue pendiente.
