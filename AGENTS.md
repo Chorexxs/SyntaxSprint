@@ -1,0 +1,313 @@
+# AGENTS.md — Guía de desarrollo de SyntaxSprint
+
+SyntaxSprint es una aplicación web **Django 5.x** para practicar velocidad de escritura
+con fragmentos de código reales. Mide WPM y precisión en tests de 30 segundos, guarda el
+historial del usuario y calcula promedios.
+
+> Este repositorio usa **Spec-Driven Development (SDD)**. La fuente de verdad está en
+> `specs/`. Antes de escribir código, lee `specs/README.md`, `specs/constitution.md` y la
+> carpeta de la funcionalidad que vas a tocar.
+
+---
+
+## 1. Snapshot del proyecto
+
+| Aspecto | Valor |
+| --- | --- |
+| Framework | Django 5.x (MVT) |
+| Base de datos | SQLite3 (`syntax_sprint/db.sqlite3`) |
+| Frontend | Plantillas Django + Tailwind CDN + CSS propio |
+| JavaScript | Vanilla ES6+ (clase `TypingTest`); jQuery 3.x permitido |
+| Servidor | Gunicorn (`syntax_sprint.wsgi`) |
+| Configuración | `python-decouple` + `.env` |
+| Pruebas | `django.test.TestCase` (suite pendiente) |
+| Lint | `pylint`, `isort` |
+| App principal | `backend` |
+
+## 2. Estructura real
+
+```text
+SyntaxSprint/
+├── AGENTS.md
+├── README.md
+├── requirements.txt
+├── specs/                       # Spec-Driven Development
+│   ├── README.md
+│   ├── constitution.md
+│   ├── traceability.md
+│   ├── templates/
+│   └── 000-overview/ … 007-quality-and-delivery/
+└── syntax_sprint/               # BASE_DIR
+    ├── manage.py
+    ├── db.sqlite3
+    ├── backend/                 # app: models, views, urls, admin, tests
+    ├── syntax_sprint/           # settings, urls, wsgi/asgi
+    ├── templates/               # index, login, signup, profile
+    └── static/                  # css/styles.css, js/script.js, icon/
+```
+
+> El `README.md` describe una estructura más plana; la real es la de arriba. Ver
+> `specs/001-foundation` y `specs/007-quality-and-delivery`.
+
+## 3. Comandos
+
+```bash
+# Todas las rutas son relativas a la raíz del repositorio
+cd syntax_sprint
+
+# Servidor de desarrollo
+python manage.py runserver
+
+# Migraciones
+python manage.py makemigrations
+python manage.py migrate
+python manage.py makemigrations --check --dry-run
+
+# Pruebas
+python manage.py test
+python manage.py test backend.tests
+python manage.py test backend.tests.AuthTests.test_login_valid
+
+# Verificación
+python manage.py check
+python manage.py check --deploy
+
+# Lint e imports (desde la raíz)
+isort --check-only syntax_sprint/
+isort syntax_sprint/
+pylint syntax_sprint/
+
+# Producción
+python manage.py collectstatic --noinput
+gunicorn syntax_sprint.wsgi:application --bind 0.0.0.0:8000
+```
+
+## 4. Mapa de rutas y contratos
+
+| Método | Ruta | Vista | Auth | Respuesta |
+| --- | --- | --- | --- | --- |
+| GET | `/` | `index` | No | `index.html` |
+| GET/POST | `/get_python_function` | `get_python_function` | No | `{name, code}` |
+| GET/POST | `/signup` | `signup` | No | HTML / 302 |
+| GET/POST | `/login` | `login` | No | HTML / 302 |
+| GET | `/logout` | `logout` | Sí | 302 → `/` |
+| GET | `/profile` | `profile` | Sí | `profile.html` |
+| POST | `/save_typing_test_result` | `save_typing_test_result` | Sí | `{message}` |
+| — | `/admin/` | Django Admin | Staff | HTML |
+
+Modelo único: `TypingTestResult(user, wpm, accuracy, date)`.
+
+## 5. Convenciones de código
+
+### Imports (isort)
+
+1. Biblioteca estándar
+2. Paquetes de terceros
+3. Django
+4. Imports locales
+
+### Nombres
+
+- Funciones y variables: `snake_case` (`save_typing_test_result`)
+- Clases: `PascalCase` (`TypingTest`, `TypingTestResult`)
+- Constantes: `UPPER_SNAKE_CASE` (`CODE_SNIPPETS`)
+- Modelos: `PascalCase` singular
+- Nombres de URL: `snake_case`
+
+### Tipos y formato
+
+```python
+def calculate_wpm(chars: int, time_seconds: float) -> float:
+    return (chars / 5) / (time_seconds / 60)
+```
+
+- Máximo 100 caracteres por línea
+- 4 espacios, sin tabs, sin espacios finales
+- Anotaciones de tipo en funciones nuevas
+- Español para documentación y mensajes; inglés para identificadores
+
+### Django
+
+- `@login_required(login_url="login")` en vistas protegidas
+- `JsonResponse` para endpoints AJAX
+- `messages` para feedback de usuario
+- Códigos HTTP correctos: 200, 400, 405
+- `on_delete=models.CASCADE` en FKs
+- `__str__` en todos los modelos
+- URLs con nombre y `redirect("nombre")`, nunca rutas hardcodeadas
+- `{% csrf_token %}` en todo formulario y en páginas que hagan POST por `fetch`
+
+### JavaScript
+
+- `fetch` con `X-CSRFToken` para POST
+- Manejar errores y respuestas no-2xx
+- No introducir frameworks sin una spec aprobada
+- Mantener los IDs del DOM usados por `TypingTest`
+
+### Seguridad
+
+- Nunca versionar secretos, `.env` ni claves
+- Validar toda entrada en el servidor
+- No exponer trazas internas al usuario
+- `DEBUG=False` en producción
+
+### Commits
+
+- **Siempre en español.** Sin excepciones, ni siquiera en ramas personales.
+- Asunto en imperativo y ≤ 72 caracteres: `Tipo: descripción`.
+- Tipos permitidos, también en español: `Añadir`, `Corregir`, `Actualizar`,
+  `Eliminar`, `Refactorizar`, `Documentar`, `Probar`, `Desplegar`.
+- Cuerpo opcional en viñetas: qué cambia y por qué.
+- Un commit por tarea (`T00X-NN`); no mezclar refactor, funcionalidad y formato.
+- Referenciar la spec cuando aplique: `Refs: specs/00X-nombre`.
+
+```text
+Corregir validación de resultados del perfil
+
+- Rechazar WPM negativo y accuracy fuera de 0–100
+- Responder 400 ante JSON inválido
+- Añadir pruebas de rangos
+
+Refs: specs/005-results-and-profile
+```
+
+---
+
+## 6. Flujo Spec-Driven Development
+
+### 6.1 Regla de oro
+
+**Ningún cambio de comportamiento sin requisito.** El orden es siempre:
+
+```text
+spec.md  →  plan.md  →  tasks.md  →  código  →  verificación  →  traceability.md
+```
+
+### 6.2 Dónde vive cada cosa
+
+| Necesito… | Voy a… |
+| --- | --- |
+| Entender el producto | `specs/000-overview/spec.md` |
+| Saber cómo está construido | `specs/000-overview/plan.md` |
+| Ver qué falta | `specs/000-overview/tasks.md` |
+| Trabajar en una funcionalidad | `specs/00X-*/spec.md` + `plan.md` + `tasks.md` |
+| Crear una funcionalidad nueva | Copiar `specs/templates/*` a `specs/008-nombre/` |
+| Verificar cobertura de requisitos | `specs/traceability.md` |
+| Conocer las reglas no negociables | `specs/constitution.md` |
+
+### 6.3 Anatomía de una spec
+
+```markdown
+# Spec 00X — Nombre
+| Estado | Borrador / Aprobada / Implementada / Obsoleta |
+
+## 1. Contexto y problema
+## 2. Objetivos / No objetivos
+## 3. Actores y casos de uso
+## 4. Requisitos funcionales   → RF-00X-NN (formato EARS)
+## 5. Reglas de negocio
+## 6. Contratos (endpoints, modelos)
+## 7. Requisitos no funcionales → RNF-00X-NN
+## 8. Criterios de aceptación   → CA-00X-NN (Dado/Cuando/Entonces)
+## 9. Fuera de alcance
+## 10. Riesgos y deuda técnica
+## 11. Referencias de código
+```
+
+Un requisito debe ser **verificable**. "Ser rápido" no es un requisito; "responder en
+menos de 300 ms en local" sí lo es.
+
+### 6.4 Anatomía de una tarea
+
+```markdown
+- [ ] **T00X-01** Verbo + resultado esperado.
+  - Requisito: `RF-00X-01`
+  - Archivos: `ruta/archivo.py`
+  - DoD: cómo se comprueba que está hecha.
+```
+
+Estados: `[ ]` pendiente · `[x]` completada · `[!]` bloqueada.
+
+### 6.5 Ciclo de trabajo
+
+1. Leer la spec y las tareas pendientes de la funcionalidad.
+2. Implementar **una tarea** por cambio, sin mezclar refactors.
+3. Ejecutar su verificación (test, `check`, o checklist manual).
+4. Marcar `[x]` y actualizar `traceability.md`.
+5. Si el alcance cambia: actualizar `spec.md` **antes** de tocar código.
+6. Registrar decisiones y deuda en `plan.md`, no en comentarios sueltos.
+
+### 6.6 Definition of Ready
+
+- [ ] Spec aprobada y con criterios de aceptación.
+- [ ] Plan con archivos afectados y contratos.
+- [ ] Tareas ordenadas por dependencia.
+- [ ] Riesgos de seguridad y migración identificados.
+
+### 6.7 Definition of Done
+
+- [ ] Tareas de la funcionalidad en `[x]`.
+- [ ] `python manage.py check` sin errores.
+- [ ] `python manage.py test` en verde.
+- [ ] `isort --check-only` y `pylint` sin errores nuevos.
+- [ ] `spec.md` y `plan.md` reflejan la implementación.
+- [ ] `traceability.md` actualizado.
+- [ ] Sin secretos ni `DEBUG=True` versionados.
+
+---
+
+## 7. Checklist para agentes de IA
+
+Antes de editar:
+
+- [ ] Leí `specs/000-overview/spec.md` y la spec de la funcionalidad.
+- [ ] Identifiqué el `RF-*` y la tarea `T*` que voy a satisfacer.
+- [ ] Revisé `specs/constitution.md`.
+- [ ] Comprobé si el archivo ya tiene trabajo del usuario sin commitear (`git status`).
+
+Al editar:
+
+- [ ] Cambio mínimo y consistente con el estilo circundante.
+- [ ] No elimino archivos ni lógica sin investigarlos antes.
+- [ ] No añado dependencias sin requisito explícito.
+- [ ] No edito migraciones ya aplicadas.
+
+Al terminar:
+
+- [ ] Ejecuté la verificación de la tarea.
+- [ ] Actualicé `tasks.md` y `traceability.md`.
+- [ ] Reporté cualquier divergencia entre código y spec.
+- [ ] Dejé claro qué quedó pendiente.
+
+## 8. Deuda técnica conocida (priorizada)
+
+| Prioridad | Deuda | Feature | Tarea |
+| --- | --- | --- | --- |
+| 1 | Suite de pruebas vacía | 007 | T007-01…T007-04 |
+| 2 | CSRF no inicializado en la portada | 004/007 | T004-08, T007-06 |
+| 3 | `login_required` redirige a `/accounts/login/` (404) | 002/005 | T002-07, T005-09 |
+| 4 | Sin validación de rango de WPM/accuracy | 005 | T005-06 |
+| 5 | JSON inválido produce 500 | 003/005 | T003-06, T005-05 |
+| 6 | `TypingTestResult` no registrado en admin | 001 | T001-08 |
+| 7 | Imports duplicados y sin usar en `views.py` | 001 | T001-09 |
+| 8 | Header/tema duplicado en 4 plantillas | 006 | T006-05, T006-06 |
+| 9 | `outline: none` global (accesibilidad) | 006 | T006-08 |
+| 10 | Sin settings de producción ni CI | 007 | T007-08, T007-11 |
+| 11 | README y versión de Django desalineados | 001/007 | T001-05, T007-14 |
+| 12 | `AGENTS.md` está en `.gitignore` | 007 | T007-16 |
+
+## 9. Seguridad — reglas rápidas
+
+1. `.env` nunca se commitea; usa `.env.example`.
+2. Toda vista que escribe datos: autenticación + CSRF + validación.
+3. Los resultados se asocian siempre a `request.user`, nunca a un ID del cliente.
+4. Los mensajes de error no revelan si un usuario existe.
+5. En producción: HTTPS, cookies `Secure`, HSTS y `DEBUG=False`.
+
+## 10. Referencias
+
+- `README.md` — descripción funcional e instalación.
+- `specs/README.md` — manual de SDD.
+- `specs/constitution.md` — principios no negociables.
+- `specs/traceability.md` — requisito → tarea → verificación.
+- `specs/000-overview/plan.md` — arquitectura y ADRs.
