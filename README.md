@@ -44,6 +44,10 @@ SyntaxSprint es una aplicación web diseñada para ayudar a los usuarios a mejor
 3. **Instala las dependencias:**
 
    ```bash
+   # Desarrollo (incluye lint, tests y auditoría de dependencias)
+   pip install -r requirements-dev.txt
+
+   # Solo producción
    pip install -r requirements.txt
    ```
 

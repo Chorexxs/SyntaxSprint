@@ -16,6 +16,11 @@ __pycache__/
 # Estaticos generados por collectstatic
 staticfiles/
 
+# Cobertura de pruebas
+.coverage
+.coverage.*
+htmlcov/
+
 # InsForge (contiene claves y configuracion local)
 .insforge/
 
