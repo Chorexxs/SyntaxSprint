@@ -34,7 +34,6 @@ Render Dashboard → servicio `syntaxsprint` → **Environment**.
 | `DATABASE_URL` | Cadena de conexión de Render Postgres | Recomendada |
 | `PYTHON_VERSION` | `3.12.1` | Opcional |
 | `DB_PATH` | `/var/data/db.sqlite3` | Solo SQLite con disco |
-| `RUN_MIGRATIONS_ON_START` | `False` si el Start Command ejecuta `migrate`; `True` como fallback | Opcional |
 
 Reglas:
 
@@ -112,6 +111,10 @@ En Render → **Settings**:
 El repositorio incluye `render.yaml` como blueprint. Si el servicio ya existe, el
 blueprint no se aplica solo: revisa que los comandos y variables coincidan.
 
+> Las migraciones se ejecutan en el Start Command. No se ejecutan al importar
+> `wsgi.py` para evitar que el worker se quede bloqueado si la base de datos no
+> responde.
+
 ## 6. Después de rotar la clave
 
 ### Borrar sesiones
@@ -168,7 +171,6 @@ Si devuelve 404:
 - [ ] `DATABASE_URL` (Postgres) o `DB_PATH` + disco.
 - [ ] `collectstatic` en el build.
 - [ ] Migraciones aplicadas.
-- [ ] `RUN_MIGRATIONS_ON_START=False` si el Start Command ya ejecuta `migrate`.
 - [ ] Sesiones borradas.
 - [ ] Contraseñas reseteadas.
 - [ ] `/`, `/login`, `/static/css/styles.css` y `/admin/` responden.
@@ -181,6 +183,7 @@ Si devuelve 404:
 | `DisallowedHost` | `ALLOWED_HOSTS` con esquema o vacío | `syntaxsprint.onrender.com` |
 | `ModuleNotFoundError: No module named 'backend'` | Start Command antiguo sin `--chdir` | Usar `gunicorn --chdir syntax_sprint ...` o el fallback de `wsgi.py` |
 | `No open ports detected` | Gunicorn escuchando en `127.0.0.1:8000` | `gunicorn.conf.py` o `--bind 0.0.0.0:$PORT` |
+| Render dice "live" pero todo da timeout | Worker bloqueado (migración en import o BD inaccesible) | Revisar Start Command y logs; no migrar en `wsgi.py` |
 | `CSRF verification failed` | Origen no confiable | `CSRF_TRUSTED_ORIGINS=https://...` |
 | Bucle de redirección HTTPS | Proxy no reconocido | `TRUST_PROXY_HEADERS=True` |
 | CSS/JS 404 | Sin `collectstatic` o sin WhiteNoise | Revisar build y middleware |

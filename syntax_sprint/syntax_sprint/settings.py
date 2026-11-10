@@ -108,6 +108,10 @@ DATABASES = {
 DATABASE_URL = config("DATABASE_URL", default="")
 if DATABASE_URL:
     DATABASES["default"] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+    if DATABASES["default"]["ENGINE"].endswith("postgresql"):
+        DATABASES["default"].setdefault("OPTIONS", {}).setdefault(
+            "connect_timeout", 5
+        )
 
 
 # Password validation
