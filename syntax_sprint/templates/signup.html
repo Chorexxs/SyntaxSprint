@@ -100,7 +100,7 @@
         </div>
         
         {% if messages %}
-          <div class="text-[var(--error)] text-sm">
+          <div class="text-[var(--error)] text-sm" role="alert">
             {% for message in messages %}
               <p>{{ message }}</p>
             {% endfor %}

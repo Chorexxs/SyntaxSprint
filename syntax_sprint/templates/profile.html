@@ -43,7 +43,10 @@
     
     <nav class="flex items-center gap-4">
       <a href="{% url 'index' %}" class="text-sm hover:text-[var(--text-active)] transition-colors">test</a>
-      <a href="{% url 'logout' %}" class="text-sm hover:text-[var(--text-active)] transition-colors">logout</a>
+      <form method="post" action="{% url 'logout' %}" class="inline">
+        {% csrf_token %}
+        <button type="submit" class="text-sm hover:text-[var(--text-active)] transition-colors">logout</button>
+      </form>
       
       <button id="theme-toggle" class="p-2 rounded-lg hover:bg-[var(--bg-secondary)] transition-colors" title="Toggle theme">
         <svg id="sun-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">

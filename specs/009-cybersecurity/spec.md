@@ -323,6 +323,14 @@ Orden obligatorio:
 **Riesgo global: CRÍTICO.** La base de datos debe salir del repositorio y del historial,
 y las 6 cuentas más las 2 contraseñas hardcodeadas deben considerarse comprometidas.
 
+> La auditoría completa del 2026-11-10 amplía esta línea base: el repositorio es público,
+> GitHub Pages sirve `db.sqlite3` (HTTP 200), la `SECRET_KEY` histórica estaba en uso y
+> `pip-audit` detectaba 49 avisos. Se aplicó contención local (BD y `.pyc` fuera del
+> índice, clave local rotada, sesiones borradas, dependencias actualizadas y 26 tests).
+> Sigue pendiente la exposición pública: Pages, visibilidad del repo y purga del
+> historial. Ver `audits/security/2026-11-10-auditoria-completa.md` (no publicar hasta
+> completar la rotación y la purga).
+
 > Detalle completo en `audits/security/2026-11-10-linea-base.md`.
 
 ## 14. Fuera de alcance

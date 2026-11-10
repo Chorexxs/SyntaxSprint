@@ -30,6 +30,7 @@ audits/
 | --- | --- | --- | --- |
 | 2026-11-10 | Código | `code/2026-11-10-linea-base.md` | 3.8/10 (F) |
 | 2026-11-10 | Seguridad | `security/2026-11-10-linea-base.md` | CRÍTICO |
+| 2026-11-10 | Seguridad | `security/2026-11-10-auditoria-completa.md` | CRÍTICO — contención local aplicada |
 
-> La línea base de seguridad incluye una fuga de datos personales en el historial de
-> git. La remediación requiere decisión y autorización del responsable del proyecto.
+> El informe de auditoría completa **no debe publicarse ni commitearse** hasta completar
+> la rotación de credenciales y la purga del historial (`RNF-009-05`).

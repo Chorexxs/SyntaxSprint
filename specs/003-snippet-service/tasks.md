@@ -29,13 +29,14 @@ Referencia: `specs/003-snippet-service/spec.md`
   - Archivos: `backend/snippets.py`, `backend/views.py`
   - DoD: `views.py` < 60 líneas y la vista importa el helper.
 
-- [ ] **T003-06** Envolver `json.loads` en `try/except` y responder 400 con `{"error": "Cuerpo JSON inválido"}`.
+- [x] **T003-06** Envolver `json.loads` en `try/except` y responder 400 con `{"error": "Cuerpo JSON inválido"}`.
   - Requisito: `RF-003-07`
-  - Archivos: `backend/views.py`
+  - Evidencia: test `test_invalid_json_returns_400`.
   - DoD: `client.post(url, data="{", content_type="application/json")` devuelve 400.
 
-- [ ] **T003-07** Añadir `@require_http_methods(["GET", "POST"])`.
+- [x] **T003-07** Añadir `@require_http_methods(["GET", "POST"])`.
   - Requisito: `RF-003-05`
+  - Evidencia: test `test_put_not_allowed`.
   - DoD: `PUT` devuelve 405.
 
 - [ ] **T003-08** Validar en tiempo de importación que cada snippet tenga `name` y `code` no vacíos.

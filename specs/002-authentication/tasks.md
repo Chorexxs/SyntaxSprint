@@ -25,38 +25,38 @@ Referencia: `specs/002-authentication/spec.md`
 
 ## Fase 2 — Endurecimiento
 
-- [ ] **T002-06** Aplicar `validate_password` antes de crear el usuario y mostrar todos los errores.
+- [x] **T002-06** Aplicar `validate_password` antes de crear el usuario y mostrar todos los errores.
   - Requisito: `RF-002-09`
   - Archivos: `backend/views.py`, `templates/signup.html`
   - DoD: contraseña `12345678` se rechaza con mensaje explicativo.
 
-- [ ] **T002-07** Añadir `login_url="login"` a `profile` y `save_typing_test_result`.
+- [x] **T002-07** Añadir `login_url="login"` a `profile` y `save_typing_test_result`.
   - Requisito: `RF-002-08`
   - Archivos: `backend/views.py`
   - DoD: visitante en `/profile` termina en `/login`, no en 404.
 
-- [ ] **T002-08** Sustituir `request.POST["..."]` por `.get()` y responder 400 si faltan campos.
+- [x] **T002-08** Sustituir `request.POST["..."]` por `.get()` y responder 400 si faltan campos.
   - Requisito: `RF-002-10`
   - Archivos: `backend/views.py`
   - DoD: POST vacío devuelve 400 sin traza.
 
-- [ ] **T002-09** Cambiar el logout a POST con formulario y `{% csrf_token %}`.
+- [x] **T002-09** Cambiar el logout a POST con formulario y `{% csrf_token %}`.
   - Requisito: `RF-002-07`
   - Archivos: `backend/views.py`, `templates/*.html`
   - DoD: GET `/logout` no cierra sesión; POST sí.
 
-- [ ] **T002-10** Normalizar email a minúsculas antes de comprobar duplicados.
+- [x] **T002-10** Normalizar email a minúsculas antes de comprobar duplicados.
   - Requisito: `RF-002-02`
   - Archivos: `backend/views.py`
   - DoD: `User@X.com` y `user@x.com` colisionan.
 
 ## Fase 3 — Verificación
 
-- [ ] **T002-11** Escribir tests de registro, login, logout y acceso anónimo.
+- [x] **T002-11** Escribir tests de registro, login, logout y acceso anónimo.
   - Archivos: `backend/tests.py`
   - DoD: 9 casos del plan en verde.
 
-- [ ] **T002-12** Añadir `role="alert"` a los bloques de mensajes.
+- [x] **T002-12** Añadir `role="alert"` a los bloques de mensajes.
   - Requisito: `RNF-002-03`
   - Archivos: `templates/login.html`, `templates/signup.html`
 

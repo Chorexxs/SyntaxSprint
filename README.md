@@ -21,7 +21,7 @@ SyntaxSprint es una aplicación web diseñada para ayudar a los usuarios a mejor
 ## Requisitos
 
 - Python 3.x
-- Django 5.0.7
+- Django 5.2.17
 - jQuery 3.x
 
 ## Instalación (Para desplegarlo en local)
@@ -68,13 +68,13 @@ SyntaxSprint es una aplicación web diseñada para ayudar a los usuarios a mejor
 
 ```
 syntax_sprint/
-├── syntax_sprint/          # Configuración de Django
+├── manage.py
 ├── backend/                # Aplicación principal (modelos, vistas, URLs, tests)
+├── syntax_sprint/          # Configuración de Django
 ├── templates/              # Plantillas HTML
-├── static/                 # Archivos estáticos
-│   ├── css/               # Estilos CSS
-│   └── js/                # JavaScript
-└── manage.py
+└── static/                 # Archivos estáticos
+    ├── css/                # Estilos CSS
+    └── js/                 # JavaScript
 ```
 
 ## Uso

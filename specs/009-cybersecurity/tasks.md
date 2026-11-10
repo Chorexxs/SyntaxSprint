@@ -25,14 +25,15 @@ Referencia: `specs/009-cybersecurity/spec.md`
 
 ## Fase 2 — Remediación CRÍTICA (requiere autorización)
 
-- [!] **T009-05** Dejar de rastrear `syntax_sprint/db.sqlite3` con `git rm --cached`.
+- [x] **T009-05** Dejar de rastrear `syntax_sprint/db.sqlite3` con `git rm --cached`.
   - Requisito: `RF-009-11`
-  - Bloqueada por: decisión del usuario sobre el repo y el historial.
+  - Evidencia: `git status` muestra la baja; el archivo sigue en disco.
   - DoD: `git ls-files | grep db.sqlite3` vacío.
 
 - [!] **T009-06** Rotar `SECRET_KEY` y forzar el reset de contraseñas de los 6 usuarios.
   - Requisito: `RF-009-14`
-  - Bloqueada por: acceso al entorno de producción y decisión de comunicación.
+  - Estado: `SECRET_KEY` local rotada (86 chars, sin prefijo inseguro).
+  - Bloqueada por: acceso al entorno de producción y comunicación a usuarios.
   - DoD: sesiones invalidadas y usuarios notificados.
 
 - [!] **T009-07** Purgar `db.sqlite3` del historial con `git filter-repo` y force-push coordinado.
@@ -45,59 +46,66 @@ Referencia: `specs/009-cybersecurity/spec.md`
   - Bloqueada por: decisión del usuario.
   - DoD: visibilidad documentada en el informe.
 
-- [ ] **T009-09** Dejar de rastrear los 13 `__pycache__/*.pyc`.
+- [x] **T009-09** Dejar de rastrear los 13 `__pycache__/*.pyc`.
   - Requisito: `RF-009-04`
-  - Archivos: `syntax_sprint/**/__pycache__/`
+  - Evidencia: `scan_secrets.py` ya no reporta archivos `.pyc`.
   - DoD: `scan_secrets.py` reporta 0 archivos `.pyc`.
 
 ## Fase 3 — Configuración y aplicación
 
-- [ ] **T009-10** Añadir el bloque `if not DEBUG` con HTTPS, HSTS y cookies seguras
+- [x] **T009-10** Añadir el bloque `if not DEBUG` con HTTPS, HSTS y cookies seguras
   (coordina con `T007-08`).
   - Requisito: `RF-009-06`
-  - Archivos: `syntax_sprint/syntax_sprint/settings.py`
+  - Evidencia: `check --deploy` con `DEBUG=False` → 0 issues.
   - DoD: `check --deploy` sin warnings W004/W008/W012/W016.
 
-- [ ] **T009-11** Sustituir `SECRET_KEY` débil por una clave aleatoria de ≥ 50 caracteres.
+- [!] **T009-11** Sustituir `SECRET_KEY` débil por una clave aleatoria de ≥ 50 caracteres.
   - Requisito: `RF-009-06`
-  - DoD: `check --deploy` sin W009.
+  - Estado: rotada en local (86 chars, sin `django-insecure-`).
+  - Bloqueada por: acceso al `.env` de producción.
+  - DoD: `check --deploy` sin W009 en producción.
 
-- [ ] **T009-12** Asegurar `DEBUG=False` en producción.
+- [!] **T009-12** Asegurar `DEBUG=False` en producción.
   - Requisito: `RF-009-06`
+  - Estado: bloque de producción listo; el `.env` local sigue en `True`.
+  - Bloqueada por: acceso al entorno de producción.
   - DoD: `check --deploy` sin W018.
 
-- [ ] **T009-13** Añadir `{% csrf_token %}` a la portada (coordina con `T004-08`).
+- [x] **T009-13** Añadir `{% csrf_token %}` a la portada (coordina con `T004-08`).
   - Requisito: `RF-009-08`
-  - Archivos: `templates/index.html`
+  - Evidencia: test `test_index_sets_csrf_cookie`.
 
-- [ ] **T009-14** Cambiar el logout a POST con CSRF (coordina con `T002-09`).
+- [x] **T009-14** Cambiar el logout a POST con CSRF (coordina con `T002-09`).
   - Requisito: `RF-009-08`
+  - Evidencia: tests `test_logout_requires_post` y `test_logout_post_clears_session`.
 
-- [ ] **T009-15** Reemplazar `innerHTML` en `script.js:201` por nodos seguros.
+- [x] **T009-15** Reemplazar `innerHTML` en `script.js:201` por nodos seguros.
   - Requisito: `RF-009-08`
-  - Archivos: `static/js/script.js`
+  - Evidencia: `code_metrics.py` ya no reporta `innerHTML`.
 
-- [ ] **T009-16** Añadir rate limiting al login.
+- [x] **T009-16** Añadir rate limiting al login.
   - Requisito: `RF-009-07`
-  - DoD: 5 intentos fallidos en 1 minuto se bloquean temporalmente.
+  - Evidencia: test `test_login_rate_limit`.
+  - Nota: `LocMemCache` es por proceso; para varios workers usar Redis/BD.
 
-- [ ] **T009-17** Verificar aislamiento por usuario en `/profile` y guardado.
+- [x] **T009-17** Verificar aislamiento por usuario en `/profile` y guardado.
   - Requisito: `RF-009-07`
-  - Archivos: `backend/tests.py`
-  - DoD: test con dos usuarios que confirma que no se ven resultados ajenos.
+  - Evidencia: test `test_user_cannot_see_other_results`.
 
 ## Fase 4 — Dependencias y GitHub
 
-- [ ] **T009-18** Ejecutar `pip-audit -r requirements.txt` en un entorno aislado.
+- [x] **T009-18** Ejecutar `pip-audit -r requirements.txt` en un entorno aislado.
   - Requisito: `RF-009-09`
-  - DoD: informe con CVEs y plan de actualización.
+  - Evidencia: 49 avisos antes; 0 después de actualizar.
 
 - [ ] **T009-19** Activar Secret Scanning, Push Protection y Dependabot en GitHub.
   - Requisito: `RF-009-10`
+  - Bloqueada por: acceso autenticado a GitHub.
   - DoD: captura o estado documentado en el informe.
 
-- [ ] **T009-20** Completar el checklist de 10 puntos de exposición en GitHub.
+- [!] **T009-20** Completar el checklist de 10 puntos de exposición en GitHub.
   - Requisito: `RF-009-10`
+  - Estado: checklist documentado; Pages y visibilidad pendientes.
   - DoD: checklist firmado en `audits/security/`.
 
 - [ ] **T009-21** Verificar que logs y errores no exponen PII ni rutas internas.
@@ -108,7 +116,43 @@ Referencia: `specs/009-cybersecurity/spec.md`
 
 - [ ] **T009-22** Reejecutar el escáner de contenido e historial y comparar con la línea base.
   - Requisitos: `RF-009-05`, `RF-009-14`
+  - Estado: contenido limpio; historial pendiente de purga.
   - DoD: nuevo informe en `audits/security/` sin hallazgos CRÍTICA.
+
+## Fase 6 — Hallazgos de la auditoría completa (2026-11-10)
+
+- [!] **T009-23** Despublicar GitHub Pages o cambiar el build para que no sirva
+  `syntax_sprint/` (la BD y el código están accesibles por HTTP 200).
+  - Requisito: `RF-009-10`
+  - Evidencia: `curl -sI .../syntax_sprint/db.sqlite3` → 200, 139.264 bytes.
+  - Bloqueada por: configuración del repositorio en GitHub.
+  - DoD: la ruta devuelve 404 y se invalida la caché del sitio.
+
+- [x] **T009-24** Actualizar dependencias vulnerables: Django 5.2.17+, certifi
+  2026.10.18, idna 3.15, urllib3 2.8.0, sqlparse 0.6.0 y pylint 4.0.9 (dev).
+  - Requisito: `RF-009-09`
+  - Evidencia: `pip-audit` → 0 avisos.
+  - DoD: `pip-audit` sin avisos en producción y tests en verde.
+
+- [x] **T009-25** Corregir `ALLOWED_HOSTS` para descartar entradas vacías.
+  - Requisito: `RF-009-06`
+  - Evidencia: `_csv_env` descarta `''`; `check` OK.
+
+- [x] **T009-26** Mitigar la enumeración de usuarios en el registro con un mensaje
+  genérico y, opcionalmente, verificación por email.
+  - Requisito: `RF-009-07`
+  - Evidencia: test `test_signup_duplicate_email_is_generic`.
+
+- [!] **T009-27** Invalidar las 8 sesiones de la base de datos y forzar el reset de las
+  6 cuentas afectadas.
+  - Requisito: `RF-009-14`
+  - Estado: 8 sesiones locales borradas; producción y contraseñas pendientes.
+  - Bloqueada por: acceso a producción y comunicación a usuarios.
+  - DoD: `django_session` vacío y usuarios obligados a cambiar contraseña.
+
+- [ ] **T009-28** Añadir una política CSP y revisar cabeceras de seguridad.
+  - Requisito: `RF-009-06`
+  - DoD: `Content-Security-Policy` presente y sin errores en consola.
 
 ## Deuda técnica / Backlog
 
@@ -125,3 +169,4 @@ Referencia: `specs/009-cybersecurity/spec.md`
 | Fecha | Cambio |
 | --- | --- |
 | 2026-11-10 | Creación del procedimiento, escáner y línea base crítica |
+| 2026-11-10 | Auditoría completa: fuga activa confirmada en GitHub y GitHub Pages |

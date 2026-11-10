@@ -41,6 +41,7 @@
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body class="bg-[var(--bg-primary)] text-[var(--text-sub)] font-mono min-h-screen flex flex-col transition-colors duration-200">
+  <div class="hidden">{% csrf_token %}</div>
   
   <!-- Header -->
   <header class="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center">
@@ -61,7 +62,10 @@
       
       {% if user.is_authenticated %}
         <a href="{% url 'profile' %}" class="text-sm hover:text-[var(--text-active)] transition-colors">{{ user.username }}</a>
-        <a href="{% url 'logout' %}" class="text-sm hover:text-[var(--text-active)] transition-colors">logout</a>
+        <form method="post" action="{% url 'logout' %}" class="inline">
+          {% csrf_token %}
+          <button type="submit" class="text-sm hover:text-[var(--text-active)] transition-colors">logout</button>
+        </form>
       {% else %}
         <a href="{% url 'login' %}" class="text-sm hover:text-[var(--text-active)] transition-colors">login</a>
       {% endif %}
@@ -118,7 +122,7 @@
       <div id="prompt-display" class="text-xl md:text-2xl leading-relaxed whitespace-pre-wrap break-words font-mono"></div>
       
       <!-- Hidden Input -->
-      <textarea id="words-input" class="opacity-0 absolute pointer-events-none" spellcheck="false" autocomplete="off" value=""></textarea>
+      <textarea id="words-input" class="opacity-0 absolute pointer-events-none" spellcheck="false" autocomplete="off" aria-label="Typing input"></textarea>
     </div>
 
     <!-- Results -->
@@ -137,6 +141,7 @@
       <button id="restart-btn" class="px-6 py-2 border border-[var(--text-sub)]/30 rounded-lg hover:bg-[var(--bg-secondary)] transition-colors">
         try again
       </button>
+      <p id="save-status" class="text-sm text-[var(--text-sub)] mt-4 hidden" role="status"></p>
     </div>
 
   </main>
