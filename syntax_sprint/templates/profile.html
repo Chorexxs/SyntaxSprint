@@ -1,72 +1,16 @@
-{% load static %}
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="es" data-theme="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile - SyntaxSprint</title>
-  <link rel="icon" type="image/svg+xml" href="{% static 'icon/icon.svg' %}">
-  
-  <!-- TailwindCSS -->
-  <script src="https://cdn.tailwindcss.com/3.4.19"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            'bg-primary': 'var(--bg-primary)',
-            'bg-secondary': 'var(--bg-secondary)',
-            'text-main': 'var(--text-main)',
-            'text-sub': 'var(--text-sub)',
-            'text-active': 'var(--text-active)',
-            'caret': 'var(--caret)',
-            'success': 'var(--success)',
-            'error': 'var(--error)',
-          }
-        }
-      }
-    }
-  </script>
-  
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-</head>
-<body class="bg-[var(--bg-primary)] text-[var(--text-sub)] font-mono min-h-screen flex flex-col transition-colors duration-200">
-  
-  <!-- Header -->
-  <header class="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center">
-    <a href="{% url 'index' %}" class="text-2xl font-semibold tracking-tight">
-      <span class="text-[var(--text-active)]">Syntax</span><span class="text-[var(--caret)]">Sprint</span>
-    </a>
-    
-    <nav class="flex items-center gap-4">
-      <a href="{% url 'index' %}" class="text-sm hover:text-[var(--text-active)] transition-colors">test</a>
-      <form method="post" action="{% url 'logout' %}" class="inline">
-        {% csrf_token %}
-        <button type="submit" class="text-sm hover:text-[var(--text-active)] transition-colors">logout</button>
-      </form>
-      
-      <button id="theme-toggle" class="p-2 rounded-lg hover:bg-[var(--bg-secondary)] transition-colors" title="Toggle theme">
-        <svg id="sun-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
-        </svg>
-        <svg id="moon-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-        </svg>
-      </button>
-    </nav>
-  </header>
+{% block title %}Profile - SyntaxSprint{% endblock %}
 
-  <!-- Main Content -->
-  <main class="flex-1 px-4 pt-24 pb-8 max-w-4xl mx-auto w-full">
+{% block main_class %}flex-1 px-4 pt-24 pb-8 max-w-4xl mx-auto w-full{% endblock %}
+
+{% block content %}
     <!-- Profile Header -->
     <div class="text-center mb-12">
       <h1 class="text-4xl font-semibold text-[var(--text-active)] mb-2">{{ user.username }}</h1>
       <p class="text-[var(--text-sub)]">your stats</p>
     </div>
-    
+
     <!-- Stats -->
     <div class="grid grid-cols-2 gap-8 mb-12">
       <div class="text-center p-6 bg-[var(--bg-secondary)] rounded-lg">
@@ -78,11 +22,11 @@
         <div class="text-sm text-[var(--text-sub)]">average accuracy</div>
       </div>
     </div>
-    
+
     <!-- History -->
     <div>
       <h2 class="text-xl font-semibold text-[var(--text-active)] mb-6">history</h2>
-      
+
       {% if results %}
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
@@ -113,40 +57,4 @@
       </div>
       {% endif %}
     </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="py-6 text-center text-sm text-[var(--text-sub)]/60">
-    <a href="https://github.com/Chorexxs" target="_blank" class="hover:text-[var(--text-sub)] transition-colors">GitHub</a>
-    <span class="mx-2">·</span>
-    <a href="https://www.linkedin.com/in/oswaldo-fonseca-gonzalez/" target="_blank" class="hover:text-[var(--text-sub)] transition-colors">LinkedIn</a>
-  </footer>
-
-  <script>
-    // Theme toggle
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    
-    function updateThemeIcon(theme) {
-      const sunIcon = document.getElementById('sun-icon');
-      const moonIcon = document.getElementById('moon-icon');
-      if (theme === 'dark') {
-        sunIcon.classList.remove('hidden');
-        moonIcon.classList.add('hidden');
-      } else {
-        sunIcon.classList.add('hidden');
-        moonIcon.classList.remove('hidden');
-      }
-    }
-    updateThemeIcon(savedTheme);
-    
-    document.getElementById('theme-toggle').addEventListener('click', () => {
-      const currentTheme = document.documentElement.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-      updateThemeIcon(newTheme);
-    });
-  </script>
-</body>
-</html>
+{% endblock %}

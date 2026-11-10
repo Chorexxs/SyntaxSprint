@@ -25,7 +25,6 @@ class TypingTest {
       resultsSection: document.getElementById('results-section'),
       startBtn: document.getElementById('start-btn'),
       restartBtn: document.getElementById('restart-btn'),
-      themeToggle: document.getElementById('theme-toggle'),
       languageSelect: document.getElementById('language-select'),
       wordsInput: document.getElementById('words-input'),
       promptDisplay: document.getElementById('prompt-display'),
@@ -34,8 +33,6 @@ class TypingTest {
       liveAcc: document.getElementById('live-acc'),
       wpmResult: document.getElementById('wpm-result'),
       accResult: document.getElementById('acc-result'),
-      sunIcon: document.getElementById('sun-icon'),
-      moonIcon: document.getElementById('moon-icon'),
     };
 
     this.state = {
@@ -65,14 +62,12 @@ class TypingTest {
     this.startTest = this.startTest.bind(this);
     this.restartTest = this.restartTest.bind(this);
     this.endTest = this.endTest.bind(this);
-    this.toggleTheme = this.toggleTheme.bind(this);
     this.saveResult = this.saveResult.bind(this);
   }
 
   init() {
     this.elements.startBtn.addEventListener('click', () => this.startTest());
     this.elements.restartBtn.addEventListener('click', () => this.restartTest());
-    this.elements.themeToggle.addEventListener('click', () => this.toggleTheme());
 
     this.elements.languageSelect.addEventListener('change', (e) => {
       this.state.language = e.target.value;
@@ -109,32 +104,6 @@ class TypingTest {
 
     document.addEventListener('keydown', this.handleGlobalKeydown);
     document.addEventListener('keyup', this.handleGlobalKeyup);
-
-    this.initTheme();
-  }
-
-  initTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    this.updateThemeIcon(savedTheme);
-  }
-
-  toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-    this.updateThemeIcon(newTheme);
-  }
-
-  updateThemeIcon(theme) {
-    if (theme === 'dark') {
-      this.elements.sunIcon.classList.remove('hidden');
-      this.elements.moonIcon.classList.add('hidden');
-    } else {
-      this.elements.sunIcon.classList.add('hidden');
-      this.elements.moonIcon.classList.remove('hidden');
-    }
   }
 
   async startTest() {
