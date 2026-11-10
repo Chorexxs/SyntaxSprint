@@ -40,6 +40,8 @@ services:
         value: https://syntaxsprint.onrender.com
       - key: TRUST_PROXY_HEADERS
         value: "True"
+      - key: RUN_MIGRATIONS_ON_START
+        value: "False"
       - key: PYTHON_VERSION
         value: "3.12.1"
       - key: DATABASE_URL

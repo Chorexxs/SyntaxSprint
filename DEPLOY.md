@@ -34,6 +34,7 @@ Render Dashboard → servicio `syntaxsprint` → **Environment**.
 | `DATABASE_URL` | Cadena de conexión de Render Postgres | Recomendada |
 | `PYTHON_VERSION` | `3.12.1` | Opcional |
 | `DB_PATH` | `/var/data/db.sqlite3` | Solo SQLite con disco |
+| `RUN_MIGRATIONS_ON_START` | `False` si el Start Command ejecuta `migrate`; `True` como fallback | Opcional |
 
 Reglas:
 
@@ -138,7 +139,9 @@ El proyecto usa WhiteNoise:
 
 - `WhiteNoiseMiddleware` sirve los archivos de `staticfiles/`.
 - `collectstatic` se ejecuta en el build.
-- `STORAGES["staticfiles"]` usa `CompressedManifestStaticFilesStorage`.
+- `STORAGES["staticfiles"]` usa `CompressedStaticFilesStorage`.
+- `WHITENOISE_USE_FINDERS=True` sirve desde `STATICFILES_DIRS` aunque el build
+  no ejecute `collectstatic`.
 
 Verificación:
 
@@ -165,6 +168,7 @@ Si devuelve 404:
 - [ ] `DATABASE_URL` (Postgres) o `DB_PATH` + disco.
 - [ ] `collectstatic` en el build.
 - [ ] Migraciones aplicadas.
+- [ ] `RUN_MIGRATIONS_ON_START=False` si el Start Command ya ejecuta `migrate`.
 - [ ] Sesiones borradas.
 - [ ] Contraseñas reseteadas.
 - [ ] `/`, `/login`, `/static/css/styles.css` y `/admin/` responden.
@@ -175,6 +179,7 @@ Si devuelve 404:
 | Síntoma | Causa probable | Solución |
 | --- | --- | --- |
 | `DisallowedHost` | `ALLOWED_HOSTS` con esquema o vacío | `syntaxsprint.onrender.com` |
+| `ModuleNotFoundError: No module named 'backend'` | Start Command antiguo sin `--chdir` | Usar `gunicorn --chdir syntax_sprint ...` o el fallback de `wsgi.py` |
 | `CSRF verification failed` | Origen no confiable | `CSRF_TRUSTED_ORIGINS=https://...` |
 | Bucle de redirección HTTPS | Proxy no reconocido | `TRUST_PROXY_HEADERS=True` |
 | CSS/JS 404 | Sin `collectstatic` o sin WhiteNoise | Revisar build y middleware |
