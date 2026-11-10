@@ -73,21 +73,29 @@ class FileMetric:
     js_findings: list[dict] = field(default_factory=list)
 
 
+IGNORED_PARTS = {
+    ".git",
+    "venv",
+    "__pycache__",
+    ".agents",
+    "staticfiles",
+    "node_modules",
+}
+
+
 def iter_python_files(base: Path) -> list[Path]:
-    """Lista archivos .py omitiendo entornos y bytecode."""
+    """Lista archivos .py omitiendo entornos, bytecode y estáticos generados."""
     return sorted(
         path for path in base.rglob("*.py")
-        if not any(part in {".git", "venv", "__pycache__", ".agents"}
-                   for part in path.parts)
+        if not any(part in IGNORED_PARTS for part in path.parts)
     )
 
 
 def iter_text_files(base: Path, suffix: str) -> list[Path]:
-    """Lista archivos de texto por extensión, omitiendo entornos."""
+    """Lista archivos de texto por extensión, omitiendo entornos y generados."""
     return sorted(
         path for path in base.rglob(f"*{suffix}")
-        if not any(part in {".git", "venv", "__pycache__", ".agents"}
-                   for part in path.parts)
+        if not any(part in IGNORED_PARTS for part in path.parts)
     )
 
 
@@ -233,8 +241,16 @@ def render(metrics: list[FileMetric]) -> None:
         if signals:
             print(f"  {metric.path}: " + ", ".join(signals))
 
-    untyped = [item for item in metrics for fn in item.functions if not fn.typed]
-    print(f"\nFunciones sin anotaciones de tipo: {len(untyped)}")
+    untyped = [
+        (item.path, function)
+        for item in metrics
+        if Path(item.path).name != "tests.py"
+        for function in item.functions
+        if not function.typed
+    ]
+    print(f"\nFunciones sin anotaciones de tipo (sin tests): {len(untyped)}")
+    for path, function in untyped:
+        print(f"  {path}:{function.line} {function.name}")
 
 
 def main() -> int:
