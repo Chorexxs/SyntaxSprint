@@ -25,38 +25,51 @@ Referencia: `specs/001-foundation/spec.md`
   - Requisito: `RF-001-03`
   - Archivos: `settings.py`
   - DoD: `manage.py check` OK y no existen referencias a plantillas externas.
+  - Estado: pendiente. `settings.py:82` todavía incluye
+    `os.path.join(BASE_DIR.parent, "templates")`.
 
-- [ ] **T001-05** Alinear la versión de Django entre `requirements.txt`, `README.md` y la migración.
+- [x] **T001-05** Alinear la versión de Django entre `requirements.txt`, `README.md` y la migración.
   - Requisito: `RF-001-08`
   - Archivos: `requirements.txt`, `README.md`
   - DoD: una sola versión documentada y reproducible en entorno limpio.
+  - Evidencia: `requirements.txt` y `README.md:24` declaran Django 5.2.17.
 
-- [ ] **T001-06** Crear `.env.example` con las tres variables y sin valores reales.
+- [x] **T001-06** Crear `.env.example` con las tres variables y sin valores reales.
   - Requisito: `RF-001-01`, `RNF-001-03`
   - Archivos: `.env.example`
   - DoD: un desarrollador nuevo puede configurar el proyecto siguiéndolo.
+  - Evidencia: `.env.example` versionado con `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`,
+    `CSRF_TRUSTED_ORIGINS`, `TRUST_PROXY_HEADERS`, `DATABASE_URL` y `DB_PATH` sin
+    valores reales.
 
-- [ ] **T001-07** Parsear `ALLOWED_HOSTS` ignorando cadenas vacías.
+- [x] **T001-07** Parsear `ALLOWED_HOSTS` ignorando cadenas vacías.
   - Requisito: `RF-001-01`
   - Archivos: `settings.py`
   - DoD: `ALLOWED_HOSTS=""` produce `[]` y no un host vacío.
+  - Evidencia: `_csv_env` (`settings.py:23-26`) descarta entradas vacías; cubierto
+    además por `T009-25`.
 
 ## Fase 3 — Admin y limpieza de código
 
-- [ ] **T001-08** Registrar `TypingTestResult` en el admin con listado y filtros.
+- [x] **T001-08** Registrar `TypingTestResult` en el admin con listado y filtros.
   - Requisito: `RF-001-06`
   - Archivos: `backend/admin.py`
   - DoD: `/admin/` muestra el modelo y filtra por fecha y usuario.
+  - Evidencia: `TypingTestResultAdmin` con `list_display`, `list_filter`,
+    `search_fields`, `ordering` y `date_hierarchy`.
 
-- [ ] **T001-09** Eliminar imports duplicados y sin usar en `views.py` (`HttpResponse`, `requests`, bloque repetido).
+- [x] **T001-09** Eliminar imports duplicados y sin usar en `views.py` (`HttpResponse`, `requests`, bloque repetido).
   - Requisito: `RNF-001-02`
   - Archivos: `backend/views.py`
   - DoD: `pylint` no reporta `unused-import` ni `duplicate-code` en ese archivo.
+  - Evidencia: no hay duplicados; `pylint` con `--enable=unused-import,ungrouped-imports`
+    no reporta avisos en `backend/`.
 
 ## Fase 4 — Verificación
 
-- [ ] **T001-10** Ejecutar `python manage.py check` y adjuntar salida en la PR.
+- [x] **T001-10** Ejecutar `python manage.py check` y adjuntar salida en la PR.
   - Requisito: `RNF-001-01`
+  - Evidencia: `manage.py check` → `System check identified no issues (0 silenced)`.
 
 ## Deuda técnica / Backlog
 

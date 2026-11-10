@@ -45,18 +45,24 @@ Referencia: `specs/006-ui-and-theming/spec.md`
   - Requisitos: `RF-006-07`, `RNF-006-03`
   - Archivos: `static/css/styles.css`
   - DoD: Tab muestra foco en logo, toggle, inputs y botones.
+  - Estado: pendiente. `styles.css:45-48` mantiene `*:focus { outline: none; }` y las
+    plantillas usan `focus:outline-none` de Tailwind.
 
 - [ ] **T006-09** Añadir `aria-label` al toggle y `aria-pressed` dinámico.
   - Requisito: `RF-006-08`
   - Archivos: `base.html`, `theme.js`
+  - Estado: pendiente. `#theme-toggle` (`index.html:54`) solo tiene `title`.
 
 - [ ] **T006-10** Añadir labels accesibles a los inputs de login y signup.
   - Requisito: `RF-006-07`
   - Archivos: `templates/login.html`, `templates/signup.html`
+  - Estado: pendiente. Los 6 `<input>` no tienen `<label>` asociado ni `aria-label`.
 
 - [ ] **T006-11** Añadir `role="alert"` a los mensajes y `scope="col"` a la tabla.
   - Requisito: `RF-006-07`
   - Archivos: `templates/*.html`
+  - Estado: parcial. `role="alert"` ya está en login y signup; falta `scope="col"` en
+    los `<th>` de `profile.html:91-93`.
 
 - [ ] **T006-12** Revisar contraste de `--text-sub` en ambos temas y ajustar si < 4.5:1.
   - Requisito: `RNF-000-05`

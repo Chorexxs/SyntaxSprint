@@ -20,7 +20,7 @@ historial del usuario y calcula promedios.
 | JavaScript | Vanilla ES6+ (clase `TypingTest`); jQuery 3.x permitido |
 | Servidor | Gunicorn (`syntax_sprint.wsgi`) |
 | Configuración | `python-decouple` + `.env` |
-| Pruebas | `django.test.TestCase` (suite pendiente) |
+| Pruebas | `django.test.TestCase` (26 tests, suite en verde) |
 | Lint | `pylint`, `isort` |
 | App principal | `backend` |
 
@@ -90,7 +90,8 @@ gunicorn syntax_sprint.wsgi:application --bind 0.0.0.0:8000
 | GET/POST | `/get_python_function` | `get_python_function` | No | `{name, code}` |
 | GET/POST | `/signup` | `signup` | No | HTML / 302 |
 | GET/POST | `/login` | `login` | No | HTML / 302 |
-| GET | `/logout` | `logout` | Sí | 302 → `/` |
+| GET | `/logout` | `logout` | Sí | 405 (solo POST) |
+| POST | `/logout` | `logout` | Sí | 302 → `/` |
 | GET | `/profile` | `profile` | Sí | `profile.html` |
 | POST | `/save_typing_test_result` | `save_typing_test_result` | Sí | `{message}` |
 | — | `/admin/` | Django Admin | Staff | HTML |
@@ -281,24 +282,27 @@ Al terminar:
 
 ## 8. Deuda técnica conocida (priorizada)
 
+Estado verificado el 2026-11-10: `manage.py check` 0 issues, `manage.py test` 26 tests
+OK, `isort --check-only` sin avisos. La antigua deuda "suite de pruebas vacía" ya está
+cerrada.
+
 | Prioridad | Deuda | Feature | Tarea |
 | --- | --- | --- | --- |
-| 1 | Suite de pruebas vacía | 007 | T007-01…T007-04 |
-| 2 | CSRF no inicializado en la portada | 004/007 | T004-08, T007-06 |
-| 3 | `login_required` redirige a `/accounts/login/` (404) | 002/005 | T002-07, T005-09 |
-| 4 | Sin validación de rango de WPM/accuracy | 005 | T005-06 |
-| 5 | JSON inválido produce 500 | 003/005 | T003-06, T005-05 |
-| 6 | `TypingTestResult` no registrado en admin | 001 | T001-08 |
-| 7 | Imports duplicados y sin usar en `views.py` | 001 | T001-09 |
-| 8 | Header/tema duplicado en 4 plantillas | 006 | T006-05, T006-06 |
-| 9 | `outline: none` global (accesibilidad) | 006 | T006-08 |
-| 10 | Sin settings de producción ni CI | 007 | T007-08, T007-11 |
-| 11 | README y versión de Django desalineados | 001/007 | T001-05, T007-14 |
-| 12 | `AGENTS.md` está en `.gitignore` | 007 | T007-16 |
-| 13 | **`db.sqlite3` versionada con 6 usuarios y 31 resultados (PII)** | 009 | T009-05…T009-08 |
-| 14 | **`SECRET_KEY` y 2 contraseñas hardcodeadas en el historial** | 009 | T009-06, T009-07 |
+| 1 | `views.py` (183 líneas) mezcla auth, validación y perfil | 008 | T008-11 |
+| 2 | Sin CI: los 26 tests no protegen `main` | 007/008 | T007-11, T008-16 |
+| 3 | Header/tema duplicado en 4 plantillas; no existe `base.html` | 006 | T006-05, T006-06, T006-07 |
+| 4 | `outline: none` global y controles sin nombre accesible | 006 | T006-08, T006-09, T006-10, T006-11 |
+| 5 | Historial del perfil sin paginación | 005 | T005-08 |
+| 6 | Faltan tests de promedios, cascada, estado vacío y `ProfileTests` | 005/007 | T005-12, T007-04 |
+| 7 | Cobertura sin medir; `coverage` no está en `requirements.txt` | 007 | T007-05, T007-12 |
+| 8 | 53 líneas > 100 en `snippets.py`, 7 en `script.js` y 7 funciones sin tipar | 008 | T008-09, T008-10 |
+| 9 | Pérdida de contadores al pegar y reinicio sin limpiar intervalo | 004 | T004-10, T004-13 |
+| 10 | Mensajes de registro divergentes de la spec (genéricos a propósito) | 002 | RF-002-02, RF-002-03 |
+| 11 | `TEMPLATES[0]["DIRS"]` conserva la ruta heredada del padre | 001 | T001-04 |
+| 12 | **`db.sqlite3` versionada con 6 usuarios y 31 resultados (PII)** | 009 | T009-05…T009-08 |
+| 13 | **`SECRET_KEY` y 2 contraseñas hardcodeadas en el historial** | 009 | T009-06, T009-07 |
 
-> Los puntos 13 y 14 son **CRÍTICOS**. Están documentados en
+> Los puntos 12 y 13 son **CRÍTICOS**. Están documentados en
 > `audits/security/2026-11-10-linea-base.md` y requieren autorización para la purga del
 > historial.
 

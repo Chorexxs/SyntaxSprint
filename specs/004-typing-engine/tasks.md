@@ -30,34 +30,46 @@ Referencia: `specs/004-typing-engine/spec.md`
 
 ## Fase 2 — Correcciones
 
-- [ ] **T004-08** Añadir `{% csrf_token %}` a `index.html` para inicializar la cookie CSRF.
+- [x] **T004-08** Añadir `{% csrf_token %}` a `index.html` para inicializar la cookie CSRF.
   - Requisito: `RNF-004-05`
   - Archivos: `templates/index.html`
   - DoD: en ventana privada, el POST de inicio responde 200 y no 403.
+  - Evidencia: `index.html:44` y `index.html:66`; test `test_index_sets_csrf_cookie`.
 
-- [ ] **T004-09** Manejar la respuesta de `saveResult`: distinguir 200, 302 (anónimo), 403 y 500, y mostrar aviso.
+- [x] **T004-09** Manejar la respuesta de `saveResult`: distinguir 200, 302 (anónimo), 403 y 500, y mostrar aviso.
   - Requisito: `RF-004-12`
   - Archivos: `script.js`, `templates/index.html`
   - DoD: usuario anónimo ve "inicia sesión para guardar tu resultado".
+  - Evidencia: `saveResult` usa `redirect: 'manual'`, detecta `opaqueredirect`/302,
+    trata `!response.ok` y muestra aviso en `#save-status`.
 
 - [ ] **T004-10** Corregir la desincronización de `totalChars` tras backspace y pegado.
   - Requisitos: `RF-004-07`, `RF-004-08`
   - Archivos: `script.js`
   - DoD: escribir 3, borrar 1 y escribir 2 deja `totalChars = 4`.
+  - Estado: parcial. Backspace ajusta `correctChars`, `incorrectChars` y `totalChars`;
+    `handlePaste` no actualiza esos contadores (solo el valor del input), así que las
+    estadísticas quedan desfasadas hasta la siguiente pulsación.
 
 - [ ] **T004-11** Extraer `computeWpm()` y `computeAccuracy()` como funciones puras y reutilizarlas.
   - Requisitos: `RF-004-04`, `RF-004-05`
   - Archivos: `script.js`
   - DoD: mismo resultado en vivo y al final; sin duplicar fórmulas.
+  - Estado: pendiente. La fórmula de WPM está duplicada en `updateLiveStats` (l. 451)
+    y `endTest` (l. 486); la de precisión en l. 459 y l. 491.
 
-- [ ] **T004-12** Eliminar el atributo `value=""` del `<textarea>` y añadir `aria-label`.
+- [x] **T004-12** Eliminar el atributo `value=""` del `<textarea>` y añadir `aria-label`.
   - Requisito: `RNF-004-04`
   - Archivos: `templates/index.html`
+  - Evidencia: `index.html:125` sin `value=""` y con `aria-label="Typing input"`.
 
 - [ ] **T004-13** Garantizar limpieza de `timerInterval` en fin, reinicio y `blur`.
   - Requisito: `RNF-004-02`
   - Archivos: `script.js`
   - DoD: tras 3 reinicios solo hay un intervalo activo.
+  - Estado: parcial. `endTest` y `blur` limpian el intervalo; `restartTest` llama a
+    `startTest` sin `clearInterval` previo, por lo que reiniciar durante un test
+    activo deja el intervalo anterior vivo.
 
 ## Fase 3 — Verificación
 

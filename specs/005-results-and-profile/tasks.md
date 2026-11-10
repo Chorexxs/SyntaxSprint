@@ -24,44 +24,53 @@ Referencia: `specs/005-results-and-profile/spec.md`
 
 ## Fase 2 — Robustez
 
-- [ ] **T005-05** Envolver `json.loads` en `try/except` y validar tipos numéricos.
+- [x] **T005-05** Envolver `json.loads` en `try/except` y validar tipos numéricos.
   - Requisito: `RF-005-03`
   - Archivos: `backend/views.py`
   - DoD: cuerpo inválido o claves ausentes devuelven 400 sin traza.
+  - Evidencia: tests `test_save_invalid_json` y `test_save_missing_fields`.
 
-- [ ] **T005-06** Validar rangos: `0 ≤ wpm ≤ 400`, `0 ≤ accuracy ≤ 100`, valores finitos.
+- [x] **T005-06** Validar rangos: `0 ≤ wpm ≤ 400`, `0 ≤ accuracy ≤ 100`, valores finitos.
   - Requisito: `RF-005-09`
   - Archivos: `backend/views.py`
   - DoD: `-1`, `101`, `NaN` e `Infinity` devuelven 400.
+  - Evidencia: `math.isfinite` + rangos en `views.py:300-303`; test
+    `test_save_out_of_range`.
 
-- [ ] **T005-07** Sustituir las dos agregaciones por una sola con `Avg` doble.
+- [x] **T005-07** Sustituir las dos agregaciones por una sola con `Avg` doble.
   - Requisito: `RF-005-06`
   - Archivos: `backend/views.py`
   - DoD: una sola consulta SQL en el perfil.
+  - Evidencia: `results.aggregate(avg_wpm=Avg("wpm"), avg_accuracy=Avg("accuracy"))`.
 
 - [ ] **T005-08** Paginar el historial (20 por página) y eliminar `on_profile_page` si no se usa.
   - Requisito: `RF-005-10`
   - Archivos: `backend/views.py`, `templates/profile.html`
   - DoD: con 45 resultados hay 3 páginas navegables.
 
-- [ ] **T005-09** Añadir `login_url="login"` al guardado y al perfil.
+- [x] **T005-09** Añadir `login_url="login"` al guardado y al perfil.
   - Requisito: `RF-005-08`
   - Archivos: `backend/views.py`
   - DoD: visitante termina en `/login`.
+  - Evidencia: tests `test_profile_requires_login` y `test_save_requires_login`.
 
-- [ ] **T005-10** Hacer la tabla responsive (scroll horizontal accesible o tarjetas en móvil).
+- [x] **T005-10** Hacer la tabla responsive (scroll horizontal accesible o tarjetas en móvil).
   - Requisito: `RNF-005-04`
   - Archivos: `templates/profile.html`, `static/css/styles.css`
+  - Evidencia: `profile.html:87` envuelve la tabla en `overflow-x-auto`.
 
 ## Fase 3 — Verificación
 
-- [ ] **T005-11** Tests de guardado válido, 400, 405, anónimo y aislamiento entre usuarios.
+- [x] **T005-11** Tests de guardado válido, 400, 405, anónimo y aislamiento entre usuarios.
   - Requisitos: `CA-005-01`…`CA-005-07`
   - Archivos: `backend/tests.py`
+  - Evidencia: `ResultTests` (6 casos) + `AuthTests.test_save_requires_login`.
 
 - [ ] **T005-12** Test de promedios y de borrado en cascada.
   - Requisitos: `CA-005-05`, `RF-005-12`
   - Archivos: `backend/tests.py`
+  - Estado: pendiente. No hay test que compruebe `avg_wpm`/`avg_accuracy` ni el
+    borrado en cascada al eliminar un usuario.
 
 ## Deuda técnica / Backlog
 

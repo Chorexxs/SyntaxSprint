@@ -29,49 +29,62 @@ Referencia: `specs/008-code-audit/spec.md`
 
 ## Fase 2 — Hallazgos prioritarios
 
-- [ ] **T008-06** Refactorizar `get_python_function`: extraer catálogo y helper
+- [x] **T008-06** Refactorizar `get_python_function`: extraer catálogo y helper
   (coordina con `T003-05`).
   - Requisito: `RF-008-11`
   - Archivos: `backend/views.py`, `backend/snippets.py`
   - DoD: función ≤ 40 líneas y vista delgada.
+  - Evidencia: `get_python_function` ocupa 16 líneas; el catálogo vive en
+    `backend/snippets.py` y la vista solo valida el JSON y delega en `pick_snippet`.
 
-- [ ] **T008-07** Eliminar imports duplicados y sin usar en `views.py` (coordina con `T001-09`).
+- [x] **T008-07** Eliminar imports duplicados y sin usar en `views.py` (coordina con `T001-09`).
   - Requisito: `RF-008-11`
   - Archivos: `backend/views.py`
   - DoD: `pylint` sin `unused-import` ni `ungrouped-imports` en ese archivo.
+  - Evidencia: `pylint --enable=unused-import,ungrouped-imports` no reporta avisos.
 
-- [ ] **T008-08** Ejecutar `isort` en los 5 archivos que fallan y añadir el check a CI.
+- [x] **T008-08** Ejecutar `isort` en los 5 archivos que fallan y añadir el check a CI.
   - Requisito: `RF-008-11`
   - Archivos: `backend/models.py`, `backend/urls.py`, `backend/views.py`,
     `syntax_sprint/settings.py`, `syntax_sprint/urls.py`
   - DoD: `isort --check-only syntax_sprint/` devuelve 0.
+  - Evidencia: `isort --check-only syntax_sprint/` sin salida. El check en CI queda
+    pendiente dentro de `T007-11`.
 
 - [ ] **T008-09** Reducir las 61 líneas > 100 caracteres de `views.py` y las 7 de `script.js`.
   - Requisito: `RF-008-11`
   - DoD: `pylint` sin `line-too-long` en esos archivos.
+  - Estado: parcial. `views.py` ya tiene 0 líneas > 100 (el catálogo se movió a
+    `snippets.py`, que concentra 53). `script.js` conserva 7.
 
 - [ ] **T008-10** Añadir anotaciones de tipo a las 9 funciones sin tipar.
   - Requisito: `RF-008-11`
   - Archivos: `backend/views.py`, `backend/models.py`
   - DoD: `code_metrics.py` reporta 0 funciones sin tipar.
+  - Estado: pendiente. Siguen sin anotaciones `get_python_function`, `index`,
+    `signup`, `login`, `logout`, `save_typing_test_result` y `profile` (7 funciones).
 
 - [ ] **T008-11** Separar responsabilidades de `views.py`: catálogo → `snippets.py`,
   validación → helper, perfil → consulta única y paginada.
   - Requisitos: `RF-008-02`, `RF-008-12`
   - Coordina con: `T003-05`, `T005-07`, `T005-08`
   - DoD: `views.py` ≤ 120 líneas y sin lógica de negocio pesada.
+  - Estado: pendiente. `views.py` tiene 326 líneas y el catálogo ocupa las líneas 43-180.
 
-- [ ] **T008-12** Reemplazar `innerHTML` en `script.js:201` por creación segura de nodos
+- [x] **T008-12** Reemplazar `innerHTML` en `script.js:201` por creación segura de nodos
   o `textContent`.
   - Requisito: `RF-008-11`
   - Archivos: `static/js/script.js`
   - DoD: `code_metrics.py` reporta 0 riesgos JS.
+  - Evidencia: `renderCode` usa `document.createElement` + `replaceChildren`
+    (`script.js:196-210`); no quedan asignaciones a `innerHTML`.
 
 ## Fase 3 — Testabilidad y escalabilidad
 
 - [ ] **T008-13** Implementar la suite de pruebas (coordina con `T007-01`…`T007-04`).
   - Requisito: `RF-008-12`
   - DoD: cobertura ≥ 80 % en `backend/`.
+  - Estado: parcial. La suite existe y pasa (26 tests), pero no se ha medido cobertura.
 
 - [ ] **T008-14** Medir consultas del perfil y dejarlas en ≤ 5 por request.
   - Requisito: `RF-008-12`
@@ -106,3 +119,5 @@ Referencia: `specs/008-code-audit/spec.md`
 | Fecha | Cambio |
 | --- | --- |
 | 2026-11-10 | Creación del procedimiento, herramienta y línea base |
+| 2026-11-10 | Verificación: imports limpios (`T008-07`), `isort` sin avisos (`T008-08`), `innerHTML` eliminado (`T008-12`) |
+| 2026-11-10 | Catálogo extraído a `snippets.py`; `get_python_function` de 151 a 16 líneas (`T008-06`) |

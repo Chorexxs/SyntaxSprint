@@ -55,10 +55,13 @@ Referencia: `specs/002-authentication/spec.md`
 - [x] **T002-11** Escribir tests de registro, login, logout y acceso anónimo.
   - Archivos: `backend/tests.py`
   - DoD: 9 casos del plan en verde.
+  - Evidencia: `AuthTests` con 12 casos (incluye rate limit y contraseña débil);
+    `manage.py test` → 26 tests OK.
 
 - [x] **T002-12** Añadir `role="alert"` a los bloques de mensajes.
   - Requisito: `RNF-002-03`
   - Archivos: `templates/login.html`, `templates/signup.html`
+  - Evidencia: `role="alert"` en `login.html:83` y `signup.html:103`.
 
 ## Deuda técnica / Backlog
 
@@ -72,3 +75,10 @@ Referencia: `specs/002-authentication/spec.md`
 | Fecha | Cambio |
 | --- | --- |
 | 2026-11-10 | Auditoría del flujo actual y definición de endurecimiento |
+| 2026-11-10 | Verificación contra código: 12 tests de `AuthTests` en verde |
+
+> Divergencia código ↔ spec: `RF-002-02` y `RF-002-03` piden los literales
+> "Email already exists" / "Username already exists". La implementación usa un mensaje
+> genérico ("No se pudo crear la cuenta…") para evitar enumeración de usuarios, tal como
+> decidió `T009-26`. Se mantiene el comportamiento seguro; el requisito queda 🟡 hasta
+> que la spec se actualice.
