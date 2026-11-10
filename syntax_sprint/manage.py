@@ -4,7 +4,7 @@ import os
 import sys
 
 
-def main():
+def main() -> None:
     """Run administrative tasks."""
     # The project lives inside the nested ``syntax_sprint`` directory.
     # Override the value from Render so ``manage.py`` always resolves the
