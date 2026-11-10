@@ -170,6 +170,23 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-009-13 | T009-01 | CA-009-06 | ✅ |
 | RF-009-14 | T009-06, T009-07 | CA-009-06 | 🟡 |
 
+## 010 — Dependencias
+
+| Requisito | Tarea | Verificación | Estado |
+| --- | --- | --- | --- |
+| RF-010-01 | T010-01 | procedimiento bajo demanda | ✅ |
+| RF-010-02 | T010-02 | CA-010-01 | ✅ |
+| RF-010-03 | T010-10 | comparar con última versión | ✅ |
+| RF-010-04 | T010-09, T010-10 | `pip-audit` | ✅ |
+| RF-010-05 | T010-01 | clasificación por tipo | ✅ |
+| RF-010-06 | T010-05, T010-06 | CA-010-02 | ✅ |
+| RF-010-07 | T010-01 | CA-010-04 | ✅ |
+| RF-010-08 | T010-01 | CA-010-02 | ✅ |
+| RF-010-09 | T010-01 | CA-010-03 | ✅ |
+| RF-010-10 | T010-04 | CA-010-05 | ✅ |
+| RF-010-11 | T010-01 | CA-010-06 | ✅ |
+| RF-010-12 | T010-05, T010-06 | requirements exacto | ✅ |
+
 ## Notas de verificación
 
 | Comprobación | Comando | Resultado |
@@ -177,8 +194,10 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | Sistema | `manage.py check` | 0 issues |
 | Pruebas | `manage.py test` | 26 tests OK (18,4 s) |
 | Imports | `isort --check-only syntax_sprint/` | Sin avisos |
-| Lint | `pylint backend` | 8,01/10 (0 `line-too-long` en `views.py`; 53 en `snippets.py`) |
+| Lint | `pylint backend` | 5,29/10 (incluye migraciones; informativo) |
 | Cobertura | `coverage report` | No medido: `coverage` no está en el `venv` |
+| Dependencias | `specs/tools/check_dependencies.py --strict` | OK (0 sin uso, runtime coherente) |
+| Vulnerabilidades | `pip-audit -r requirements.txt` | 0 avisos |
 | BD versionada | `git ls-files \| grep db.sqlite3` | Sin resultados |
 | AGENTS versionado | `git ls-files AGENTS.md` | Rastreado |
 
@@ -215,7 +234,8 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | 007 | 11 | 9 | 2 | 0 |
 | 008 | 12 | 10 | 2 | 0 |
 | 009 | 14 | 11 | 3 | 0 |
-| **Total** | **113** | **90** | **18** | **5** |
+| 010 | 12 | 12 | 0 | 0 |
+| **Total** | **125** | **102** | **18** | **5** |
 
 > La matriz se actualiza al cerrar cada tarea. Un requisito no puede pasar a ✅ sin su
 > verificación ejecutada.

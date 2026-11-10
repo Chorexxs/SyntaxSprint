@@ -4,6 +4,7 @@ Histórico de auditorías bajo demanda definidas en:
 
 - `specs/008-code-audit/` — calidad, arquitectura y escalabilidad.
 - `specs/009-cybersecurity/` — seguridad, secretos y filtraciones.
+- `specs/010-dependencies/` — inventario y actualización de dependencias.
 
 ## Estructura
 
@@ -11,6 +12,8 @@ Histórico de auditorías bajo demanda definidas en:
 audits/
 ├── code/
 │   └── AAAA-MM-DD-alcance.md
+├── dependencies/
+│   └── AAAA-MM-DD-actualizacion.md
 └── security/
     └── AAAA-MM-DD-alcance.md
 ```
@@ -31,6 +34,7 @@ audits/
 | 2026-11-10 | Código | `code/2026-11-10-linea-base.md` | 3.8/10 (F) |
 | 2026-11-10 | Seguridad | `security/2026-11-10-linea-base.md` | CRÍTICO |
 | 2026-11-10 | Seguridad | `security/2026-11-10-auditoria-completa.md` | Contenido — producción verificada |
+| 2026-11-10 | Dependencias | `dependencies/2026-11-10-actualizacion.md` | 0 vulnerabilidades; parches aplicados |
 
 > Informe interno; no exponer fuera del repositorio. El historial ya está purgado, el
 > repositorio es privado y Pages devuelve 404. La rotación de producción sigue pendiente.

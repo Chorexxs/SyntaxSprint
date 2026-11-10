@@ -81,10 +81,10 @@ Referencia: `specs/008-code-audit/spec.md`
 
 ## Fase 3 — Testabilidad y escalabilidad
 
-- [ ] **T008-13** Implementar la suite de pruebas (coordina con `T007-01`…`T007-04`).
+- [x] **T008-13** Implementar la suite de pruebas (coordina con `T007-01`…`T007-04`).
   - Requisito: `RF-008-12`
   - DoD: cobertura ≥ 80 % en `backend/`.
-  - Estado: parcial. La suite existe y pasa (26 tests), pero no se ha medido cobertura.
+  - Evidencia: 26 tests y 98 % de cobertura (`views.py` 96 %, `models.py` 89 %).
 
 - [ ] **T008-14** Medir consultas del perfil y dejarlas en ≤ 5 por request.
   - Requisito: `RF-008-12`

@@ -31,6 +31,8 @@ SyntaxSprint/
 ├── AGENTS.md
 ├── README.md
 ├── requirements.txt
+├── requirements-dev.txt
+├── .python-version
 ├── specs/                       # Spec-Driven Development
 │   ├── README.md
 │   ├── constitution.md
@@ -57,6 +59,12 @@ cd syntax_sprint
 
 # Servidor de desarrollo
 python manage.py runserver
+
+# Dependencias de desarrollo (incluye producción)
+pip install -r ../requirements-dev.txt
+
+# Verificación de dependencias (sin red)
+python ../specs/tools/check_dependencies.py --strict
 
 # Migraciones
 python manage.py makemigrations
@@ -293,15 +301,14 @@ cerrada.
 | 3 | `outline: none` global y controles sin nombre accesible | 006 | T006-08, T006-09, T006-10, T006-11 |
 | 4 | Historial del perfil sin paginación | 005 | T005-08 |
 | 5 | Faltan tests de promedios, cascada, estado vacío y `ProfileTests` | 005/007 | T005-12, T007-04 |
-| 6 | Cobertura sin medir; `coverage` no está en `requirements.txt` | 007 | T007-05, T007-12 |
-| 7 | 53 líneas > 100 en `snippets.py`, 7 en `script.js` y 7 funciones sin tipar | 008 | T008-09, T008-10 |
-| 8 | Pérdida de contadores al pegar y reinicio sin limpiar intervalo | 004 | T004-10, T004-13 |
-| 9 | Mensajes de registro divergentes de la spec (genéricos a propósito) | 002 | RF-002-02, RF-002-03 |
-| 10 | `TEMPLATES[0]["DIRS"]` conserva la ruta heredada del padre | 001 | T001-04 |
-| 11 | **`db.sqlite3` versionada con 6 usuarios y 31 resultados (PII)** | 009 | T009-05…T009-08 |
-| 12 | **`SECRET_KEY` y 2 contraseñas hardcodeadas en el historial** | 009 | T009-06, T009-07 |
+| 6 | 53 líneas > 100 en `snippets.py`, 7 en `script.js` y 7 funciones sin tipar | 008 | T008-09, T008-10 |
+| 7 | Pérdida de contadores al pegar y reinicio sin limpiar intervalo | 004 | T004-10, T004-13 |
+| 8 | Mensajes de registro divergentes de la spec (genéricos a propósito) | 002 | RF-002-02, RF-002-03 |
+| 9 | `TEMPLATES[0]["DIRS"]` conserva la ruta heredada del padre | 001 | T001-04 |
+| 10 | **`db.sqlite3` versionada con 6 usuarios y 31 resultados (PII)** | 009 | T009-05…T009-08 |
+| 11 | **`SECRET_KEY` y 2 contraseñas hardcodeadas en el historial** | 009 | T009-06, T009-07 |
 
-> Los puntos 11 y 12 son **CRÍTICOS**. Están documentados en
+> Los puntos 10 y 11 son **CRÍTICOS**. Están documentados en
 > `audits/security/2026-11-10-linea-base.md` y requieren autorización para la purga del
 > historial.
 
@@ -321,10 +328,13 @@ Las auditorías se ejecutan **solo cuando el usuario lo pide**. No son automáti
 | --- | --- | --- |
 | "audita el código", "revisa la arquitectura", "¿esto es espagueti?" | `specs/008-code-audit/spec.md` | `specs/tools/code_metrics.py` |
 | "audita la seguridad", "revisa filtraciones", "¿hay API keys?" | `specs/009-cybersecurity/spec.md` | `specs/tools/scan_secrets.py` |
+| "revisa las dependencias", "actualiza las dependencias" | `specs/010-dependencies/spec.md` | `pip-audit`, `pip list --outdated` |
 
 Reglas obligatorias:
 
-1. **Solo lectura**: no se corrige código durante la auditoría; los arreglos van en tareas.
+1. **Solo lectura** en auditorías (008/009): no se corrige código durante la auditoría;
+   los arreglos van en tareas. La actualización de dependencias (010) es la excepción:
+   modifica `requirements.txt` en rama y commit propios, nunca junto a una funcionalidad.
 2. **Evidencia**: cada hallazgo requiere `archivo:línea` o comando reproducible.
 3. **Nunca imprimir secretos**: ni en consola, ni en el chat, ni en el informe. Usar
    `<redacted>`.
@@ -336,6 +346,8 @@ Reglas obligatorias:
 python specs/tools/code_metrics.py
 python specs/tools/scan_secrets.py
 python specs/tools/scan_secrets.py --history
+python specs/tools/check_dependencies.py --strict
+pip-audit -r requirements.txt
 cd syntax_sprint && python manage.py check --deploy
 ```
 
@@ -376,4 +388,5 @@ Reglas:
 - `specs/traceability.md` — requisito → tarea → verificación.
 - `specs/000-overview/plan.md` — arquitectura y ADRs.
 - `specs/templates/audit-report.md` — plantilla de informes de auditoría.
+- `specs/010-dependencies/spec.md` — procedimiento de actualización de dependencias.
 - `audits/README.md` — histórico de auditorías.

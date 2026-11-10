@@ -18,6 +18,7 @@ specs/
 │   └── audit-report.md        # Plantilla de informes de auditoría
 ├── tools/                     # Herramientas de verificación sin dependencias
 │   ├── code_metrics.py        # Métricas de calidad y complejidad
+│   ├── check_dependencies.py  # Inventario y coherencia de dependencias
 │   └── scan_secrets.py        # Escáner de secretos y archivos sensibles
 ├── 000-overview/              # Visión de producto y arquitectura global
 │   ├── spec.md
@@ -31,7 +32,8 @@ specs/
 ├── 006-ui-and-theming/        # Sistema visual, temas, responsividad
 ├── 007-quality-and-delivery/  # Pruebas, lint, seguridad, despliegue
 ├── 008-code-audit/            # Auditoría de código y arquitectura bajo demanda
-└── 009-cybersecurity/         # Auditoría de seguridad y filtraciones bajo demanda
+├── 009-cybersecurity/         # Auditoría de seguridad y filtraciones bajo demanda
+└── 010-dependencies/          # Actualización de dependencias bajo demanda
 ```
 
 Los informes generados por las auditorías viven fuera de `specs/`:
@@ -136,10 +138,13 @@ Las auditorías **no se ejecutan solas**: se activan cuando el usuario lo indica
 | --- | --- |
 | "audita el código", "revisa la arquitectura", "¿esto es espagueti?" | `specs/008-code-audit/spec.md` |
 | "audita la seguridad", "revisa filtraciones", "¿hay API keys?" | `specs/009-cybersecurity/spec.md` |
+| "revisa las dependencias", "actualiza las dependencias" | `specs/010-dependencies/spec.md` |
 
 Reglas comunes:
 
-1. **Solo lectura**: la auditoría no modifica código; los arreglos van en tareas aparte.
+1. **Solo lectura**: las auditorías (008 y 009) no modifican código; los arreglos van en
+   tareas aparte. La actualización de dependencias (010) es la excepción: sí modifica
+   `requirements.txt`, siempre en rama y commit propios.
 2. **Evidencia obligatoria**: cada hallazgo lleva `archivo:línea` o comando reproducible.
 3. **Nunca imprimir secretos**: usar `<redacted>`; ni en el chat ni en el informe.
 4. **Informe versionado** en `audits/<tipo>/AAAA-MM-DD-<alcance>.md`.
@@ -152,4 +157,5 @@ Herramientas disponibles:
 python specs/tools/code_metrics.py
 python specs/tools/scan_secrets.py
 python specs/tools/scan_secrets.py --history
+python specs/tools/check_dependencies.py --strict
 ```

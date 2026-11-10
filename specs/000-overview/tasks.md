@@ -13,6 +13,7 @@ Referencia: `specs/000-overview/spec.md`
 - [ ] **T000-06** Definir métricas de éxito medibles en analítica (requiere 007).
 - [x] **T000-07** Definir el procedimiento de auditoría de código (spec 008).
 - [x] **T000-08** Definir el procedimiento de auditoría de seguridad (spec 009).
+- [x] **T000-09** Definir el procedimiento de actualización de dependencias (spec 010).
 
 ## Milestones
 

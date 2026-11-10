@@ -32,11 +32,11 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
     `ResultTests.test_user_cannot_see_other_results`. Faltan los tests de promedios y
     de estado vacío.
 
-- [ ] **T007-05** Alcanzar ≥ 80 % de cobertura en `backend/` y documentar el comando.
+- [x] **T007-05** Alcanzar ≥ 80 % de cobertura en `backend/` y documentar el comando.
   - Requisito: `RNF-007-02`
   - DoD: `coverage report` muestra el porcentaje en la PR.
-  - Estado: pendiente. `coverage` no está instalado en el `venv` del repositorio
-    (ver `T007-12`), así que no se ha podido medir.
+  - Evidencia: `coverage run --source=backend manage.py test` + `coverage report` →
+    98 % total; `views.py` 96 % y `models.py` 89 %.
 
 ## Fase 2 — Correcciones habilitadas por los tests
 
@@ -80,9 +80,9 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
     (`DEBUG=True`, `DATABASE_URL=""`) y terminaron con código 0. `pylint` se ejecuta
     como informativo (`continue-on-error`) hasta cerrar `T008-09`/`T008-10`.
 
-- [ ] **T007-12** Añadir `coverage` (y opcionalmente `pytest-django`) a `requirements.txt`.
+- [x] **T007-12** Añadir `coverage` (y opcionalmente `pytest-django`) a `requirements.txt`.
   - Requisito: `RNF-007-02`
-  - Estado: pendiente. `requirements.txt` no incluye `coverage`.
+  - Evidencia: `coverage==7.17.2` en `requirements-dev.txt` (no en producción).
 
 - [ ] **T007-13** Ejecutar `isort` y `pylint` y registrar la línea base de avisos.
   - Requisito: `RF-007-03`

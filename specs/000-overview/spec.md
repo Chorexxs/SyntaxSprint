@@ -55,6 +55,7 @@ usuario para medir su progreso.
 | C7 | Calidad, pruebas, seguridad y despliegue | `007-quality-and-delivery` | Pendiente |
 | C8 | Auditoría de código y arquitectura bajo demanda | `008-code-audit` | Implementada (procedimiento) |
 | C9 | Auditoría de ciberseguridad y filtraciones bajo demanda | `009-cybersecurity` | Implementada (procedimiento) |
+| C10 | Inventario y actualización de dependencias bajo demanda | `010-dependencies` | Implementada (procedimiento) |
 
 ## 5. Requisitos funcionales de producto
 
