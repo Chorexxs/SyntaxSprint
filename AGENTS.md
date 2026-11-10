@@ -349,7 +349,7 @@ cd syntax_sprint && python manage.py check --deploy
 | Base de datos | PostgreSQL vía `DATABASE_URL` (recomendado) o SQLite con `DB_PATH` + disco |
 | Estáticos | WhiteNoise + `collectstatic` |
 | Build | `pip install -r requirements.txt && python syntax_sprint/manage.py collectstatic --noinput` |
-| Start | `python syntax_sprint/manage.py migrate --noinput && gunicorn --chdir syntax_sprint syntax_sprint.wsgi:application` |
+| Start | `python syntax_sprint/manage.py migrate --noinput && gunicorn --chdir syntax_sprint syntax_sprint.wsgi:application --bind 0.0.0.0:$PORT` |
 | Guía | `DEPLOY.md` |
 | Blueprint | `render.yaml` |
 

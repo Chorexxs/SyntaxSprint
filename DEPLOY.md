@@ -106,7 +106,7 @@ En Render → **Settings**:
 | Campo | Valor |
 | --- | --- |
 | Build Command | `pip install -r requirements.txt && python syntax_sprint/manage.py collectstatic --noinput` |
-| Start Command | `python syntax_sprint/manage.py migrate --noinput && gunicorn --chdir syntax_sprint syntax_sprint.wsgi:application` |
+| Start Command | `python syntax_sprint/manage.py migrate --noinput && gunicorn --chdir syntax_sprint syntax_sprint.wsgi:application --bind 0.0.0.0:$PORT` |
 | Health Check Path | `/` |
 
 El repositorio incluye `render.yaml` como blueprint. Si el servicio ya existe, el
@@ -180,6 +180,7 @@ Si devuelve 404:
 | --- | --- | --- |
 | `DisallowedHost` | `ALLOWED_HOSTS` con esquema o vacío | `syntaxsprint.onrender.com` |
 | `ModuleNotFoundError: No module named 'backend'` | Start Command antiguo sin `--chdir` | Usar `gunicorn --chdir syntax_sprint ...` o el fallback de `wsgi.py` |
+| `No open ports detected` | Gunicorn escuchando en `127.0.0.1:8000` | `gunicorn.conf.py` o `--bind 0.0.0.0:$PORT` |
 | `CSRF verification failed` | Origen no confiable | `CSRF_TRUSTED_ORIGINS=https://...` |
 | Bucle de redirección HTTPS | Proxy no reconocido | `TRUST_PROXY_HEADERS=True` |
 | CSS/JS 404 | Sin `collectstatic` o sin WhiteNoise | Revisar build y middleware |
