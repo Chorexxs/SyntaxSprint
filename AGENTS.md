@@ -339,9 +339,34 @@ cd syntax_sprint && python manage.py check --deploy
 > Línea base: `audits/code/2026-11-10-linea-base.md` (3.8/10, F) y
 > `audits/security/2026-11-10-linea-base.md` (CRÍTICO). Ver la sección 8.
 
-## 11. Referencias
+## 11. Despliegue en Render
+
+| Aspecto | Valor |
+| --- | --- |
+| Hosting | Render Web Service |
+| URL | `https://syntaxsprint.onrender.com/` |
+| Región | `gcp-us-west1` (Oregón) |
+| Base de datos | PostgreSQL vía `DATABASE_URL` (recomendado) o SQLite con `DB_PATH` + disco |
+| Estáticos | WhiteNoise + `collectstatic` |
+| Build | `pip install -r requirements.txt && python syntax_sprint/manage.py collectstatic --noinput` |
+| Start | `python syntax_sprint/manage.py migrate --noinput && gunicorn --chdir syntax_sprint syntax_sprint.wsgi:application` |
+| Guía | `DEPLOY.md` |
+| Blueprint | `render.yaml` |
+
+Reglas:
+
+1. La `SECRET_KEY` se rota en Render → Environment, no en GitHub.
+2. Antes de mergear/pushear a `main`, haz backup de la base: Render redepliega
+   automáticamente y un SQLite sin disco persistente se pierde.
+3. `ALLOWED_HOSTS` no lleva esquema ni barra final.
+4. `TRUST_PROXY_HEADERS=True` es obligatorio detrás del proxy de Render.
+5. No subir `.env`, `db.sqlite3`, `staticfiles/` ni `backup.json`.
+
+## 12. Referencias
 
 - `README.md` — descripción funcional e instalación.
+- `DEPLOY.md` — guía de despliegue en Render.
+- `render.yaml` — blueprint de Render.
 - `specs/README.md` — manual de SDD.
 - `specs/constitution.md` — principios no negociables.
 - `specs/traceability.md` — requisito → tarea → verificación.

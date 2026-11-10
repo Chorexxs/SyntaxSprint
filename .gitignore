@@ -12,3 +12,6 @@ skills-lock.json
 syntax_sprint/db.sqlite3
 __pycache__/
 *.py[cod]
+
+# Estaticos generados por collectstatic
+staticfiles/

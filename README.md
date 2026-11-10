@@ -77,6 +77,19 @@ syntax_sprint/
     └── js/                 # JavaScript
 ```
 
+## Despliegue en Render
+
+La aplicación está preparada para Render:
+
+- Web Service con Gunicorn.
+- PostgreSQL mediante `DATABASE_URL` (recomendado) o SQLite con disco persistente (`DB_PATH`).
+- Estáticos con WhiteNoise y `collectstatic`.
+- Variables de entorno para `SECRET_KEY`, `DEBUG`, `ALLOWED_HOSTS`,
+  `CSRF_TRUSTED_ORIGINS` y `TRUST_PROXY_HEADERS`.
+
+La guía completa, el checklist y la rotación de la `SECRET_KEY` están en
+[`DEPLOY.md`](DEPLOY.md). El blueprint está en [`render.yaml`](render.yaml).
+
 ## Uso
 
 1. **Registro e Inicio de Sesión:**

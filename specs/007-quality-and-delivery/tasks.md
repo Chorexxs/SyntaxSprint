@@ -75,6 +75,32 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
   - Requisito: `RF-007-08`
   - DoD: decisión documentada en `plan.md` o en el README.
 
+## Fase 6 — Render y estáticos
+
+- [x] **T007-17** Añadir WhiteNoise y configurar `STORAGES` para servir estáticos con `DEBUG=False`.
+  - Requisito: `RF-007-10`
+  - Archivos: `settings.py`, `requirements.txt`, `.gitignore`
+  - Evidencia: `collectstatic` copia 130 archivos y `findstatic` encuentra el CSS.
+
+- [x] **T007-18** Detectar `RENDER_EXTERNAL_HOSTNAME` y permitir `DB_PATH` y `DATABASE_URL`.
+  - Requisito: `RF-007-07`
+  - Archivos: `settings.py`, `.env.example`
+  - DoD: Render añade su host a `ALLOWED_HOSTS`/CSRF; PostgreSQL se activa con `DATABASE_URL`.
+
+- [x] **T007-19** Crear `render.yaml` y `DEPLOY.md` con variables, build/start, backup y rotación.
+  - Requisito: `RF-007-07`
+  - DoD: el blueprint usa PostgreSQL free y el README enlaza la guía.
+
+- [x] **T007-20** Verificar `collectstatic`, `check --deploy` y tests con los cambios de Render.
+  - Requisito: `RF-007-10`
+  - Evidencia: 130 estáticos, `check --deploy` con `DEBUG=False` → 0 issues, 26 tests OK.
+  - DoD: 0 issues, 26 tests y estáticos encontrados.
+
+- [ ] **T007-21** Aplicar el blueprint en Render, rotar `SECRET_KEY`, migrar a PostgreSQL y verificar la URL.
+  - Requisito: `RF-007-07`
+  - Bloqueada por: acceso al dashboard de Render y backup de la base actual.
+  - DoD: `/`, `/login`, `/static/css/styles.css` y `/admin/` responden; logs sin 500.
+
 ## Deuda técnica / Backlog
 
 - [ ] Pre-commit hooks (`isort`, `pylint`, `django check`).

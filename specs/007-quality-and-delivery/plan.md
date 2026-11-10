@@ -145,3 +145,33 @@ Checklist previo:
 - [ ] `collectstatic` ejecutado.
 - [ ] HTTPS y cookies seguras verificadas.
 - [ ] Backup de la base de datos.
+
+## 11. Render y estáticos
+
+La app se despliega en Render (`syntaxsprint.onrender.com`). Cambios de esta fase:
+
+| Cambio | Motivo |
+| --- | --- |
+| `WhiteNoiseMiddleware` + `STORAGES` | Servir CSS/JS con `DEBUG=False` |
+| `collectstatic` en el build | Generar `staticfiles/` y el manifest |
+| `RENDER_EXTERNAL_HOSTNAME` | Añadir automáticamente host y CSRF de Render |
+| `DB_PATH` | Permitir SQLite en un disco persistente |
+| `DATABASE_URL` + `dj-database-url` | Usar PostgreSQL gestionado y evitar SQLite efímero |
+| `render.yaml` | Blueprint reproducible con build/start/variables |
+| `DEPLOY.md` | Runbook de rotación, backup, migración y rollback |
+
+Comandos:
+
+```bash
+pip install -r requirements.txt
+python syntax_sprint/manage.py collectstatic --noinput
+python syntax_sprint/manage.py migrate --noinput
+gunicorn --chdir syntax_sprint syntax_sprint.wsgi:application
+```
+
+Riesgo principal: Render free no ofrece disco persistente. Sin PostgreSQL ni disco,
+el SQLite se pierde en cada redeploy. La opción recomendada es `DATABASE_URL` con
+Render Postgres; la alternativa es un disco de pago con `DB_PATH=/var/data/db.sqlite3`.
+
+Antes de mergear a `main`, hacer backup (`dumpdata`) porque Render redepliega
+automáticamente al detectar el push.

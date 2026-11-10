@@ -124,10 +124,10 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-007-04 | T003-06, T005-05, T007-07 | CA-007-05 | ? |
 | RF-007-05 | T007-08 | CA-007-03 | ?? |
 | RF-007-06 | T003-07, T005-02 | 405 | ? |
-| RF-007-07 | T007-10 | CA-007-04 | ⬜ |
+| RF-007-07 | T007-10 | CA-007-04 | ?? |
 | RF-007-08 | T007-14, T007-15, T007-16 | CA-007-07 | ?? |
 | RF-007-09 | T004-08, T007-06 | POST 200 | ? |
-| RF-007-10 | T007-09 | CA-007-04 | ⬜ |
+| RF-007-10 | T007-09 | CA-007-04 | ? |
 | RF-007-11 | T007-11 | CI | ⬜ |
 
 ## 008 — Auditoría de código
@@ -177,10 +177,10 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | 004 | 16 | 11 | 5 | 0 |
 | 005 | 12 | 11 | 0 | 1 |
 | 006 | 10 | 4 | 2 | 4 |
-| 007 | 11 | 6 | 2 | 3 |
+| 007 | 11 | 7 | 3 | 1 |
 | 008 | 12 | 11 | 1 | 0 |
 | 009 | 14 | 11 | 3 | 0 |
-| **Total** | **113** | **85** | **18** | **10** |
+| **Total** | **113** | **86** | **19** | **8** |
 
 > La matriz se actualiza al cerrar cada tarea. Un requisito no puede pasar a ? sin su
 > verificaci?n ejecutada.
