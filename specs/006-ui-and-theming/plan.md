@@ -10,19 +10,21 @@
 
 Crear `templates/base.html` con el esqueleto común y refactorizar las cuatro plantillas
 para que lo extiendan. Mantener Tailwind por CDN en esta fase y centralizar el script de
-tema en un archivo estático (`static/js/theme.js`) cargado con `defer`. Corregir los
-problemas de accesibilidad sin alterar la identidad visual.
+tema en un archivo estático (`static/js/theme.js`) cargado con `defer`. El header y el
+footer viven directamente en `base.html`: solo se usan ahí y los partials añadirían
+indirección sin beneficio (Artículo 2 de la constitución).
 
 ## 2. Cambios por archivo
 
 | Archivo | Acción | Descripción |
 | --- | --- | --- |
-| `templates/base.html` | Crear | Head, header, footer, bloques `content` y `scripts`. |
+| `templates/base.html` | Crear | Head, header, footer, bloques `content`, `main_class` y `scripts`. |
 | `templates/index.html` | Modificar | Extender `base.html`; conservar IDs del motor. |
 | `templates/login.html` | Modificar | Extender `base.html`. |
 | `templates/signup.html` | Modificar | Extender `base.html`. |
 | `templates/profile.html` | Modificar | Extender `base.html`. |
 | `static/js/theme.js` | Crear | Inicialización y toggle de tema. |
+| `static/js/script.js` | Modificar | Quitar el tema: ahora es responsabilidad de `theme.js`. |
 | `static/css/styles.css` | Modificar | Reemplazar `outline: none` por `:focus-visible`. |
 
 ## 3. Diseño de la plantilla base
@@ -33,30 +35,41 @@ problemas de accesibilidad sin alterar la identidad visual.
 <html lang="es" data-theme="dark">
 <head>
   ...
+  {# Antes del primer pintado; evita FOUC (RNF-006-01). #}
   <script>
     (function () {
-      const saved = localStorage.getItem('theme');
-      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-      document.documentElement.setAttribute('data-theme', saved || (prefersLight ? 'light' : 'dark'));
+      try {
+        const saved = localStorage.getItem('theme');
+        document.documentElement.setAttribute(
+          'data-theme', saved === 'light' ? 'light' : 'dark'
+        );
+      } catch (error) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
     })();
   </script>
-  {% block head %}{% endblock %}
+  <script src="{% static 'js/theme.js' %}" defer></script>
+  {% block extra_head %}{% endblock %}
 </head>
 <body>
-  {% include "partials/header.html" %}
-  {% block content %}{% endblock %}
-  {% include "partials/footer.html" %}
-  <script src="{% static 'js/theme.js' %}" defer></script>
+  <header>...</header>
+  <main class="{% block main_class %}...{% endblock %}">
+    {% block content %}{% endblock %}
+  </main>
+  <footer>...</footer>
   {% block scripts %}{% endblock %}
 </body>
 </html>
 ```
 
+> `prefers-color-scheme` (RF-006-09) no se aplica todavía: se mantiene el tema oscuro por
+> defecto de RF-006-01 y queda para `T006-15`.
+
 ## 4. Accesibilidad
 
 | Elemento | Cambio |
 | --- | --- |
-| Toggle de tema | `aria-label="Toggle theme"`, `aria-pressed` dinámico. |
+| Toggle de tema | `aria-label` en español y `aria-pressed` dinámico. |
 | Inputs de login/signup | `<label class="sr-only">` o `aria-label`. |
 | Mensajes | `role="alert"`. |
 | Foco | `:focus-visible { outline: 2px solid var(--caret); outline-offset: 2px; }`. |
@@ -101,7 +114,7 @@ Checklist:
 
 ## 8. Orden de implementación
 
-1. Crear `base.html` y partials.
+1. Crear `base.html` (header y footer incluidos).
 2. Migrar `index.html` y validar motor.
 3. Migrar login, signup y profile.
 4. Extraer `theme.js` y eliminar duplicados.

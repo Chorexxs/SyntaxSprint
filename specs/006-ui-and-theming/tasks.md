@@ -24,20 +24,27 @@ Referencia: `specs/006-ui-and-theming/spec.md`
 
 ## Fase 2 — Deduplicación
 
-- [ ] **T006-05** Crear `templates/base.html` con head, header, footer y bloques.
+- [x] **T006-05** Crear `templates/base.html` con head, header, footer y bloques.
   - Requisito: `RF-006-04`
   - Archivos: `templates/base.html`
   - DoD: las 4 páginas lo extienden y no duplican el header.
+  - Evidencia: las 4 plantillas usan `{% extends "base.html" %}`; cada página
+    renderiza un único `<header>` y un único CDN de Tailwind (verificado con
+    `django.test.Client`).
 
-- [ ] **T006-06** Extraer `static/js/theme.js` y eliminar los 4 scripts inline duplicados.
+- [x] **T006-06** Extraer `static/js/theme.js` y eliminar los 4 scripts inline duplicados.
   - Requisitos: `RF-006-02`, `RF-006-03`
   - Archivos: `static/js/theme.js`, `templates/*.html`
   - DoD: un solo punto de inicialización de tema.
+  - Evidencia: `theme.js` concentra toggle, iconos, `aria` y persistencia; `script.js`
+    ya no contiene lógica de tema y las 4 plantillas no tienen scripts duplicados.
 
-- [ ] **T006-07** Aplicar el tema antes del primer pintado para evitar FOUC.
+- [x] **T006-07** Aplicar el tema antes del primer pintado para evitar FOUC.
   - Requisito: `RNF-006-01`
   - Archivos: `base.html`
   - DoD: sin destello claro al recargar en tema oscuro.
+  - Evidencia: script inline único en `<head>` que fija `data-theme` antes de cargar
+    CSS y Tailwind; protege `localStorage` con `try/catch`.
 
 ## Fase 3 — Accesibilidad
 
@@ -48,9 +55,11 @@ Referencia: `specs/006-ui-and-theming/spec.md`
   - Estado: pendiente. `styles.css:45-48` mantiene `*:focus { outline: none; }` y las
     plantillas usan `focus:outline-none` de Tailwind.
 
-- [ ] **T006-09** Añadir `aria-label` al toggle y `aria-pressed` dinámico.
+- [x] **T006-09** Añadir `aria-label` al toggle y `aria-pressed` dinámico.
   - Requisito: `RF-006-08`
   - Archivos: `base.html`, `theme.js`
+  - Evidencia: `aria-label` inicial en `base.html` y `theme.js` actualiza
+    `aria-label` y `aria-pressed` según el tema activo.
   - Estado: pendiente. `#theme-toggle` (`index.html:54`) solo tiene `title`.
 
 - [ ] **T006-10** Añadir labels accesibles a los inputs de login y signup.

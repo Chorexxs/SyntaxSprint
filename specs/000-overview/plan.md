@@ -75,6 +75,7 @@ SyntaxSprint/
     │   ├── settings.py
     │   └── urls.py
     ├── templates/
+    │   ├── base.html
     │   ├── index.html
     │   ├── login.html
     │   ├── signup.html
@@ -102,7 +103,6 @@ SyntaxSprint/
 
 | Deuda | Ubicación | Feature que la resuelve |
 | --- | --- | --- |
-| Header y tema duplicados en 4 plantillas | `templates/*.html` | 006 |
 | Foco no visible y controles sin nombre accesible | `templates/*.html`, `static/css/styles.css` | 006 |
 | Historial del perfil sin paginación | `backend/result_views.py` | 005 |
 | Faltan tests de perfil, promedios y cascada | `backend/tests.py` | 005/007 |
