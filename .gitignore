@@ -15,3 +15,21 @@ __pycache__/
 
 # Estaticos generados por collectstatic
 staticfiles/
+
+# InsForge (contiene claves y configuracion local)
+.insforge/
+
+# InsForge & AI agent skills
+.insforge
+.agent
+.agents
+.augment
+.claude
+.cline
+.github/copilot*
+.kilocode
+.qoder
+.qwen
+.roo
+.trae
+.windsurf
