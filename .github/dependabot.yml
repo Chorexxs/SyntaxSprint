@@ -1,0 +1,38 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Madrid"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencias"
+      - "python"
+    commit-message:
+      prefix: "Actualizar"
+    groups:
+      python-parches:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    ignore:
+      # Los saltos mayores de Django se aprueban a mano (RF-010-07).
+      - dependency-name: "django"
+        update-types: ["version-update:semver-major"]
+
+  # Mantiene al día las acciones de GitHub usadas por el workflow de CI.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencias"
+      - "github-actions"
+    commit-message:
+      prefix: "Actualizar"
+    groups:
+      github-actions:
+        patterns: ["*"]
