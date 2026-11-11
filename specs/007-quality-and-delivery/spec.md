@@ -107,7 +107,7 @@ dependa de pasos manuales no documentados.
 | `SECURE_HSTS_SECONDS` alto prematuro | Dominio bloqueado | Empezar en 3600 y subir |
 | Tests dependientes de hora | Fallos intermitentes | `freezegun` o `mock` de `timezone.now` |
 | Sin CI el DoD no se cumple | Regresiones | T007-07 |
-| Tailwind CDN bloqueado por CSP | Estilos rotos | Compilar local o permitir CDN explícitamente |
+| Tailwind CDN bloqueado por CSP | Estilos rotos | Resuelto: Tailwind compilado localmente (2026-11-11) |
 
 ## 11. Referencias de código
 

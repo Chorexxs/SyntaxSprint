@@ -30,7 +30,7 @@ de Python y los CDN.
 | `requirements-dev.txt` | Añadir | `pylint`, `pylint-django`, `isort`, `coverage`, `pip-audit`. |
 | `audits/dependencies/` | Añadir | Un informe por ejecución. |
 | `specs/tools/check_dependencies.py` | Añadir | Inventario sin dependencias externas. |
-| `syntax_sprint/templates/*.html` | Modificar | Fijar la versión del CDN de Tailwind. |
+| `syntax_sprint/templates/*.html` | Modificar | Fijar la versión del CDN (sustituido después por build local). |
 | `render.yaml` | Modificar | Fuente única de la versión de Python. |
 
 ## 3. Inventario actual (2026-11-10)
@@ -62,7 +62,7 @@ queda en el backlog.
 
 | Recurso | Origen | Versión |
 | --- | --- | --- |
-| Tailwind CSS | `https://cdn.tailwindcss.com/3.4.17` | 3.4.17 (fijada) |
+| Tailwind CSS | Build local (`npm run build:css`) | 3.4.17 (fijada) |
 | JetBrains Mono | Google Fonts | Gestionada por Google |
 | JavaScript | Propio (`static/js`) | — |
 
@@ -117,7 +117,7 @@ No hay `package.json` ni `node_modules`: no existe ecosistema npm que actualizar
 | Un parche rompe una vista no cubierta | Media | Checklist manual del test de typing |
 | Eliminar `requests` rompe algo oculto | Baja | Búsqueda previa + suite + `check` |
 | Salto mayor de Django | Media | Rama y tarea propias |
-| Tailwind CDN cambia de versión mayor | Media | Fijar versión (`T010-07`) |
+| Tailwind CDN cambia de versión mayor | Media | Resuelto: build local (`T010-08`) |
 | CI y `render.yaml` divergen en Python | Baja | Fuente única (`T010-06`) |
 
 ## 8. Orden de implementación
@@ -126,7 +126,7 @@ No hay `package.json` ni `node_modules`: no existe ecosistema npm que actualizar
 2. Añadir el verificador de inventario y la plantilla de informe (`T010-03`).
 3. Separar dependencias de desarrollo (`T010-05`).
 4. Eliminar dependencias sin uso (`T010-04`).
-5. Fijar el CDN de Tailwind (`T010-07`).
+5. Fijar Tailwind (hecho: build local con 3.4.17).
 6. Activar Dependabot (`T010-09`).
 7. Primera ejecución real del procedimiento (`T010-09`).
 

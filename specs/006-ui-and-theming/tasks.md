@@ -104,7 +104,10 @@ Referencia: `specs/006-ui-and-theming/spec.md`
 
 ## Deuda técnica / Backlog
 
-- [ ] Compilar Tailwind localmente y eliminar el CDN (ver 007).
+- [x] Compilar Tailwind localmente y eliminar el CDN (ver 007).
+  - Evidencia: `package.json`, `tailwind.config.js` y `npm run build:css` generan
+    `static/css/tailwind.css`; `base.html` ya no carga el CDN ni scripts/config inline.
+  - Fecha: 2026-11-11.
 - [ ] Modo de alto contraste.
 - [ ] Iconos SVG reutilizables como partial.
 - [ ] Revisar tipografía en pantallas grandes (> 1920 px).
@@ -117,3 +120,4 @@ Referencia: `specs/006-ui-and-theming/spec.md`
 | 2026-11-11 | T006-08 cerrada: foco visible con `:focus-visible` |
 | 2026-11-11 | T006-10 y T006-11 cerradas: labels accesibles y `scope="col"` |
 | 2026-11-11 | T006-12 cerrada: tokens ajustados a contraste WCAG AA |
+| 2026-11-11 | Tailwind compilado localmente; CDN y scripts inline eliminados |

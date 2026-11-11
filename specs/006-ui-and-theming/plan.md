@@ -9,10 +9,11 @@
 ## 1. Enfoque
 
 Crear `templates/base.html` con el esqueleto común y refactorizar las cuatro plantillas
-para que lo extiendan. Mantener Tailwind por CDN en esta fase y centralizar el script de
-tema en un archivo estático (`static/js/theme.js`) cargado con `defer`. El header y el
-footer viven directamente en `base.html`: solo se usan ahí y los partials añadirían
-indirección sin beneficio (Artículo 2 de la constitución).
+para que lo extiendan. Mantener Tailwind por CDN en esa fase (sustituido por un build
+local el 2026-11-11) y centralizar el script de tema en un archivo estático
+(`static/js/theme.js`) cargado con `defer`. El header y el footer viven directamente en
+`base.html`: solo se usan ahí y los partials añadirían indirección sin beneficio
+(Artículo 2 de la constitución).
 
 ## 2. Cambios por archivo
 

@@ -68,6 +68,16 @@ SyntaxSprint es una aplicación web diseñada para ayudar a los usuarios a mejor
 
    Abre tu navegador y ve a `http://127.0.0.1:8000/`.
 
+### Tailwind CSS
+
+El CSS de Tailwind se compila localmente y se versiona en
+`syntax_sprint/static/css/tailwind.css`. Si cambias clases en plantillas o JavaScript:
+
+```bash
+npm install
+npm run build:css
+```
+
 ## Estructura del Proyecto
 
 ```

@@ -116,7 +116,7 @@ usuario para medir su progreso.
 | --- | --- | --- |
 | Fragmentos demasiado largos para 30 s | Mala experiencia | Limitar a ≤ 15 líneas; validar en tests manuales |
 | Guardado silencioso fallido | Pérdida de progreso | Mostrar estado y registrar errores (ver 005) |
-| Dependencia de CDN de Tailwind | Caída del CDN rompe estilos | Plan de build local en 007 |
+| Dependencia de CDN de Tailwind | Caída del CDN rompe estilos | Resuelto: build local (2026-11-11) |
 | Sin pruebas automatizadas | Regresiones frecuentes | Prioridad máxima en 007 |
 
 ## 11. Referencias

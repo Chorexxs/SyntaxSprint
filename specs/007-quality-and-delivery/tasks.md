@@ -153,7 +153,10 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
 - [ ] Dockerfile de producción.
 - [ ] Sentry o logging estructurado.
 - [ ] Tests E2E con Playwright del flujo completo.
-- [ ] Compilar Tailwind y eliminar el CDN.
+- [x] Compilar Tailwind y eliminar el CDN.
+  - Evidencia: build local con `npm run build:css` (Tailwind 3.4.17) y
+    `static/css/tailwind.css` versionado; `base.html` ya no usa el CDN.
+  - Fecha: 2026-11-11.
 
 ## Historial
 

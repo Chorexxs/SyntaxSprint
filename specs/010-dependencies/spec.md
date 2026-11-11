@@ -15,7 +15,8 @@ no existe ninguna política que diga **cuándo** ni **cómo** actualizarlas. Ade
 - Conviven dependencias de producción y de desarrollo en el mismo archivo.
 - `requests` y sus transitivas (`certifi`, `charset-normalizer`, `idna`, `urllib3`) no
   se usan en el código.
-- El CDN de Tailwind (`https://cdn.tailwindcss.com`) no fija versión.
+- El CDN de Tailwind no fijaba versión; desde el 2026-11-11 se compila localmente con
+  `3.4.17` fijada en `package.json`.
 - `pip-audit` se ejecutó una sola vez (`T009-18`) y no hay procedimiento repetible.
 - La versión de Python vive en `render.yaml` y en el workflow de CI, sin una fuente única.
 
@@ -36,7 +37,6 @@ actualización se convierte en un salto grande y arriesgado.
 - Actualizaciones automáticas programadas (eso es Dependabot/Renovate, ver `T010-09`).
 - Cambiar de gestor de paquetes (pip-tools, poetry, uv) sin una spec aparte.
 - Actualizar el sistema operativo, PostgreSQL o el proveedor de hosting.
-- Sustituir el CDN de Tailwind por un build local (corresponde a `006`/`007`).
 - Desplegar la aplicación.
 
 ## 3. Actores y casos de uso
@@ -144,7 +144,7 @@ No se modifican endpoints ni modelos de datos.
 | --- | --- | --- |
 | Una actualización rompe comportamiento no cubierto | Regresión silenciosa | Verificación completa + checklist manual del test de typing |
 | Salto mayor de Django (5.2 → 6.x) | Cambios incompatibles | Rama y tarea aparte, ventana de pruebas |
-| CDN de Tailwind sin versión | Cambio de estilos sin aviso | Fijar versión o migrar a build local (`T010-07`) |
+| CDN de Tailwind sin versión | Cambio de estilos sin aviso | Resuelto: build local con versión fijada (`T010-08`) |
 | Actualizar por actualizar | Ruido y riesgo | Solo bajo demanda y con informe |
 | Dependencias transitivas descontroladas | CVEs invisibles | `pip-audit` en cada ejecución y CI |
 | Falsa sensación de seguridad | Deuda oculta | El informe lista lo que **no** se actualizó y por qué |
@@ -154,6 +154,7 @@ No se modifican endpoints ni modelos de datos.
 - `requirements.txt` — dependencias de Python fijadas.
 - `render.yaml` — versión de Python y variables de despliegue.
 - `.github/workflows/ci.yml` — verificación automática.
-- `syntax_sprint/templates/*.html` — CDN de Tailwind y Google Fonts.
+- `syntax_sprint/templates/*.html` — clases de Tailwind y Google Fonts.
+- `tailwind.config.js`, `package.json` y `assets/css/tailwind.input.css` — build local.
 - `specs/009-cybersecurity/tasks.md` — `T009-18` (pip-audit) y `T009-19` (Dependabot).
 - `audits/README.md` — reglas de los informes bajo demanda.

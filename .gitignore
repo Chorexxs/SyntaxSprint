@@ -38,3 +38,6 @@ htmlcov/
 .roo
 .trae
 .windsurf
+
+# Dependencias del build de Tailwind
+node_modules/

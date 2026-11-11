@@ -91,6 +91,23 @@ header {
 }
 
 /* ==========================================
+   Borders
+   ========================================== */
+/* Tailwind no aplica modificadores de opacidad a colores arbitrarios basados
+   en var(); estos utilitarios derivan del token secundario. */
+.border-subtle {
+  border-color: color-mix(in srgb, var(--text-sub) 20%, transparent);
+}
+
+.border-subtle-strong {
+  border-color: color-mix(in srgb, var(--text-sub) 30%, transparent);
+}
+
+.border-faint {
+  border-color: color-mix(in srgb, var(--text-sub) 10%, transparent);
+}
+
+/* ==========================================
    Typography
    ========================================== */
 .font-mono {

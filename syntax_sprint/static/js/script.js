@@ -137,7 +137,7 @@ class TypingTest {
     const language = this.elements.languageSelect.value;
 
     try {
-      const response = await fetch(apiUrl, {
+      const response = await fetch(document.body.dataset.apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -493,7 +493,8 @@ class TypingTest {
 
   async saveResult(wpm, acc) {
     const status = document.getElementById('save-status');
-    if (typeof saveResultUrl === 'undefined') return;
+    const saveResultUrl = document.body.dataset.saveUrl;
+    if (!saveResultUrl) return;
 
     try {
       const response = await fetch(saveResultUrl, {

@@ -8,43 +8,10 @@
   <link rel="icon" type="image/svg+xml" href="{% static 'icon/icon.svg' %}">
 
   {# Aplica el tema antes del primer pintado para evitar FOUC (RNF-006-01). #}
-  <script>
-    (function () {
-      try {
-        var saved = localStorage.getItem('theme');
-        document.documentElement.setAttribute(
-          'data-theme', saved === 'light' ? 'light' : 'dark'
-        );
-      } catch (error) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-      }
-    })();
-  </script>
+  <script src="{% static 'js/theme-init.js' %}"></script>
 
-  <!-- TailwindCSS -->
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            'bg-primary': 'var(--bg-primary)',
-            'bg-secondary': 'var(--bg-secondary)',
-            'text-main': 'var(--text-main)',
-            'text-sub': 'var(--text-sub)',
-            'text-active': 'var(--text-active)',
-            'caret': 'var(--caret)',
-            'success': 'var(--success)',
-            'error': 'var(--error)',
-          },
-          fontFamily: {
-            'mono': ['JetBrains Mono', 'Fira Code', 'monospace'],
-          }
-        }
-      }
-    }
-  </script>
+  <!-- Tailwind compilado localmente: npm run build:css -->
+  <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,7 +23,7 @@
   <script src="{% static 'js/theme.js' %}" defer></script>
   {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-[var(--bg-primary)] text-[var(--text-sub)] font-mono min-h-screen flex flex-col transition-colors duration-200">
+<body class="bg-[var(--bg-primary)] text-[var(--text-sub)] font-mono min-h-screen flex flex-col transition-colors duration-200" data-api-url="{% url 'get_python_function' %}" data-save-url="{% url 'save_typing_test_result' %}">
 
   <!-- Header -->
   <header class="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex justify-between items-center">

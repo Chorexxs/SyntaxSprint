@@ -118,7 +118,7 @@ templates/base.html
 | --- | --- | --- |
 | Tema duplicado en 4 plantillas | Inconsistencias | T006-04 |
 | `*:focus { outline: none }` | Inaccesible | T006-05 |
-| Tailwind por CDN | Warning de producción y dependencia de red | 007 |
+| Tailwind por CDN | Warning de producción y dependencia de red | Resuelto: build local (2026-11-11) |
 | `--text-sub` con bajo contraste en claro | WCAG | T006-12: resuelto (`#5f6165`) |
 | `--text-sub` sobre `--bg-secondary` en oscuro | WCAG | T006-12: resuelto (`#9a9ca1`) |
 

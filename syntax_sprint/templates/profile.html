@@ -31,7 +31,7 @@
       <div class="overflow-x-auto">
         <table class="w-full text-sm">
           <thead>
-            <tr class="text-[var(--text-sub)] border-b border-[var(--text-sub)]/20">
+            <tr class="text-[var(--text-sub)] border-b border-subtle">
               <th scope="col" class="text-left py-3 px-4 font-normal">date</th>
               <th scope="col" class="text-right py-3 px-4 font-normal">wpm</th>
               <th scope="col" class="text-right py-3 px-4 font-normal">accuracy</th>
@@ -39,7 +39,7 @@
           </thead>
           <tbody>
             {% for result in results %}
-            <tr class="border-b border-[var(--text-sub)]/10">
+            <tr class="border-b border-faint">
               <td class="py-3 px-4 text-[var(--text-sub)]">{{ result.date|date:"M j, Y H:i" }}</td>
               <td class="py-3 px-4 text-right text-[var(--text-active)]">{{ result.wpm|floatformat:0 }}</td>
               <td class="py-3 px-4 text-right text-[var(--text-sub)]">{{ result.accuracy|floatformat:0 }}%</td>

@@ -16,7 +16,7 @@ historial del usuario y calcula promedios.
 | --- | --- |
 | Framework | Django 5.x (MVT) |
 | Base de datos | InsForge PostgreSQL (`DATABASE_URL`) |
-| Frontend | Plantillas Django + Tailwind CDN + CSS propio |
+| Frontend | Plantillas Django + Tailwind compilado + CSS propio |
 | JavaScript | Vanilla ES6+ (clase `TypingTest`); jQuery 3.x permitido |
 | Servidor | Gunicorn (`syntax_sprint.wsgi`) |
 | Configuración | `python-decouple` + `.env` |
@@ -62,6 +62,10 @@ python manage.py runserver
 
 # Dependencias de desarrollo (incluye producción)
 pip install -r ../requirements-dev.txt
+
+# Tailwind local (solo si cambias clases en plantillas o JS)
+npm install
+npm run build:css
 
 # Verificación de dependencias (sin red)
 python ../specs/tools/check_dependencies.py --strict
@@ -294,8 +298,8 @@ Estado verificado el 2026-11-11: `manage.py check` 0 issues, `manage.py test` 33
 OK, `isort --check-only` sin avisos. La antigua deuda "suite de pruebas vacía" ya está
 cerrada.
 
-No hay deuda priorizada abierta. Queda como backlog de producto compilar Tailwind
-localmente y eliminar el CDN (`006`/`007`).
+No hay deuda priorizada abierta. Tailwind se compila localmente desde el 2026-11-11
+(`npm run build:css`).
 
 > No quedan hallazgos **CRÍTICOS** abiertos. Evidencia:
 > `audits/security/2026-11-11-verificacion.md`.
@@ -365,6 +369,8 @@ Reglas:
 3. `ALLOWED_HOSTS` no lleva esquema ni barra final.
 4. `TRUST_PROXY_HEADERS=True` es obligatorio detrás del proxy de Render.
 5. No subir `.env`, `db.sqlite3`, `staticfiles/` ni `backup.json`.
+6. Si cambias clases de Tailwind, ejecuta `npm run build:css` y commitea
+   `syntax_sprint/static/css/tailwind.css`.
 
 ## 12. Referencias
 
