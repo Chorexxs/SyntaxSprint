@@ -9,15 +9,18 @@ Referencia: `specs/000-overview/spec.md`
 - [x] **T000-02** Documentar arquitectura y decisiones (ADR-01…ADR-06).
 - [x] **T000-03** Crear estructura SDD (`specs/`, plantillas, constitución).
 - [x] **T000-04** Inventariar deuda técnica transversal.
-- [ ] **T000-05** Revisar y aprobar el roadmap con el responsable del proyecto.
+- [x] **T000-05** Revisar y aprobar el roadmap con el responsable del proyecto.
+  - Evidencia: aprobado por el responsable el 2026-11-11, tras verificar 39 tests,
+    cobertura 99 %, CI en verde y sitio en producción. Los milestones M1–M6 quedan
+    cerrados; el trabajo futuro vive en el backlog de cada `tasks.md`.
 - [ ] **T000-06** Definir métricas de éxito medibles en analítica (requiere 007).
 - [x] **T000-07** Definir el procedimiento de auditoría de código (spec 008).
 - [x] **T000-08** Definir el procedimiento de auditoría de seguridad (spec 009).
 - [x] **T000-09** Definir el procedimiento de actualización de dependencias (spec 010).
 
-> `T000-05` sigue abierta porque exige la aprobación explícita del responsable del
-> proyecto. `T000-06` sigue abierta: las métricas están definidas en
-> `specs/000-overview/spec.md` §7, pero no hay analítica que las mida.
+> `T000-06` sigue abierta: las métricas están definidas en `specs/000-overview/spec.md`
+> §7, pero no hay analítica que las mida. Necesita su propia spec antes de escribir
+> código (ver `specs/README.md` §6).
 
 ## Milestones
 
@@ -74,3 +77,4 @@ Referencia: `specs/000-overview/spec.md`
 | --- | --- |
 | 2026-11-10 | Creación del roadmap y estructura SDD |
 | 2026-11-11 | Cierre de M2–M5 con evidencia verificada; T000-05 y T000-06 quedan abiertas |
+| 2026-11-11 | T000-05 aprobada por el responsable; solo queda T000-06 (analítica) |
