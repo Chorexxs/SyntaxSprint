@@ -274,6 +274,9 @@ Crear `audits/code/AAAA-MM-DD-<alcance>.md` usando
 
 **Nota preliminar:** 3.8/10 (F). No sustituye la auditoría completa; sirve de referencia.
 
+> Reauditoría del 2026-11-11: `audits/code/2026-11-11-reauditoria.md` → **8.8/10 (B)**,
+> 0 hallazgos ALTA.
+
 ## 13. Fuera de alcance
 
 - Corrección de los hallazgos.

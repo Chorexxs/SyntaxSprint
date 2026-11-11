@@ -35,6 +35,7 @@ audits/
 | 2026-11-10 | Seguridad | `security/2026-11-10-linea-base.md` | CRÍTICO |
 | 2026-11-10 | Seguridad | `security/2026-11-10-auditoria-completa.md` | Contenido — producción verificada |
 | 2026-11-10 | Dependencias | `dependencies/2026-11-10-actualizacion.md` | 0 vulnerabilidades; parches aplicados |
+| 2026-11-11 | Código | `code/2026-11-11-reauditoria.md` | 8.8/10 (B); 0 hallazgos ALTA |
 | 2026-11-11 | Seguridad | `security/2026-11-11-verificacion.md` | PII y secretos cerrados; quedan acciones del responsable |
 
 > Informe interno; no exponer fuera del repositorio. El historial está purgado, el

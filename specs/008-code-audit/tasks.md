@@ -23,9 +23,10 @@ Referencia: `specs/008-code-audit/spec.md`
   - Evidencia: `python specs/tools/code_metrics.py` → 16 archivos, 919 LOC, 9 funciones.
   - DoD: valores reales en la sección 12 del spec.
 
-- [ ] **T008-05** Redactar el informe completo de línea base en `audits/code/2026-11-10-linea-base.md`.
+- [x] **T008-05** Redactar el informe completo de línea base en `audits/code/2026-11-10-linea-base.md`.
   - Requisito: `RF-008-09`
-  - Estado: parcial (resumen creado; falta revisión manual D1–D8 completa).
+  - Evidencia: informe con las 9 secciones y la revisión manual D1–D8 añadida el
+    2026-11-11 (observaciones por dimensión con evidencia `AUD-*`).
 
 ## Fase 2 — Hallazgos prioritarios
 
@@ -90,15 +91,18 @@ Referencia: `specs/008-code-audit/spec.md`
   - DoD: cobertura ≥ 80 % en `backend/`.
   - Evidencia: 26 tests y 98 % de cobertura (`views.py` 96 %, `models.py` 89 %).
 
-- [ ] **T008-14** Medir consultas del perfil y dejarlas en ≤ 5 por request.
+- [x] **T008-14** Medir consultas del perfil y dejarlas en ≤ 5 por request.
   - Requisito: `RF-008-12`
-  - Archivos: `backend/views.py`
-  - DoD: medición documentada en el informe.
+  - Evidencia: `ProfileTests.test_query_budget` con `CaptureQueriesContext`: sesión,
+    usuario, agregación, `COUNT` y página = **5 consultas**; documentado en la
+    reauditoría.
 
-- [ ] **T008-15** Verificar que añadir un lenguaje solo requiere editar `snippets.py`
+- [x] **T008-15** Verificar que añadir un lenguaje solo requiere editar `snippets.py`
   (no la vista ni el JS).
   - Requisito: `RF-008-12`
-  - DoD: prueba manual documentada.
+  - Evidencia: `test_new_language_only_needs_catalog` añade `rust` al catálogo en tiempo
+    de test y el endpoint lo devuelve sin tocar vista ni JS. La opción visible del
+    selector vive en el markup de `index.html`; no hay lógica de lenguajes en la vista.
 
 - [x] **T008-16** Añadir `code_metrics.py`, `isort` y `pylint` como quality gate en CI.
   - Requisitos: `RNF-008-02`, `RF-008-06`
@@ -111,9 +115,10 @@ Referencia: `specs/008-code-audit/spec.md`
 
 ## Fase 4 — Reauditoría
 
-- [ ] **T008-17** Repetir la auditoría tras cerrar los hallazgos ALTA y comparar scores.
+- [x] **T008-17** Repetir la auditoría tras cerrar los hallazgos ALTA y comparar scores.
   - Requisito: `RF-008-06`
-  - DoD: nuevo informe en `audits/code/` con sección de comparación.
+  - Evidencia: `audits/code/2026-11-11-reauditoria.md` → **8.8/10 (B)**, 0 ALTA y
+    comparación con la línea base (3.8 → 8.8).
 
 ## Deuda técnica / Backlog
 
@@ -132,3 +137,4 @@ Referencia: `specs/008-code-audit/spec.md`
 | 2026-11-10 | Catálogo extraído a `snippets.py`; `get_python_function` de 151 a 16 líneas (`T008-06`) |
 | 2026-11-10 | Vistas separadas por dominio y validación extraída; `views.py` de 183 a 7 líneas (`T008-10`, `T008-11`) |
 | 2026-11-11 | Catálogo y JS sin líneas > 100; migración excluida por ser autogenerada (`T008-09`) |
+| 2026-11-11 | Perfil con 5 consultas y lenguajes extensibles; reauditoría 8.8 (B) (`T008-14`, `T008-15`, `T008-17`) |

@@ -10,6 +10,9 @@
 | Herramientas | Python 3.12.1, Django 5.2.6, pylint 3.3.4, isort 5.13.2 |
 | Resultado global | **3.8 / 10 — F** |
 
+> Informe completado el 2026-11-11 con la revisión manual D1–D8 que faltaba. La
+> remediación se evalúa en `audits/code/2026-11-11-reauditoria.md`.
+
 ## 1. Alcance y exclusiones
 
 - Incluido: `backend/`, `syntax_sprint/`, `static/js/`, plantillas y CSS.
@@ -113,3 +116,16 @@ cd syntax_sprint && python manage.py test
   separado; se contrasta con `pylint`.
 - No se midió duplicación exacta ni cobertura (no hay tests).
 - La revisión manual D1–D8 está parcialmente cubierta por esta línea base.
+
+## 10. Revisión manual D1–D8 (completada el 2026-11-11)
+
+| Dimensión | Observación sobre el commit `d85ff1d` | Evidencia |
+| --- | --- | --- |
+| D1 Arquitectura | Vista de 282 líneas que mezcla catálogo, validación y HTTP; sin capa de servicio ni plantilla base | AUD-001, AUD-011, AUD-013 |
+| D2 Escalabilidad | Añadir un lenguaje obliga a editar la vista; historial sin paginación; configuración mezclada | AUD-001, AUD-011 |
+| D3 Legibilidad | Función de 151 líneas, imports duplicados y 68 líneas > 100 (61 Python + 7 JS) | AUD-003…AUD-006 |
+| D4 Errores | `json.loads` sin `try/except`, `KeyError` posibles y guardado silencioso para anónimos | Spec 005 §10 |
+| D5 Testabilidad | Cero tests; fórmulas de WPM/precisión duplicadas en JS | AUD-002, AUD-014 |
+| D6 Rendimiento | Dos agregaciones por request y sin paginación del historial | Spec 005 §10 |
+| D7 Frontend | Clase JS de ~550 líneas, `innerHTML`, intervalos y contadores sin limpiar | AUD-010, AUD-014 |
+| D8 Dependencias/docs | `isort` falla en 5 archivos, README desalineado y versiones sin fijar | AUD-007, AUD-008 |

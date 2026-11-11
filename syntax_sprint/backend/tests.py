@@ -1,10 +1,13 @@
 """Pruebas de seguridad y comportamiento de SyntaxSprint."""
 
 import json
+from unittest import mock
 
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
+from django.db import connection
 from django.test import Client, TestCase
+from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 
 from .models import TypingTestResult
@@ -232,6 +235,22 @@ class SnippetTests(TestCase):
             names.add(response.json()["name"])
         self.assertGreaterEqual(len(names), 3)
 
+    def test_new_language_only_needs_catalog(self):
+        extra = {
+            "python": [{"name": "Hello", "code": "print('hi')"}],
+            "rust": [{"name": "Main", "code": "fn main() {}"}],
+        }
+        with mock.patch.dict(CODE_SNIPPETS, extra, clear=True):
+            response = self.client.post(
+                reverse("get_python_function"),
+                data=json.dumps({"language": "rust"}),
+                content_type="application/json",
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(), {"name": "Main", "code": "fn main() {}"}
+        )
+
 
 class ResultTests(TestCase):
     """Validación y aislamiento de resultados."""
@@ -371,6 +390,20 @@ class ProfileTests(TestCase):
         user.delete()
 
         self.assertEqual(TypingTestResult.objects.count(), 0)
+
+    def test_query_budget(self):
+        user = User.objects.create_user(
+            username="tester", email="tester@example.com", password=PASSWORD
+        )
+        for _ in range(25):
+            TypingTestResult.objects.create(user=user, wpm=50, accuracy=95)
+
+        self.client.force_login(user)
+        with CaptureQueriesContext(connection) as queries:
+            response = self.client.get(reverse("profile"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertLessEqual(len(queries), 5, [q["sql"] for q in queries])
 
 
 class SecurityHeadersTests(TestCase):
