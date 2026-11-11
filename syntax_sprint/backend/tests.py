@@ -324,6 +324,30 @@ class ProfileTests(TestCase):
         self.assertEqual(TypingTestResult.objects.count(), 0)
 
 
+class SecurityHeadersTests(TestCase):
+    """Cabeceras de seguridad añadidas por el middleware."""
+
+    def test_csp_header_on_index(self):
+        response = self.client.get(reverse("index"))
+        policy = response.headers.get("Content-Security-Policy")
+        self.assertIsNotNone(policy)
+        for directive in (
+            "default-src 'self'",
+            "https://cdn.tailwindcss.com",
+            "https://fonts.gstatic.com",
+            "object-src 'none'",
+            "base-uri 'self'",
+            "form-action 'self'",
+            "frame-ancestors 'none'",
+        ):
+            self.assertIn(directive, policy)
+
+    def test_csp_header_on_not_found(self):
+        response = self.client.get("/ruta-inexistente/")
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("Content-Security-Policy", response.headers)
+
+
 class CsrfTests(TestCase):
     """El token CSRF debe existir en la portada y proteger los POST."""
 

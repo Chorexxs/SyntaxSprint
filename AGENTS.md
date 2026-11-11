@@ -20,7 +20,7 @@ historial del usuario y calcula promedios.
 | JavaScript | Vanilla ES6+ (clase `TypingTest`); jQuery 3.x permitido |
 | Servidor | Gunicorn (`syntax_sprint.wsgi`) |
 | Configuración | `python-decouple` + `.env` |
-| Pruebas | `django.test.TestCase` (31 tests, suite en verde) |
+| Pruebas | `django.test.TestCase` (33 tests, suite en verde) |
 | Lint | `pylint`, `isort` |
 | App principal | `backend` |
 
@@ -290,17 +290,15 @@ Al terminar:
 
 ## 8. Deuda técnica conocida (priorizada)
 
-Estado verificado el 2026-11-11: `manage.py check` 0 issues, `manage.py test` 31 tests
+Estado verificado el 2026-11-11: `manage.py check` 0 issues, `manage.py test` 33 tests
 OK, `isort --check-only` sin avisos. La antigua deuda "suite de pruebas vacía" ya está
 cerrada.
 
-| Prioridad | Deuda | Feature | Tarea |
-| --- | --- | --- | --- |
-| 1 | Sin política CSP ni revisión de cabeceras | 009 | T009-28 |
+No hay deuda priorizada abierta. Queda como backlog de producto compilar Tailwind
+localmente y eliminar el CDN (`006`/`007`).
 
 > No quedan hallazgos **CRÍTICOS** abiertos. Evidencia:
-> `audits/security/2026-11-11-verificacion.md`. Único pendiente de seguridad: la política
-> CSP (`T009-28`).
+> `audits/security/2026-11-11-verificacion.md`.
 
 ## 9. Seguridad — reglas rápidas
 

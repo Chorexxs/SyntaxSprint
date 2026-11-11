@@ -152,9 +152,11 @@ Referencia: `specs/009-cybersecurity/spec.md`
     (`django_session` vacío). La BD local se recreó vacía.
   - DoD: `django_session` vacío y usuarios obligados a cambiar contraseña.
 
-- [ ] **T009-28** Añadir una política CSP y revisar cabeceras de seguridad.
+- [x] **T009-28** Añadir una política CSP y revisar cabeceras de seguridad.
   - Requisito: `RF-009-06`
-  - DoD: `Content-Security-Policy` presente y sin errores en consola.
+  - Evidencia: `backend/middleware.py` añade `Content-Security-Policy` a todas las
+    respuestas (incluidos 404). Verificado en local: Tailwind carga, el fondo aplica el
+    token y la consola no muestra violaciones CSP. Tests `SecurityHeadersTests`.
 
 ## Deuda técnica / Backlog
 
@@ -175,3 +177,4 @@ Referencia: `specs/009-cybersecurity/spec.md`
 | 2026-11-10 | Historial purgado, force-push, repo privado y Pages despublicado |
 | 2026-11-11 | Verificación local: PII fuera del repo, historial sin CRÍTICAS, `check --deploy` OK, 500 sin trazas y BD local saneada |
 | 2026-11-11 | Producción sin cuentas ni sesiones; backup previo al despliegue y acciones de GitHub confirmadas |
+| 2026-11-11 | CSP activa y versión del CDN de Tailwind corregida a 3.4.17 |

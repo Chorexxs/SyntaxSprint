@@ -161,6 +161,7 @@ Revisar manualmente:
 | `SECURE_HSTS_SECONDS` | > 0 en producción |
 | `SECURE_CONTENT_TYPE_NOSNIFF` | `True` |
 | `X_FRAME_OPTIONS` | `DENY` |
+| `Content-Security-Policy` | Presente en todas las respuestas y sin violaciones en consola |
 | `CSRF_TRUSTED_ORIGINS` | Dominios reales |
 | Admin | No expuesto sin auth y rate limiting |
 

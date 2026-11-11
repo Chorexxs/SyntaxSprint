@@ -4,7 +4,7 @@ Actualizada: 2026-11-11
 Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 
 > Verificación ejecutada el 2026-11-11: `manage.py check` → 0 issues,
-> `manage.py test` → 31 tests OK, `isort --check-only syntax_sprint/` → sin avisos.
+> `manage.py test` → 33 tests OK, `isort --check-only syntax_sprint/` → sin avisos.
 > Ver las notas al final para las divergencias código ↔ spec.
 
 ## 000 — Visión de producto

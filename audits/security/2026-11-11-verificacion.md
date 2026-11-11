@@ -26,6 +26,8 @@
 | BD local con PII | `manage.py shell` antes de borrar | 6 usuarios / 31 resultados → eliminada y recreada vacía (0/0) |
 | Producción | `insforge db query` sobre `auth_user` y `django_session` | 0 usuarios, 0 resultados, 0 sesiones |
 | Backup previo al despliegue | `insforge db export -o <temp>/prod-backup-2026-11-11.sql` | 14.575 bytes, fuera del repositorio |
+| CSP | `GET /` y `GET /ruta-inexistente/` | `Content-Security-Policy` en todas las respuestas |
+| Tailwind | `typeof window.tailwind` en Chrome | `object`; fondo `rgb(50, 52, 55)` y sin violaciones CSP |
 
 ## 2. Acciones del responsable
 
@@ -35,6 +37,6 @@
 | Reset de contraseñas / aviso a usuarios | No aplica: producción tiene 0 cuentas y la BD local se eliminó |
 | Secret Scanning, Push Protection y Dependabot | Hecho (2026-11-11) |
 | Sesiones de producción | `django_session` vacío |
-| Política CSP (`T009-28`) | Pendiente |
+| Política CSP (`T009-28`) | Hecho (2026-11-11) |
 
 > Sin secretos ni datos personales en este informe.
