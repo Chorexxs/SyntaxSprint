@@ -120,6 +120,34 @@ Referencia: `specs/008-code-audit/spec.md`
   - Evidencia: `audits/code/2026-11-11-reauditoria.md` → **8.8/10 (B)**, 0 ALTA y
     comparación con la línea base (3.8 → 8.8).
 
+## Fase 5 — Hallazgos de la reauditoría (2026-11-11)
+
+- [ ] **T008-18** Corregir el comentario obsoleto de `theme.js`.
+  - Requisito: `RF-008-09`
+  - Archivos: `static/js/theme.js`
+  - Evidencia: el comentario dice "script inline"; `base.html:12` carga
+    `theme-init.js` (AUD-013, BAJA).
+  - DoD: el comentario describe el archivo externo.
+
+- [ ] **T008-19** Configurar `LOGGING` con formato, nivel y handler de consola.
+  - Requisitos: `RF-008-11`, `RF-008-04`
+  - Archivos: `syntax_sprint/settings.py`
+  - Evidencia: sin `LOGGING`, Django usa el default a stderr; `analytics.py:16` depende
+    de ese default (AUD-014, BAJA).
+  - DoD: logs con timestamp, nivel y logger de `backend`; verificado en local.
+
+- [ ] **T008-20** Renombrar `_client_ip` para reflejar que lee `REMOTE_ADDR`.
+  - Requisito: `RF-008-11`
+  - Archivos: `backend/auth_views.py`
+  - Evidencia: `auth_views.py:81-83` (AUD-015, BAJA; coordinado con `T009-29`).
+  - DoD: nombre sin ambigüedad y tests en verde.
+
+- [ ] **T008-21** Pasar un único `since` a las métricas del informe.
+  - Requisito: `RF-008-03`
+  - Archivos: `backend/analytics.py`
+  - Evidencia: `build_report` recalcula la ventana por métrica (AUD-016, INFO).
+  - DoD: una sola resolución de ventana por informe.
+
 ## Deuda técnica / Backlog
 
 - [ ] Medir duplicación real con `pylint`/`jscpd`.
@@ -138,3 +166,4 @@ Referencia: `specs/008-code-audit/spec.md`
 | 2026-11-10 | Vistas separadas por dominio y validación extraída; `views.py` de 183 a 7 líneas (`T008-10`, `T008-11`) |
 | 2026-11-11 | Catálogo y JS sin líneas > 100; migración excluida por ser autogenerada (`T008-09`) |
 | 2026-11-11 | Perfil con 5 consultas y lenguajes extensibles; reauditoría 8.8 (B) (`T008-14`, `T008-15`, `T008-17`) |
+| 2026-11-11 | Reauditoría post-analítica: 8.55 (B), 0 ALTA y 4 hallazgos menores |

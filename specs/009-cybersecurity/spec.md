@@ -334,6 +334,11 @@ y las 6 cuentas más las 2 contraseñas hardcodeadas deben considerarse comprome
 
 > Detalle completo en `audits/security/2026-11-10-linea-base.md`.
 
+> Reauditoría post-analítica del 2026-11-11:
+> `audits/security/2026-11-11-auditoria-post-analitica.md` → riesgo **MEDIO**, 0
+> CRÍTICAS y 0 ALTAS reales, 3 MEDIAS y 3 BAJAS abiertas (SEC-016…SEC-021). Las 3
+> ALTAS del historial se confirmaron como falsos positivos (SEC-022).
+
 ## 14. Fuera de alcance
 
 - Explotación de vulnerabilidades.

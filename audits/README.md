@@ -37,6 +37,8 @@ audits/
 | 2026-11-10 | Dependencias | `dependencies/2026-11-10-actualizacion.md` | 0 vulnerabilidades; parches aplicados |
 | 2026-11-11 | Código | `code/2026-11-11-reauditoria.md` | 8.8/10 (B); 0 hallazgos ALTA |
 | 2026-11-11 | Seguridad | `security/2026-11-11-verificacion.md` | PII y secretos cerrados; quedan acciones del responsable |
+| 2026-11-11 | Código | `code/2026-11-11-auditoria-post-analitica.md` | 8.55/10 (B); 0 ALTA |
+| 2026-11-11 | Seguridad | `security/2026-11-11-auditoria-post-analitica.md` | MEDIO; 0 CRÍTICAS/ALTAS, 3 MEDIAS |
 
 > Informe interno; no exponer fuera del repositorio. El historial está purgado, el
 > repositorio es privado, Pages devuelve 404 y la `SECRET_KEY` de producción está

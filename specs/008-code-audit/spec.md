@@ -276,6 +276,10 @@ Crear `audits/code/AAAA-MM-DD-<alcance>.md` usando
 
 > Reauditoría del 2026-11-11: `audits/code/2026-11-11-reauditoria.md` → **8.8/10 (B)**,
 > 0 hallazgos ALTA.
+>
+> Reauditoría post-analítica del 2026-11-11:
+> `audits/code/2026-11-11-auditoria-post-analitica.md` → **8.55/10 (B)**, 0 ALTA y
+> 4 hallazgos menores (AUD-013…AUD-016).
 
 ## 13. Fuera de alcance
 

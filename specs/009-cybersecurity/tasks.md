@@ -159,6 +159,51 @@ Referencia: `specs/009-cybersecurity/spec.md`
     tema, Tailwind compilado y admin, sin violaciones en consola. Tests
     `SecurityHeadersTests`.
 
+## Fase 7 — Hallazgos de la reauditoría (2026-11-11)
+
+- [ ] **T009-29** Resolver la IP real del cliente y compartir el contador de intentos.
+  - Requisitos: `RF-009-07`, `RNF-009-02`
+  - Archivos: `backend/auth_views.py`, `syntax_sprint/settings.py`, `gunicorn.conf.py`
+  - Evidencia del hallazgo: sonda local con `REMOTE_ADDR` fijo → 5 fallos, el 6.º
+    bloquea y un login correcto de la misma IP también; otra IP entra. Caché
+    `LocMemCache`. Detalle en `audits/security/2026-11-11-auditoria-post-analitica.md`
+    (SEC-016, MEDIA).
+  - DoD: IP real verificada en producción, `X-Forwarded-For` solo desde el proxy y
+    caché compartida con clave `usuario+IP`.
+
+- [ ] **T009-30** Proteger el admin contra fuerza bruta.
+  - Requisito: `RF-009-07`
+  - Archivos: `syntax_sprint/settings.py`, `backend/middleware.py`
+  - Evidencia del hallazgo: `/admin/` sin límite de intentos ni 2FA (SEC-017, MEDIA).
+  - DoD: rate limiting en `/admin/login/` y 2FA o restricción por IP documentada.
+
+- [ ] **T009-31** Programar la purga de analítica y limitar el endpoint de fragmentos.
+  - Requisitos: `RF-009-11`, `RF-009-06`
+  - Archivos: `render.yaml`, `backend/snippet_views.py`
+  - Evidencia del hallazgo: `GET /get_python_function` inserta una fila sin auth y la
+    purga es manual (SEC-018, MEDIA).
+  - DoD: purga periódica configurada y endpoint con límite por IP.
+
+- [ ] **T009-32** Rechazar ventanas no positivas en `purge_analytics`.
+  - Requisito: `RF-009-06`
+  - Archivos: `backend/analytics.py`, `backend/management/commands/purge_analytics.py`
+  - Evidencia del hallazgo: `--days -1` deja el corte en el futuro y borra todo
+    (SEC-019, BAJA).
+  - DoD: `days >= 1` validado con `CommandError` y prueba.
+
+- [ ] **T009-33** Subir HSTS a un año tras verificar HTTPS estable.
+  - Requisito: `RF-009-06`
+  - Archivos: `syntax_sprint/settings.py`
+  - Evidencia del hallazgo: `SECURE_HSTS_SECONDS = 3600` (SEC-020, BAJA).
+  - DoD: `31536000` en producción y sitio accesible sin errores de certificado.
+
+- [ ] **T009-34** Fijar las GitHub Actions por SHA.
+  - Requisito: `RF-009-10`
+  - Archivos: `.github/workflows/ci.yml`
+  - Evidencia del hallazgo: acciones por etiqueta y `sha_pinning_required=false`
+    (SEC-021, BAJA).
+  - DoD: cada `uses:` apunta a un SHA completo y el workflow sigue en verde.
+
 ## Deuda técnica / Backlog
 
 - [ ] Pre-commit hook con `scan_secrets.py` y `gitleaks`.
@@ -179,3 +224,4 @@ Referencia: `specs/009-cybersecurity/spec.md`
 | 2026-11-11 | Verificación local: PII fuera del repo, historial sin CRÍTICAS, `check --deploy` OK, 500 sin trazas y BD local saneada |
 | 2026-11-11 | Producción sin cuentas ni sesiones; backup previo al despliegue y acciones de GitHub confirmadas |
 | 2026-11-11 | CSP estricta y Tailwind compilado localmente (sin CDN ni `unsafe-inline`) |
+| 2026-11-11 | Reauditoría post-analítica: 0 CRÍTICAS/ALTAS; 3 MEDIAS y 3 BAJAS nuevas |
