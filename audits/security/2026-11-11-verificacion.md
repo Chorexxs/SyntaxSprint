@@ -45,8 +45,9 @@
 
 | Control | Resultado |
 | --- | --- |
-| `/` | 200; Tailwind 3.4.17 carga (`typeof window.tailwind === "object"`) y aplica `rgb(50, 52, 55)` |
-| CSP | Presente y estricta (sin `'unsafe-inline'`); consola sin violaciones |
+| `/` | 200; `tailwind.css` local cargado y `body` con `rgb(50, 52, 55)`; sin CDN |
+| CSP | Estricta (sin `'unsafe-inline'`); consola sin violaciones |
+| Admin | Login, alta de resultado y grupos sin violaciones CSP |
 | Tailwind | Compilado localmente (`static/css/tailwind.css`), sin CDN |
 | `/login` | 200 con `for="login-username"` |
 | `/profile` sin sesión | 302 → `/login?next=/profile` |
