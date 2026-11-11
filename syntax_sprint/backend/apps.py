@@ -1,3 +1,5 @@
+"""Configuración de la app backend."""
+
 from django.apps import AppConfig
 
 

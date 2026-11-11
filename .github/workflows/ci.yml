@@ -38,8 +38,23 @@ jobs:
             requirements.txt
             requirements-dev.txt
 
+      - name: Configurar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: package-lock.json
+
       - name: Instalar dependencias
         run: python -m pip install -r requirements-dev.txt
+
+      - name: Instalar Tailwind
+        run: npm ci
+
+      - name: Comprobar el CSS compilado
+        run: |
+          npm run build:css
+          git diff --exit-code -- syntax_sprint/static/css/tailwind.css
 
       - name: Comprobar dependencias
         run: python specs/tools/check_dependencies.py --strict
@@ -60,8 +75,9 @@ jobs:
         working-directory: syntax_sprint
         run: python manage.py test
 
-      # Informativo hasta cerrar T008-09 y T008-10 (ver T008-16).
-      - name: Pylint (informativo)
+      - name: Pylint
         working-directory: syntax_sprint
-        run: pylint backend
-        continue-on-error: true
+        run: pylint backend --rcfile=../.pylintrc
+
+      - name: Métricas de código
+        run: python specs/tools/code_metrics.py --strict

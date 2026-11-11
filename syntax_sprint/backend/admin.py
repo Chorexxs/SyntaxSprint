@@ -1,3 +1,5 @@
+"""Registro de modelos en el admin de Django."""
+
 from django.contrib import admin
 
 from .models import TypingTestResult

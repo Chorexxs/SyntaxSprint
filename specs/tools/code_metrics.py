@@ -196,6 +196,69 @@ def analyze_javascript(path: Path) -> FileMetric:
     return metric
 
 
+def function_reasons(function: FunctionMetric) -> list[str]:
+    """Motivos por los que una función supera los umbrales configurados."""
+    reasons: list[str] = []
+    if function.complexity > MAX_COMPLEXITY:
+        reasons.append(f"complejidad {function.complexity}")
+    if function.lines > MAX_FUNCTION_LINES:
+        reasons.append(f"{function.lines} líneas")
+    if function.max_depth > MAX_NESTING:
+        reasons.append(f"anidamiento {function.max_depth}")
+    if function.params > MAX_PARAMS:
+        reasons.append(f"{function.params} parámetros")
+    return reasons
+
+
+def file_signals(metric: FileMetric) -> list[str]:
+    """Señales de calidad detectadas en un archivo."""
+    signals: list[str] = []
+    if metric.long_lines:
+        signals.append(f"{metric.long_lines} líneas largas")
+    if metric.todos:
+        signals.append(f"{metric.todos} TODO/FIXME")
+    if metric.bare_except:
+        signals.append(f"{metric.bare_except} except desnudo")
+    if metric.broad_except:
+        signals.append(f"{metric.broad_except} except Exception")
+    if metric.prints:
+        signals.append(f"{metric.prints} print()")
+    if metric.js_findings:
+        signals.append(f"{len(metric.js_findings)} riesgos JS")
+    return signals
+
+
+def is_migration(metric: FileMetric) -> bool:
+    """Indica si el archivo es una migración autogenerada."""
+    return "/migrations/" in metric.path.replace("\\", "/")
+
+
+def strict_violations(metrics: list[FileMetric]) -> list[str]:
+    """Problemas que deben hacer fallar el quality gate."""
+    problems: list[str] = []
+    for metric in metrics:
+        if is_migration(metric):
+            continue
+        for function in metric.functions:
+            reasons = function_reasons(function)
+            if reasons:
+                problems.append(
+                    f"{metric.path}:{function.line} {function.name} -> "
+                    + ", ".join(reasons)
+                )
+        signals = file_signals(metric)
+        if signals:
+            problems.append(f"{metric.path}: " + ", ".join(signals))
+        if Path(metric.path).name != "tests.py":
+            for function in metric.functions:
+                if not function.typed:
+                    problems.append(
+                        f"{metric.path}:{function.line} {function.name} "
+                        "sin anotaciones"
+                    )
+    return problems
+
+
 def render(metrics: list[FileMetric]) -> None:
     """Imprime un informe legible."""
     total_functions = sum(len(item.functions) for item in metrics)
@@ -207,15 +270,7 @@ def render(metrics: list[FileMetric]) -> None:
     flagged = 0
     for metric in metrics:
         for function in metric.functions:
-            reasons = []
-            if function.complexity > MAX_COMPLEXITY:
-                reasons.append(f"complejidad {function.complexity}")
-            if function.lines > MAX_FUNCTION_LINES:
-                reasons.append(f"{function.lines} líneas")
-            if function.max_depth > MAX_NESTING:
-                reasons.append(f"anidamiento {function.max_depth}")
-            if function.params > MAX_PARAMS:
-                reasons.append(f"{function.params} parámetros")
+            reasons = function_reasons(function)
             if reasons:
                 flagged += 1
                 print(f"  {metric.path}:{function.line} {function.name} -> "
@@ -225,19 +280,7 @@ def render(metrics: list[FileMetric]) -> None:
 
     print("\nSeñales por archivo:")
     for metric in metrics:
-        signals = []
-        if metric.long_lines:
-            signals.append(f"{metric.long_lines} líneas largas")
-        if metric.todos:
-            signals.append(f"{metric.todos} TODO/FIXME")
-        if metric.bare_except:
-            signals.append(f"{metric.bare_except} except desnudo")
-        if metric.broad_except:
-            signals.append(f"{metric.broad_except} except Exception")
-        if metric.prints:
-            signals.append(f"{metric.prints} print()")
-        if metric.js_findings:
-            signals.append(f"{len(metric.js_findings)} riesgos JS")
+        signals = file_signals(metric)
         if signals:
             print(f"  {metric.path}: " + ", ".join(signals))
 
@@ -258,6 +301,11 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Métricas de código de SyntaxSprint")
     parser.add_argument("--path", default="syntax_sprint", help="directorio a analizar")
     parser.add_argument("--json", action="store_true", help="salida en JSON")
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="falla si hay funciones fuera de umbral o señales de calidad",
+    )
     args = parser.parse_args()
 
     base = (ROOT / args.path).resolve()
@@ -273,6 +321,15 @@ def main() -> int:
         print(json.dumps([asdict(item) for item in metrics], ensure_ascii=False, indent=2))
     else:
         render(metrics)
+
+    if args.strict:
+        problems = strict_violations(metrics)
+        if problems:
+            print("\nQuality gate: incumplimientos detectados")
+            for problem in problems:
+                print(f"  {problem}")
+            return 1
+        print("\nQuality gate: sin incumplimientos")
     return 0
 
 

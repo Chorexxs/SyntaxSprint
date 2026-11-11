@@ -87,7 +87,10 @@ python manage.py check --deploy
 # Lint e imports (desde la raíz)
 isort --check-only syntax_sprint/
 isort syntax_sprint/
-pylint syntax_sprint/
+
+# Lint (desde syntax_sprint/)
+cd syntax_sprint
+pylint backend --rcfile=../.pylintrc
 
 # Producción
 python manage.py collectstatic --noinput
@@ -295,8 +298,8 @@ Al terminar:
 ## 8. Deuda técnica conocida (priorizada)
 
 Estado verificado el 2026-11-11: `manage.py check` 0 issues, `manage.py test` 33 tests
-OK, `isort --check-only` sin avisos. La antigua deuda "suite de pruebas vacía" ya está
-cerrada.
+OK, `isort --check-only` sin avisos, `pylint` 10.00/10 y `code_metrics.py --strict` sin
+incumplimientos. La antigua deuda "suite de pruebas vacía" ya está cerrada.
 
 No hay deuda priorizada abierta. Tailwind se compila localmente desde el 2026-11-11
 (`npm run build:css`).

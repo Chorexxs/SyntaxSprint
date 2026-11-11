@@ -1,3 +1,5 @@
+"""Rutas de la app backend."""
+
 from django.urls import path
 
 from . import auth_views, result_views, snippet_views, views

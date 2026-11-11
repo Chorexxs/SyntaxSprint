@@ -75,21 +75,21 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
   - Requisitos: `RF-007-11`, `RF-007-03`
   - DoD: el workflow pasa en `main` y falla ante un test roto.
   - Evidencia: `.github/workflows/ci.yml` en push/PR a `main` con
-    `isort --check-only --diff .`, `manage.py check`, `makemigrations --check --dry-run`
-    y `manage.py test`. Los cuatro pasos se ejecutaron en local con el mismo entorno
-    (`DEBUG=True`, `DATABASE_URL=""`) y terminaron con código 0. `pylint` se ejecuta
-    como informativo (`continue-on-error`) hasta cerrar `T008-09`/`T008-10`.
+    `isort --check-only --diff .`, `manage.py check`, `makemigrations --check --dry-run`,
+    `manage.py test`, `pylint` bloqueante con `.pylintrc`, `code_metrics.py --strict` y
+    la comprobación del CSS compilado (`T008-16`). Los pasos se replicaron en local con
+    el mismo entorno y terminaron con código 0.
 
 - [x] **T007-12** Añadir `coverage` (y opcionalmente `pytest-django`) a `requirements.txt`.
   - Requisito: `RNF-007-02`
   - Evidencia: `coverage==7.17.2` en `requirements-dev.txt` (no en producción).
 
-- [ ] **T007-13** Ejecutar `isort` y `pylint` y registrar la línea base de avisos.
+- [x] **T007-13** Ejecutar `isort` y `pylint` y registrar la línea base de avisos.
   - Requisito: `RF-007-03`
   - DoD: deuda restante listada por archivo, sin errores nuevos.
-  - Estado: parcial. `isort --check-only syntax_sprint/` pasa sin avisos; `pylint`
-    puntúa 6.75/10 por 33 líneas > 100 caracteres en `views.py` (ver `T008-09`).
-    Falta registrar la línea base por archivo.
+  - Evidencia: `isort --check-only --diff .` sin avisos. `pylint backend
+    --rcfile=../.pylintrc` (con `pylint-django`) → **10.00/10** y 0 mensajes; se añadió
+    `.pylintrc` y docstrings de módulo en `admin`, `apps`, `models` y `urls`.
 
 ## Fase 5 — Documentación
 

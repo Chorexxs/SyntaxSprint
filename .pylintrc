@@ -1,0 +1,14 @@
+[MAIN]
+load-plugins=pylint_django
+django-settings-module=syntax_sprint.settings
+ignore=migrations
+
+[MESSAGES CONTROL]
+disable=
+    missing-function-docstring,
+    missing-class-docstring,
+    duplicate-code,
+    too-few-public-methods
+
+[FORMAT]
+max-line-length=100

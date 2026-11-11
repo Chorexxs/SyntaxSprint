@@ -100,12 +100,14 @@ Referencia: `specs/008-code-audit/spec.md`
   - Requisito: `RF-008-12`
   - DoD: prueba manual documentada.
 
-- [ ] **T008-16** Añadir `code_metrics.py`, `isort` y `pylint` como quality gate en CI.
+- [x] **T008-16** Añadir `code_metrics.py`, `isort` y `pylint` como quality gate en CI.
   - Requisitos: `RNF-008-02`, `RF-008-06`
   - Coordina con: `T007-11`
-  - Estado: parcial. `isort` ya es bloqueante en CI; `pylint` se ejecuta como
-    informativo (`continue-on-error`) y `code_metrics.py` aún no está en el workflow.
-    Será bloqueante al cerrar `T008-09` y `T008-10`.
+  - Evidencia: CI ejecuta `isort` (ya bloqueante), `pylint backend --rcfile=../.pylintrc`
+    y `code_metrics.py --strict`; `code_metrics` falla ante funciones fuera de umbral,
+    señales o funciones sin tipar (las migraciones quedan exentas). También compila
+    Tailwind y falla si `tailwind.css` no está actualizado. Workflow validado como YAML y
+    comandos replicados en local.
 
 ## Fase 4 — Reauditoría
 
