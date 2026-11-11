@@ -32,9 +32,9 @@ Referencia: `specs/009-cybersecurity/spec.md`
 
 - [!] **T009-06** Rotar `SECRET_KEY` y forzar el reset de contraseñas de los 6 usuarios.
   - Requisito: `RF-009-14`
-  - Estado: `SECRET_KEY` local rotada (86 chars, sin prefijo inseguro).
-  - Bloqueada por: acceso al entorno de producción y comunicación a usuarios.
-  - DoD: sesiones invalidadas y usuarios notificados.
+  - Estado: `SECRET_KEY` rotada en Render (86 chars, sin prefijo inseguro). Pendiente el
+    reset de contraseñas y la comunicación a los 6 usuarios.
+  - Bloqueada por: decisión sobre el reset y comunicación a usuarios.
 
 - [x] **T009-07** Purgar `db.sqlite3` del historial con `git filter-repo` y force-push coordinado.
   - Requisito: `RF-009-14`
@@ -59,17 +59,16 @@ Referencia: `specs/009-cybersecurity/spec.md`
   - Evidencia: `check --deploy` con `DEBUG=False` → 0 issues.
   - DoD: `check --deploy` sin warnings W004/W008/W012/W016.
 
-- [!] **T009-11** Sustituir `SECRET_KEY` débil por una clave aleatoria de ≥ 50 caracteres.
+- [x] **T009-11** Sustituir `SECRET_KEY` débil por una clave aleatoria de ≥ 50 caracteres.
   - Requisito: `RF-009-06`
-  - Estado: rotada en local (86 chars, sin `django-insecure-`).
-  - Bloqueada por: acceso al `.env` de producción.
-  - DoD: `check --deploy` sin W009 en producción.
+  - Evidencia: rotada en Render con 86 caracteres (auditoría 2026-11-10) y
+    `check --deploy` con `DEBUG=False` → 0 issues (2026-11-11).
 
-- [!] **T009-12** Asegurar `DEBUG=False` en producción.
+- [x] **T009-12** Asegurar `DEBUG=False` en producción.
   - Requisito: `RF-009-06`
-  - Estado: bloque de producción listo; el `.env` local sigue en `True`.
-  - Bloqueada por: acceso al entorno de producción.
-  - DoD: `check --deploy` sin W018.
+  - Evidencia: la auditoría del 2026-11-10 verificó `DEBUG=False` en Render y
+    `check --deploy` con `DEBUG=False` no reporta issues (2026-11-11). El `.env` local
+    sigue en `True` a propósito para desarrollo.
 
 - [x] **T009-13** Añadir `{% csrf_token %}` a la portada (coordina con `T004-08`).
   - Requisito: `RF-009-08`
@@ -116,7 +115,8 @@ Referencia: `specs/009-cybersecurity/spec.md`
 
 - [x] **T009-22** Reejecutar el escáner de contenido e historial y comparar con la línea base.
   - Requisitos: `RF-009-05`, `RF-009-14`
-  - Estado: contenido limpio; historial pendiente de purga.
+  - Estado: contenido e historial limpios; las 3 ALTAS restantes son falsos positivos
+    documentados. Evidencia en `audits/security/2026-11-11-verificacion.md`.
   - DoD: nuevo informe en `audits/security/` sin hallazgos CRÍTICA.
 
 ## Fase 6 — Hallazgos de la auditoría completa (2026-11-10)
@@ -146,7 +146,8 @@ Referencia: `specs/009-cybersecurity/spec.md`
 - [!] **T009-27** Invalidar las 8 sesiones de la base de datos y forzar el reset de las
   6 cuentas afectadas.
   - Requisito: `RF-009-14`
-  - Estado: 8 sesiones locales borradas; producción y contraseñas pendientes.
+  - Estado: 8 sesiones locales eliminadas y BD local recreada vacía; sesiones de
+    producción y contraseñas pendientes.
   - Bloqueada por: acceso a producción y comunicación a usuarios.
   - DoD: `django_session` vacío y usuarios obligados a cambiar contraseña.
 
@@ -171,3 +172,4 @@ Referencia: `specs/009-cybersecurity/spec.md`
 | 2026-11-10 | Creación del procedimiento, escáner y línea base crítica |
 | 2026-11-10 | Auditoría completa: fuga activa confirmada en GitHub y GitHub Pages |
 | 2026-11-10 | Historial purgado, force-push, repo privado y Pages despublicado |
+| 2026-11-11 | Verificación local: PII fuera del repo, historial sin CRÍTICAS, `check --deploy` OK y BD local saneada |

@@ -35,6 +35,9 @@ audits/
 | 2026-11-10 | Seguridad | `security/2026-11-10-linea-base.md` | CRÍTICO |
 | 2026-11-10 | Seguridad | `security/2026-11-10-auditoria-completa.md` | Contenido — producción verificada |
 | 2026-11-10 | Dependencias | `dependencies/2026-11-10-actualizacion.md` | 0 vulnerabilidades; parches aplicados |
+| 2026-11-11 | Seguridad | `security/2026-11-11-verificacion.md` | PII y secretos cerrados; quedan acciones del responsable |
 
-> Informe interno; no exponer fuera del repositorio. El historial ya está purgado, el
-> repositorio es privado y Pages devuelve 404. La rotación de producción sigue pendiente.
+> Informe interno; no exponer fuera del repositorio. El historial está purgado, el
+> repositorio es privado, Pages devuelve 404 y la `SECRET_KEY` de producción está
+> rotada. Quedan la revocación de API keys y el reset de contraseñas de los usuarios
+> afectados.
