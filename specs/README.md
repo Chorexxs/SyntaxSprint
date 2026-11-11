@@ -33,7 +33,8 @@ specs/
 ├── 007-quality-and-delivery/  # Pruebas, lint, seguridad, despliegue
 ├── 008-code-audit/            # Auditoría de código y arquitectura bajo demanda
 ├── 009-cybersecurity/         # Auditoría de seguridad y filtraciones bajo demanda
-└── 010-dependencies/          # Actualización de dependencias bajo demanda
+├── 010-dependencies/          # Actualización de dependencias bajo demanda
+└── 011-analytics/             # Analítica de producto sin datos personales
 ```
 
 Los informes generados por las auditorías viven fuera de `specs/`:

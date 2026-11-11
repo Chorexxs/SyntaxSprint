@@ -21,6 +21,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-000-08 | `000-overview/spec.md` | T006-04, T006-13 | CA-006-03 | ✅ |
 | RF-000-09 | `000-overview/spec.md` | T000-07, T008-01 | CA-008-01 | ✅ |
 | RF-000-10 | `000-overview/spec.md` | T000-08, T009-01 | CA-009-01 | ✅ |
+| RF-000-11 | `000-overview/spec.md` | T000-06, T011-01…T011-07 | CA-011-04 | ✅ |
 
 ## 001 — Fundación
 
@@ -186,17 +187,29 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-010-11 | T010-01 | CA-010-06 | ✅ |
 | RF-010-12 | T010-05, T010-06 | requirements exacto | ✅ |
 
+## 011 — Analítica de producto
+
+| Requisito | Tarea | Verificación | Estado |
+| --- | --- | --- | --- |
+| RF-011-01 | T011-01, T011-02, T011-03 | CA-011-01 | ✅ |
+| RF-011-02 | T011-02, T011-03 | CA-011-03 | ✅ |
+| RF-011-03 | T011-04 | CA-011-04, CA-011-05, CA-011-06 | ✅ |
+| RF-011-04 | T011-04 | CA-011-08 | ✅ |
+| RF-011-05 | T011-05 | CA-011-09 | ✅ |
+| RF-011-06 | T011-02, T011-04 | CA-011-07 | ✅ |
+| RF-011-07 | T011-01 | campos del modelo sin datos personales | ✅ |
+
 ## Notas de verificación
 
 | Comprobación | Comando | Resultado |
 | --- | --- | --- |
 | Sistema | `manage.py check` | 0 issues |
-| Pruebas | `manage.py test` | 39 tests OK (24,6 s, medido con cobertura) |
+| Pruebas | `manage.py test` | 52 tests OK (30,7 s, medido con cobertura) |
 | Imports | `isort --check-only syntax_sprint/` | Sin avisos |
 | Lint | `pylint backend --rcfile=../.pylintrc` | 10.00/10 |
 | CI | `.github/workflows/ci.yml` (run 20) | 14 pasos en verde |
 | Arquitectura | `specs/tools/code_metrics.py` | 0 funciones fuera de umbral; vistas por dominio |
-| Cobertura | `coverage run --source=backend manage.py test` + `coverage report` | 99 % (459 sentencias, 5 sin cubrir) |
+| Cobertura | `coverage run --source=backend manage.py test` + `coverage report` | 99 % (651 sentencias, 6 sin cubrir) |
 | Dependencias | `specs/tools/check_dependencies.py --strict` | OK (0 sin uso, runtime coherente) |
 | Vulnerabilidades | `pip-audit -r requirements.txt` | 0 avisos |
 | BD versionada | `git ls-files \| grep db.sqlite3` | Sin resultados |
@@ -226,7 +239,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 
 | Feature | Total | ✅ | 🟡 | ⬜ |
 | --- | ---: | ---: | ---: | ---: |
-| 000 | 10 | 10 | 0 | 0 |
+| 000 | 11 | 11 | 0 | 0 |
 | 001 | 9 | 9 | 0 | 0 |
 | 002 | 11 | 11 | 0 | 0 |
 | 003 | 8 | 8 | 0 | 0 |
@@ -237,7 +250,8 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | 008 | 12 | 12 | 0 | 0 |
 | 009 | 14 | 14 | 0 | 0 |
 | 010 | 12 | 12 | 0 | 0 |
-| **Total** | **124** | **124** | **0** | **0** |
+| 011 | 7 | 7 | 0 | 0 |
+| **Total** | **132** | **132** | **0** | **0** |
 
 > La matriz se actualiza al cerrar cada tarea. Un requisito no puede pasar a ✅ sin su
 > verificación ejecutada.

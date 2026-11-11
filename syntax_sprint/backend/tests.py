@@ -1,16 +1,23 @@
 """Pruebas de seguridad y comportamiento de SyntaxSprint."""
 
 import json
+from datetime import timedelta
+from io import StringIO
 from unittest import mock
 
+from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-from django.db import connection
+from django.core.management import call_command
+from django.db import DatabaseError, connection
 from django.test import Client, TestCase
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
+from django.utils import timezone
 
-from .models import TypingTestResult
+from .analytics import (share_of_users_with_results, snippet_error_rate,
+                        tests_per_active_user_per_week)
+from .models import SnippetRequest, TypingTestResult
 from .snippets import CODE_SNIPPETS, validate_catalog
 
 PASSWORD = "".join(("Str0ng", "-Pass!2026"))
@@ -461,3 +468,139 @@ class CsrfTests(TestCase):
             HTTP_X_CSRFTOKEN=token,
         )
         self.assertEqual(response.status_code, 200)
+
+
+class AnalyticsTests(TestCase):
+    """Registro de peticiones y métricas de producto (spec 011)."""
+
+    def _post_language(self, language: str):
+        return self.client.post(
+            reverse("get_python_function"),
+            data=json.dumps({"language": language}),
+            content_type="application/json",
+        )
+
+    def test_valid_request_is_recorded(self):
+        response = self._post_language("python")
+
+        self.assertEqual(response.status_code, 200)
+        event = SnippetRequest.objects.get()
+        self.assertEqual(event.language, "python")
+        self.assertEqual(event.status_code, 200)
+        self.assertGreaterEqual(event.duration_ms, 0)
+
+    def test_get_request_is_recorded(self):
+        response = self.client.get(reverse("get_python_function"))
+
+        self.assertEqual(response.status_code, 200)
+        event = SnippetRequest.objects.get()
+        self.assertEqual(event.language, "python")
+        self.assertEqual(event.status_code, 200)
+
+    def test_invalid_json_is_recorded_as_unknown(self):
+        response = self.client.post(
+            reverse("get_python_function"),
+            data="no es json",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        event = SnippetRequest.objects.get()
+        self.assertEqual(event.language, "unknown")
+        self.assertEqual(event.status_code, 400)
+
+    def test_unsupported_language_keeps_the_requested_value(self):
+        response = self._post_language("cobol")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("code", response.json())
+        event = SnippetRequest.objects.get()
+        self.assertEqual(event.language, "cobol")
+        self.assertEqual(event.status_code, 200)
+
+    def test_recording_failure_does_not_break_endpoint(self):
+        target = "backend.analytics.SnippetRequest.objects.create"
+        with mock.patch(target, side_effect=DatabaseError("boom")):
+            with self.assertLogs("backend.analytics", level="ERROR"):
+                response = self._post_language("python")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("code", response.json())
+
+    def test_error_rate(self):
+        SnippetRequest.objects.create(language="python", status_code=200, duration_ms=5)
+        SnippetRequest.objects.create(language="python", status_code=400, duration_ms=5)
+
+        self.assertEqual(snippet_error_rate(), 50.0)
+
+    def test_error_rate_without_data(self):
+        self.assertIsNone(snippet_error_rate())
+
+    def test_tests_per_active_user_per_week(self):
+        first = User.objects.create_user(
+            username="ana", email="ana@example.com", password=PASSWORD
+        )
+        second = User.objects.create_user(
+            username="bea", email="bea@example.com", password=PASSWORD
+        )
+        for user in (first, second):
+            for _ in range(4):
+                TypingTestResult.objects.create(user=user, wpm=50, accuracy=95)
+
+        self.assertEqual(tests_per_active_user_per_week(28), 1.0)
+
+    def test_share_of_users_with_results(self):
+        users = [
+            User.objects.create_user(
+                username=f"user{index}",
+                email=f"user{index}@example.com",
+                password=PASSWORD,
+            )
+            for index in range(4)
+        ]
+        TypingTestResult.objects.create(user=users[0], wpm=50, accuracy=95)
+
+        self.assertEqual(share_of_users_with_results(), 25.0)
+
+    def test_report_without_data(self):
+        output = StringIO()
+
+        call_command("analytics_report", stdout=output)
+
+        self.assertIn("sin datos", output.getvalue())
+
+    def test_report_counts_events(self):
+        SnippetRequest.objects.create(language="python", status_code=200, duration_ms=5)
+        output = StringIO()
+
+        call_command("analytics_report", "--days", "7", stdout=output)
+
+        text = output.getvalue()
+        self.assertIn("últimos 7 días", text)
+        self.assertIn("Eventos de fragmentos", text)
+
+    def test_purge_removes_old_events(self):
+        old = SnippetRequest.objects.create(
+            language="python", status_code=500, duration_ms=1
+        )
+        SnippetRequest.objects.filter(pk=old.pk).update(
+            created_at=timezone.now() - timedelta(days=100)
+        )
+        recent = SnippetRequest.objects.create(
+            language="python", status_code=200, duration_ms=1
+        )
+        output = StringIO()
+
+        call_command("purge_analytics", "--days", "90", stdout=output)
+
+        self.assertFalse(SnippetRequest.objects.filter(pk=old.pk).exists())
+        self.assertTrue(SnippetRequest.objects.filter(pk=recent.pk).exists())
+        self.assertIn("1 eventos eliminados", output.getvalue())
+
+    def test_admin_is_read_only(self):
+        model_admin = admin.site._registry[SnippetRequest]  # pylint: disable=protected-access
+        request = mock.Mock()
+
+        self.assertFalse(model_admin.has_add_permission(request))
+        self.assertFalse(model_admin.has_change_permission(request))
+        self.assertFalse(model_admin.has_delete_permission(request))

@@ -32,18 +32,20 @@ Django (syntax_sprint/)
 ├── backend/result_views.py → guardado de resultados y perfil
 ├── backend/validators.py   → validación de JSON y rangos
 ├── backend/snippets.py     → catálogo de fragmentos
-├── backend/models.py       → TypingTestResult
-└── db.sqlite3              → persistencia
+├── backend/models.py       → TypingTestResult, SnippetRequest
+├── backend/analytics.py    → registro y métricas de producto (spec 011)
+└── db.sqlite3              → persistencia local (producción: PostgreSQL)
 ```
 
 ## 3. Flujo principal
 
 ```text
 1. GET /                      → index.html (público)
-2. POST /get_python_function  → snippet aleatorio {name, code}
+2. POST /get_python_function  → snippet aleatorio {name, code} + evento de analítica
 3. Usuario escribe 30 s       → WPM/accuracy en cliente
 4. POST /save_typing_test_result (auth + CSRF) → crear TypingTestResult
 5. GET /profile (auth)        → historial + promedios
+6. manage.py analytics_report → métricas de la spec 000 §7
 ```
 
 ## 4. Estructura de directorios real
@@ -67,10 +69,12 @@ SyntaxSprint/
     │   ├── result_views.py
     │   ├── validators.py
     │   ├── snippets.py
+    │   ├── analytics.py
+    │   ├── management/commands/analytics_report.py, purge_analytics.py
     │   ├── urls.py
     │   ├── admin.py
     │   ├── tests.py
-    │   └── migrations/0001_initial.py
+    │   └── migrations/0001_initial.py, 0002_snippetrequest.py
     ├── syntax_sprint/
     │   ├── settings.py
     │   └── urls.py
@@ -95,9 +99,10 @@ SyntaxSprint/
 | ADR-01 | Vistas función en lugar de CBV | Simplicidad y tamaño del proyecto | Repetición de `login_required` |
 | ADR-02 | Catálogo de snippets en memoria (`backend/snippets.py`) | Evitar BD para contenido estático | Un módulo de datos grande; se mantiene aparte de las vistas |
 | ADR-03 | Cálculo de WPM en cliente | Feedback en tiempo real | Resultado manipulable; validar en servidor |
-| ADR-04 | SQLite | Simplicidad y despliegue barato | Límites de concurrencia |
+| ADR-04 | SQLite en local; PostgreSQL (InsForge) en producción | Simplicidad en desarrollo y persistencia real | Dos motores que deben comportarse igual; lo cubren los tests |
 | ADR-05 | Tailwind por CDN (sustituido por build local el 2026-11-11) | Sin paso de build | Dependencia de red; versión fijada en 3.4.17 |
 | ADR-06 | Sesiones de Django | Stack nativo | Sin API tokens |
+| ADR-07 | Analítica propia en PostgreSQL | Sin cookies de terceros ni dependencias nuevas | Hay que mantener el modelo, la purga y los comandos |
 
 ## 6. Deuda técnica transversal
 

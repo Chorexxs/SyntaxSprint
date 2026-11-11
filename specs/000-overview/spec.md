@@ -56,6 +56,7 @@ usuario para medir su progreso.
 | C8 | Auditoría de código y arquitectura bajo demanda | `008-code-audit` | Implementada (procedimiento) |
 | C9 | Auditoría de ciberseguridad y filtraciones bajo demanda | `009-cybersecurity` | Implementada (procedimiento) |
 | C10 | Inventario y actualización de dependencias bajo demanda | `010-dependencies` | Implementada (procedimiento) |
+| C11 | Analítica de producto sin datos personales | `011-analytics` | Implementada |
 
 ## 5. Requisitos funcionales de producto
 
@@ -71,6 +72,7 @@ usuario para medir su progreso.
 | RF-000-08 | El sistema debe ser usable en escritorio y móvil. | Media |
 | RF-000-09 | Cuando el usuario lo solicite, el sistema debe auditar el código y la arquitectura con evidencia verificable. | Media |
 | RF-000-10 | Cuando el usuario lo solicite, el sistema debe auditar la seguridad y detectar filtraciones sin revelar secretos. | Alta |
+| RF-000-11 | El sistema debe medir los tests por usuario, el error rate de la API de fragmentos y el porcentaje de registrados que guardan resultados. | Media |
 
 ## 6. Requisitos no funcionales globales
 
@@ -91,6 +93,9 @@ usuario para medir su progreso.
 | Error rate de la API de fragmentos | < 1 % |
 | Usuarios que guardan al menos un resultado | ≥ 60 % de registrados |
 | Lighthouse Performance (portada) | ≥ 90 |
+
+Instrumentación: `manage.py analytics_report` (spec 011). Lighthouse se mide con la
+herramienta externa, no con eventos propios.
 
 ## 8. Glosario
 

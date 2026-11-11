@@ -13,14 +13,17 @@ Referencia: `specs/000-overview/spec.md`
   - Evidencia: aprobado por el responsable el 2026-11-11, tras verificar 39 tests,
     cobertura 99 %, CI en verde y sitio en producción. Los milestones M1–M6 quedan
     cerrados; el trabajo futuro vive en el backlog de cada `tasks.md`.
-- [ ] **T000-06** Definir métricas de éxito medibles en analítica (requiere 007).
+- [x] **T000-06** Definir métricas de éxito medibles en analítica (requiere 007).
+  - Evidencia: cumplida por `specs/011-analytics`. `manage.py analytics_report` mide
+    tests por usuario y semana, error rate de `/get_python_function` y porcentaje de
+    registrados con resultado; `purge_analytics` aplica la retención de 90 días.
+    Lighthouse queda como medición externa documentada.
 - [x] **T000-07** Definir el procedimiento de auditoría de código (spec 008).
 - [x] **T000-08** Definir el procedimiento de auditoría de seguridad (spec 009).
 - [x] **T000-09** Definir el procedimiento de actualización de dependencias (spec 010).
 
-> `T000-06` sigue abierta: las métricas están definidas en `specs/000-overview/spec.md`
-> §7, pero no hay analítica que las mida. Necesita su propia spec antes de escribir
-> código (ver `specs/README.md` §6).
+> No quedan tareas abiertas en el roadmap. El trabajo futuro vive en el backlog de cada
+> `tasks.md` y en specs nuevas.
 
 ## Milestones
 
@@ -78,3 +81,4 @@ Referencia: `specs/000-overview/spec.md`
 | 2026-11-10 | Creación del roadmap y estructura SDD |
 | 2026-11-11 | Cierre de M2–M5 con evidencia verificada; T000-05 y T000-06 quedan abiertas |
 | 2026-11-11 | T000-05 aprobada por el responsable; solo queda T000-06 (analítica) |
+| 2026-11-11 | T000-06 cerrada con la spec 011: comandos de métricas y purga |

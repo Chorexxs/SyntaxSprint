@@ -20,7 +20,7 @@ historial del usuario y calcula promedios.
 | JavaScript | Vanilla ES6+ (clase `TypingTest`); jQuery 3.x permitido |
 | Servidor | Gunicorn (`syntax_sprint.wsgi`) |
 | Configuración | `python-decouple` + `.env` |
-| Pruebas | `django.test.TestCase` (39 tests, suite en verde) |
+| Pruebas | `django.test.TestCase` (52 tests, suite en verde) |
 | Lint | `pylint`, `isort` |
 | App principal | `backend` |
 
@@ -84,6 +84,10 @@ python manage.py test backend.tests.AuthTests.test_login_valid
 python manage.py check
 python manage.py check --deploy
 
+# Analítica de producto (spec 011)
+python manage.py analytics_report --days 28
+python manage.py purge_analytics --days 90
+
 # Lint e imports (desde la raíz)
 isort --check-only syntax_sprint/
 isort syntax_sprint/
@@ -111,7 +115,8 @@ gunicorn syntax_sprint.wsgi:application --bind 0.0.0.0:8000
 | POST | `/save_typing_test_result` | `save_typing_test_result` | Sí | `{message}` |
 | — | `/admin/` | Django Admin | Staff | HTML |
 
-Modelo único: `TypingTestResult(user, wpm, accuracy, date)`.
+Modelos: `TypingTestResult(user, wpm, accuracy, date)` y
+`SnippetRequest(created_at, language, status_code, duration_ms)`.
 
 ## 5. Convenciones de código
 
@@ -297,15 +302,16 @@ Al terminar:
 
 ## 8. Deuda técnica conocida (priorizada)
 
-Estado verificado el 2026-11-11: `manage.py check` 0 issues, `manage.py test` 39 tests
+Estado verificado el 2026-11-11: `manage.py check` 0 issues, `manage.py test` 52 tests
 OK, `isort --check-only` sin avisos, `pylint` 10.00/10 y `code_metrics.py --strict` sin
 incumplimientos. La antigua deuda "suite de pruebas vacía" ya está cerrada.
 
 No hay deuda priorizada abierta. Tailwind se compila localmente desde el 2026-11-11
 (`npm run build:css`).
 
-Queda abierta una tarea de gobernanza, no de código: `T000-06` (analítica de las
-métricas de éxito), que necesita su propia spec antes de implementarse.
+No quedan tareas abiertas de gobernanza ni de código: `T000-05` se aprobó y `T000-06`
+se cerró con `specs/011-analytics`. El trabajo futuro vive en el backlog de cada
+`tasks.md`.
 
 > No quedan hallazgos **CRÍTICOS** abiertos. Evidencia:
 > `audits/security/2026-11-11-verificacion.md`.
