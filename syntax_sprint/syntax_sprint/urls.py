@@ -14,9 +14,10 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from backend import two_factor
 from django.contrib import admin
 from django.urls import include, path
+
+from backend import two_factor
 
 urlpatterns = [
     path("admin/2fa/", two_factor.admin_2fa, name="admin_2fa"),
