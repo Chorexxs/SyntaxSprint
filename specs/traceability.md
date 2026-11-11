@@ -75,8 +75,8 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-004-04 | T004-04, T004-11 | CA-004-02 | 🟡 |
 | RF-004-05 | T004-04, T004-11 | CA-004-03 | 🟡 |
 | RF-004-06 | T004-04 | stats en vivo | ✅ |
-| RF-004-07 | T004-05, T004-10 | CA-004-05 | 🟡 |
-| RF-004-08 | T004-05, T004-10 | backspace | 🟡 |
+| RF-004-07 | T004-05, T004-10 | CA-004-05 | ✅ |
+| RF-004-08 | T004-05, T004-10 | backspace | ✅ |
 | RF-004-09 | T004-05 | atajos bloqueados | ✅ |
 | RF-004-10 | T004-03 | CA-004-06 | ✅ |
 | RF-004-11 | T004-06 | CA-004-07 | ✅ |
@@ -228,14 +228,14 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | 001 | 9 | 8 | 1 | 0 |
 | 002 | 11 | 9 | 2 | 0 |
 | 003 | 8 | 8 | 0 | 0 |
-| 004 | 16 | 11 | 5 | 0 |
+| 004 | 16 | 13 | 3 | 0 |
 | 005 | 12 | 12 | 0 | 0 |
 | 006 | 10 | 8 | 1 | 1 |
 | 007 | 11 | 9 | 2 | 0 |
 | 008 | 12 | 10 | 2 | 0 |
 | 009 | 14 | 11 | 3 | 0 |
 | 010 | 12 | 12 | 0 | 0 |
-| **Total** | **125** | **107** | **17** | **1** |
+| **Total** | **125** | **109** | **15** | **1** |
 
 > La matriz se actualiza al cerrar cada tarea. Un requisito no puede pasar a ✅ sin su
 > verificación ejecutada.

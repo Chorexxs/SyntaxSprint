@@ -43,13 +43,15 @@ Referencia: `specs/004-typing-engine/spec.md`
   - Evidencia: `saveResult` usa `redirect: 'manual'`, detecta `opaqueredirect`/302,
     trata `!response.ok` y muestra aviso en `#save-status`.
 
-- [ ] **T004-10** Corregir la desincronización de `totalChars` tras backspace y pegado.
+- [x] **T004-10** Corregir la desincronización de `totalChars` tras backspace y pegado.
   - Requisitos: `RF-004-07`, `RF-004-08`
   - Archivos: `script.js`
   - DoD: escribir 3, borrar 1 y escribir 2 deja `totalChars = 4`.
-  - Estado: parcial. Backspace ajusta `correctChars`, `incorrectChars` y `totalChars`;
-    `handlePaste` no actualiza esos contadores (solo el valor del input), así que las
-    estadísticas quedan desfasadas hasta la siguiente pulsación.
+  - Evidencia: `countTypedChars(value)` recalcula los tres contadores desde el input y se
+    usa en `handleInput`, `handleKeydown` (Backspace), `handlePaste` y
+    `compositionend`. Verificado en Chrome: 3 → backspace → 2 → 2 más = 4 caracteres
+    correctos con 100 % de precisión; pegar 1 correcto + 4 erróneos muestra 20 % y tras
+    un backspace, 25 %.
 
 - [ ] **T004-11** Extraer `computeWpm()` y `computeAccuracy()` como funciones puras y reutilizarlas.
   - Requisitos: `RF-004-04`, `RF-004-05`
@@ -63,13 +65,14 @@ Referencia: `specs/004-typing-engine/spec.md`
   - Archivos: `templates/index.html`
   - Evidencia: `index.html:125` sin `value=""` y con `aria-label="Typing input"`.
 
-- [ ] **T004-13** Garantizar limpieza de `timerInterval` en fin, reinicio y `blur`.
+- [x] **T004-13** Garantizar limpieza de `timerInterval` en fin, reinicio y `blur`.
   - Requisito: `RNF-004-02`
   - Archivos: `script.js`
   - DoD: tras 3 reinicios solo hay un intervalo activo.
-  - Estado: parcial. `endTest` y `blur` limpian el intervalo; `restartTest` llama a
-    `startTest` sin `clearInterval` previo, por lo que reiniciar durante un test
-    activo deja el intervalo anterior vivo.
+  - Evidencia: `stopTimer()` centraliza `clearInterval` + `timerInterval = null` y se
+    llama al inicio de `startTest`, de `startTimer`, en `endTest` y en `blur`. Medido en
+    Chrome instrumentando `setInterval`: 1 intervalo activo tras iniciar y 1 tras
+    reiniciar (antes quedaban 2).
 
 ## Fase 3 — Verificación
 
@@ -94,3 +97,4 @@ Referencia: `specs/004-typing-engine/spec.md`
 | Fecha | Cambio |
 | --- | --- |
 | 2026-11-10 | Auditoría del motor existente y plan de correcciones |
+| 2026-11-11 | T004-10 y T004-13 cerradas: contadores recalculados y temporizador único |
