@@ -28,7 +28,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | --- | --- | --- | --- |
 | RF-001-01 | T001-01, T001-07 | CA-001-01 | ✅ |
 | RF-001-02 | T001-02 | `check` | ✅ |
-| RF-001-03 | T001-03, T001-04 | CA-001-03 | 🟡 |
+| RF-001-03 | T001-03, T001-04 | CA-001-03 | ✅ |
 | RF-001-04 | T001-03 | `/` carga CSS/JS | ✅ |
 | RF-001-05 | T001-02 | `/admin/` | ✅ |
 | RF-001-06 | T001-08 | CA-001-02 | ✅ |
@@ -225,7 +225,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | Feature | Total | ✅ | 🟡 | ⬜ |
 | --- | ---: | ---: | ---: | ---: |
 | 000 | 10 | 9 | 1 | 0 |
-| 001 | 9 | 8 | 1 | 0 |
+| 001 | 9 | 9 | 0 | 0 |
 | 002 | 11 | 9 | 2 | 0 |
 | 003 | 8 | 8 | 0 | 0 |
 | 004 | 16 | 14 | 2 | 0 |
@@ -235,7 +235,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | 008 | 12 | 10 | 2 | 0 |
 | 009 | 14 | 11 | 3 | 0 |
 | 010 | 12 | 12 | 0 | 0 |
-| **Total** | **125** | **110** | **14** | **1** |
+| **Total** | **125** | **111** | **13** | **1** |
 
 > La matriz se actualiza al cerrar cada tarea. Un requisito no puede pasar a ✅ sin su
 > verificación ejecutada.

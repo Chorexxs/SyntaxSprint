@@ -21,12 +21,13 @@ Referencia: `specs/001-foundation/spec.md`
 
 ## Fase 2 — Limpieza
 
-- [ ] **T001-04** Eliminar la ruta heredada `BASE_DIR.parent/templates` de `TEMPLATES[0]["DIRS"]`.
+- [x] **T001-04** Eliminar la ruta heredada `BASE_DIR.parent/templates` de `TEMPLATES[0]["DIRS"]`.
   - Requisito: `RF-001-03`
   - Archivos: `settings.py`
   - DoD: `manage.py check` OK y no existen referencias a plantillas externas.
-  - Estado: pendiente. `settings.py:82` todavía incluye
-    `os.path.join(BASE_DIR.parent, "templates")`.
+  - Evidencia: `settings.py:82` queda en `[BASE_DIR / "templates"]`; no hay ninguna
+    carpeta `templates/` en la raíz del repositorio y `manage.py check` + los 31 tests
+    siguen en verde.
 
 - [x] **T001-05** Alinear la versión de Django entre `requirements.txt`, `README.md` y la migración.
   - Requisito: `RF-001-08`
@@ -82,3 +83,4 @@ Referencia: `specs/001-foundation/spec.md`
 | Fecha | Cambio |
 | --- | --- |
 | 2026-11-10 | Creación a partir del estado real del repositorio |
+| 2026-11-11 | T001-04 cerrada: `TEMPLATES[0]["DIRS"]` solo apunta a `BASE_DIR/templates` |

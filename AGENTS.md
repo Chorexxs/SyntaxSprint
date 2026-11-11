@@ -297,11 +297,10 @@ cerrada.
 | Prioridad | Deuda | Feature | Tarea |
 | --- | --- | --- | --- |
 | 1 | Mensajes de registro divergentes de la spec (genéricos a propósito) | 002 | RF-002-02, RF-002-03 |
-| 2 | `TEMPLATES[0]["DIRS"]` conserva la ruta heredada del padre | 001 | T001-04 |
-| 3 | **`db.sqlite3` versionada con 6 usuarios y 31 resultados (PII)** | 009 | T009-05…T009-08 |
-| 4 | **`SECRET_KEY` y 2 contraseñas hardcodeadas en el historial** | 009 | T009-06, T009-07 |
+| 2 | **`db.sqlite3` versionada con 6 usuarios y 31 resultados (PII)** | 009 | T009-05…T009-08 |
+| 3 | **`SECRET_KEY` y 2 contraseñas hardcodeadas en el historial** | 009 | T009-06, T009-07 |
 
-> Los puntos 3 y 4 son **CRÍTICOS**. Están documentados en
+> Los puntos 2 y 3 son **CRÍTICOS**. Están documentados en
 > `audits/security/2026-11-10-linea-base.md` y requieren autorización para la purga del
 > historial.
 
