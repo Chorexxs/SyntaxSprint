@@ -78,8 +78,30 @@ Referencia: `specs/004-typing-engine/spec.md`
 
 ## Fase 3 — Verificación
 
-- [ ] **T004-14** Ejecutar el checklist manual del `plan.md` y registrar evidencia.
+- [x] **T004-14** Ejecutar el checklist manual del `plan.md` y registrar evidencia.
   - Requisitos: `CA-004-01`…`CA-004-09`
+  - Evidencia (2026-11-11, Chrome DevTools, `runserver` local con BD SQLite temporal
+    para no tocar datos de producción):
+    - Ventana aislada sin sesión; "start" → `POST /get_python_function` 200, sin 403;
+      el fragmento se muestra y el temporizador arranca en 30 (`CA-004-01`).
+    - 5 caracteres correctos → 5 `letter.correct` en verde `rgb(46,125,50)`; 1
+      incorrecto → `letter.incorrect` en rojo `rgb(192,57,43)` y precisión 83 %
+      (`CA-004-04`).
+    - Pegado de 200 caracteres → el input se trunca a 80 (longitud del fragmento) y
+      el test termina (`CA-004-05`).
+    - Temporizador a 0 → resultados visibles y POST de guardado (`CA-004-06`).
+      Anónimo: 302 a login y mensaje "Inicia sesión para guardar tu resultado.";
+      autenticado: 200 y "Resultado guardado.".
+    - "try again" → fragmento distinto (`def greet…` → `d = {…}`), input vacío y
+      contadores a 0 / 100 % (`CA-004-07`).
+    - Usuario autenticado con WPM 4 y 100 % → `/profile` muestra promedio 4 y la fila
+      del historial 4 / 100 % (`CA-004-08`).
+    - `blur` de ventana → temporizador congelado en 28 durante 3 s (`CA-004-09`).
+    - Enter, Escape, Tab y flecha izquierda → `defaultPrevented`; valor y foco intactos
+      (`RF-004-09`).
+    - Funciones puras: `computeWpm(5, 1) = 1`, `computeAccuracy(8, 2) = 80`, input
+      vacío = 100 % (`CA-004-02`, `CA-004-03`).
+    - Sin errores en consola ni peticiones fallidas durante el recorrido.
 
 - [x] **T004-15** Decidir el destino de las métricas avanzadas (`spacing`, `duration`, `afkHistory`, `errorHistory`).
   - Requisito: `RF-004-15` (retirado)

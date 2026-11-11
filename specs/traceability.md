@@ -191,11 +191,11 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | Comprobación | Comando | Resultado |
 | --- | --- | --- |
 | Sistema | `manage.py check` | 0 issues |
-| Pruebas | `manage.py test` | 26 tests OK (18,4 s) |
+| Pruebas | `manage.py test` | 39 tests OK (24,6 s, medido con cobertura) |
 | Imports | `isort --check-only syntax_sprint/` | Sin avisos |
-| Lint | `pylint backend` | 5,88/10 (incluye migraciones; informativo) |
+| Lint | `pylint backend --rcfile=../.pylintrc` | 10.00/10 |
 | Arquitectura | `specs/tools/code_metrics.py` | 0 funciones fuera de umbral; vistas por dominio |
-| Cobertura | `coverage report` | No medido: `coverage` no está en el `venv` |
+| Cobertura | `coverage run --source=backend manage.py test` + `coverage report` | 99 % (459 sentencias, 5 sin cubrir) |
 | Dependencias | `specs/tools/check_dependencies.py --strict` | OK (0 sin uso, runtime coherente) |
 | Vulnerabilidades | `pip-audit -r requirements.txt` | 0 avisos |
 | BD versionada | `git ls-files \| grep db.sqlite3` | Sin resultados |
@@ -203,18 +203,23 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 
 ### Divergencias código ↔ spec
 
-1. **RF-002-02 / RF-002-03**: la spec pide los literales "Email already exists" y
-   "Username already exists"; el código muestra un mensaje genérico para evitar
-   enumeración de usuarios (decisión de `T009-26`). Se mantiene el comportamiento
-   seguro y el requisito queda 🟡 hasta actualizar la spec.
-2. **RF-002-07**: `/logout` exige `POST` y `login_required`; un `GET` devuelve 405.
-   Es una decisión de seguridad de `T002-09`/`T009-14` no reflejada aún en la spec.
+1. **RF-002-02 / RF-002-03**: resuelto. La spec ya exige el mensaje genérico de
+   registro rechazado y el código lo aplica en `auth_views.py:65-71`; no se revela si
+   el email o el username existen.
+2. **RF-002-07**: resuelto. La spec documenta `GET → 405` y `POST → 302`, coherente
+   con `auth_views.py:114-119` y con la decisión de seguridad de `T002-09`/`T009-14`.
 3. **RF-006-03**: resuelto por `T006-06`/`T006-07`. `theme-init.js` fija `data-theme` antes
    del primer pintado, por lo que ya no hay FOUC.
 4. **RF-003-01 / RF-003-06**: resuelto por `T003-09`. El catálogo de 8 lenguajes × 15
    fragmentos se valida completo en `test_catalog_is_complete`.
 5. **T003-05**: cerrado. El catálogo vive en `snippets.py` y `views.py` quedó en 7
    líneas tras `T008-11` (DoD de "< 60 líneas" cumplido).
+6. **T004-14**: cerrado el 2026-11-11 con el checklist manual del `plan.md` ejecutado en
+   Chrome DevTools contra un `runserver` local: 6/6 ítems en verde y `CA-004-01`…`CA-004-09`
+   verificados (detalle en `specs/004-typing-engine/tasks.md`).
+7. **Estados de spec**: 001, 002, 005 y 007 figuraban como "implementada parcialmente" o
+   "pendiente" pese a tener todos sus requisitos en ✅. Se alinearon con esta matriz; el
+   trabajo futuro vive en el backlog de cada `tasks.md`.
 
 ## Resumen
 
@@ -231,7 +236,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | 008 | 12 | 12 | 0 | 0 |
 | 009 | 14 | 14 | 0 | 0 |
 | 010 | 12 | 12 | 0 | 0 |
-| **Total** | **124** | **123** | **0** | **0** |
+| **Total** | **124** | **124** | **0** | **0** |
 
 > La matriz se actualiza al cerrar cada tarea. Un requisito no puede pasar a ✅ sin su
 > verificación ejecutada.

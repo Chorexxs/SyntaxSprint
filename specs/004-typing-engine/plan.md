@@ -82,12 +82,17 @@ endTest()
 
 Checklist manual mínima:
 
-- [ ] Abrir ventana privada, pulsar start → no hay 403.
-- [ ] Escribir correcto/incorrecto → colores correctos.
-- [ ] Pegar texto largo → se trunca.
-- [ ] Dejar correr 30 s → resultados y POST 200.
-- [ ] Usuario anónimo → mensaje "inicia sesión para guardar".
-- [ ] Repetir test → fragmento nuevo y contadores a 0.
+- [x] Abrir ventana privada, pulsar start → no hay 403.
+- [x] Escribir correcto/incorrecto → colores correctos.
+- [x] Pegar texto largo → se trunca.
+- [x] Dejar correr 30 s → resultados y POST 200.
+- [x] Usuario anónimo → mensaje "inicia sesión para guardar".
+- [x] Repetir test → fragmento nuevo y contadores a 0.
+
+> Última ejecución: 2026-11-11, Chrome DevTools contra `runserver` local. Resultado
+> completo en `T004-14` (`tasks.md`): 6/6 ítems en verde y `CA-004-01`…`CA-004-09`
+> verificados. El POST de guardado responde 302 para visitantes (mensaje de sesión) y
+> 200 para usuarios autenticados.
 
 ## 7. Riesgos y mitigación
 

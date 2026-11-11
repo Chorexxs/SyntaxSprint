@@ -304,6 +304,9 @@ incumplimientos. La antigua deuda "suite de pruebas vacía" ya está cerrada.
 No hay deuda priorizada abierta. Tailwind se compila localmente desde el 2026-11-11
 (`npm run build:css`).
 
+Quedan abiertas dos tareas de gobernanza, no de código: `T000-05` (aprobación del
+roadmap por el responsable) y `T000-06` (analítica de las métricas de éxito).
+
 > No quedan hallazgos **CRÍTICOS** abiertos. Evidencia:
 > `audits/security/2026-11-11-verificacion.md`.
 
