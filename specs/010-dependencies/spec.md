@@ -156,5 +156,6 @@ No se modifican endpoints ni modelos de datos.
 - `.github/workflows/ci.yml` — verificación automática.
 - `syntax_sprint/templates/*.html` — clases de Tailwind y Google Fonts.
 - `tailwind.config.js`, `package.json` y `assets/css/tailwind.input.css` — build local.
+- `tests/js/` y `vitest.config.mjs` — pruebas de frontend con Vitest y jsdom.
 - `specs/009-cybersecurity/tasks.md` — `T009-18` (pip-audit) y `T009-19` (Dependabot).
 - `audits/README.md` — reglas de los informes bajo demanda.

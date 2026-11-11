@@ -66,12 +66,15 @@ queda en el backlog.
 | JetBrains Mono | Google Fonts | Gestionada por Google |
 | JavaScript | Propio (`static/js`) | — |
 
-No hay `package.json` ni `node_modules`: no existe ecosistema npm que actualizar.
+npm se usa solo para el build de Tailwind y para las pruebas de frontend
+(`vitest` y `jsdom`, dev). No hay dependencias JavaScript de producción.
 
 ### 3.3 Runtime, CI e infraestructura
 
 | Recurso | Versión | Fuente |
 | --- | --- | --- |
+| Vitest | 2.1.9 | `package.json` (dev) |
+| jsdom | 25.0.1 | `package.json` (dev) |
 | Python | 3.12.1 | `.python-version` (CI lo lee; runner fijado en 24.04) |
 | Render | 3.12.1 | `render.yaml`, validado por el verificador |
 | `actions/checkout` | v4 | `.github/workflows/ci.yml` |

@@ -13,7 +13,7 @@ services:
     region: oregon
     plan: free
     buildCommand: pip install -r requirements.txt && python syntax_sprint/manage.py collectstatic --noinput
-    startCommand: python syntax_sprint/manage.py migrate --noinput && gunicorn --chdir syntax_sprint syntax_sprint.wsgi:application --bind 0.0.0.0:$PORT
+    startCommand: python syntax_sprint/manage.py migrate --noinput && python syntax_sprint/manage.py createcachetable && gunicorn --chdir syntax_sprint syntax_sprint.wsgi:application --bind 0.0.0.0:$PORT
     healthCheckPath: /
     envVars:
       - key: SECRET_KEY
@@ -26,6 +26,12 @@ services:
         value: https://syntaxsprint.onrender.com
       - key: TRUST_PROXY_HEADERS
         value: "True"
+      - key: RATE_LIMIT_CACHE_ALIAS
+        # Caché de BD compartida entre workers; la tabla la crea createcachetable.
+        value: shared
+      - key: ADMIN_TOTP_REQUIRED
+        # Actívalo solo después de enrolar el TOTP del admin.
+        value: "False"
       - key: PYTHON_VERSION
         # Debe coincidir con .python-version; lo valida specs/tools/check_dependencies.py.
         value: "3.12.1"

@@ -5,9 +5,12 @@
   "description": "Build local de Tailwind para SyntaxSprint",
   "scripts": {
     "build:css": "tailwindcss -i ./assets/css/tailwind.input.css -o ./syntax_sprint/static/css/tailwind.css --minify",
-    "watch:css": "tailwindcss -i ./assets/css/tailwind.input.css -o ./syntax_sprint/static/css/tailwind.css --watch"
+    "watch:css": "tailwindcss -i ./assets/css/tailwind.input.css -o ./syntax_sprint/static/css/tailwind.css --watch",
+    "test:js": "vitest run"
   },
   "devDependencies": {
-    "tailwindcss": "3.4.17"
+    "jsdom": "25.0.1",
+    "tailwindcss": "3.4.17",
+    "vitest": "2.1.9"
   }
 }

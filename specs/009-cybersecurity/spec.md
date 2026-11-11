@@ -341,6 +341,7 @@ y las 6 cuentas más las 2 contraseñas hardcodeadas deben considerarse comprome
 >
 > Remediación del 2026-11-11: SEC-016, SEC-017, SEC-018, SEC-019, SEC-020 y SEC-021
 > cerradas (`T009-29`…`T009-34`); no quedan hallazgos de seguridad abiertos.
+> Además, caché compartida del rate limiting (`T009-35`) y 2FA del admin (spec 012).
 
 ## 14. Fuera de alcance
 

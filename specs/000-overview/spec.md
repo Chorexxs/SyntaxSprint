@@ -57,6 +57,7 @@ usuario para medir su progreso.
 | C9 | Auditoría de ciberseguridad y filtraciones bajo demanda | `009-cybersecurity` | Implementada (procedimiento) |
 | C10 | Inventario y actualización de dependencias bajo demanda | `010-dependencies` | Implementada (procedimiento) |
 | C11 | Analítica de producto sin datos personales | `011-analytics` | Implementada |
+| C12 | Verificación en dos pasos del admin | `012-admin-2fa` | Implementada |
 
 ## 5. Requisitos funcionales de producto
 

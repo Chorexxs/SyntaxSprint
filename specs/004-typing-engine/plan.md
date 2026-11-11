@@ -78,7 +78,7 @@ endTest()
 | Manual | Pegado, backspace, flechas, Tab, cambio de pestaña | Navegador |
 | Manual | Temas claro/oscuro y responsive 375 px / 1440 px | DevTools |
 | Integración | POST de guardado con CSRF | `django.test.Client` |
-| Futuro | Cálculos WPM/accuracy | Vitest o tests puros en JS |
+| Unitario JS | Fórmulas WPM/precisión y conteo del motor | Vitest + jsdom (`T004-16`) |
 
 Checklist manual mínima:
 

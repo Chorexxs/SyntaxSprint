@@ -90,6 +90,12 @@ Referencia: `specs/010-dependencies/spec.md`
     5.2.17→5.2.19 y pylint 4.0.9→4.1.3; `pip-audit` sin vulnerabilidades; mayores
     pendientes (Django 6.1.3, gunicorn 27.0.0, isort 9.0.2).
 
+- [x] **T010-11** Registrar las dependencias de frontend en el inventario.
+  - Requisitos: `RF-010-01`, `RF-010-05`
+  - Archivos: `package.json`, `specs/010-dependencies/plan.md`
+  - Evidencia: `vitest@2.1.9` y `jsdom@25.0.1` fijadas como dev; `npm run test:js`
+    en verde y en CI.
+
 ## Deuda técnica / Backlog
 
 - [ ] Migrar a `requirements.in` + `pip-compile` con hashes.

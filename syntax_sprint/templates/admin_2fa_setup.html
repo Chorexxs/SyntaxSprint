@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}2FA no configurada - SyntaxSprint{% endblock %}
+
+{% block main_class %}flex-1 flex items-center justify-center px-4 pt-16{% endblock %}
+
+{% block content %}
+    <div class="w-full max-w-xl">
+      <h1 class="text-3xl font-semibold text-[var(--text-active)] text-center mb-6">
+        2FA no configurada
+      </h1>
+      <p class="text-sm text-[var(--text-sub)] mb-4">
+        Tu cuenta es de administración, pero no tiene un dispositivo TOTP confirmado.
+        Pide al responsable del proyecto que ejecute este comando en el servidor:
+      </p>
+      <pre class="p-4 bg-[var(--bg-secondary)] rounded-lg overflow-x-auto text-sm"><code>python manage.py enroll_admin_totp --username {{ user.username }}</code></pre>
+      <p class="text-sm text-[var(--text-sub)] mt-4">
+        Después, recarga esta página e introduce el código de tu aplicación.
+      </p>
+    </div>
+{% endblock %}

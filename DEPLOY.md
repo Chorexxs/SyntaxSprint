@@ -32,6 +32,8 @@ Render Dashboard → servicio `syntaxsprint` → **Environment**.
 | `CSRF_TRUSTED_ORIGINS` | `https://syntaxsprint.onrender.com` | Sí |
 | `TRUST_PROXY_HEADERS` | `True` | Sí |
 | `DATABASE_URL` | Cadena Postgres de InsForge (`sslmode=require`) | Sí |
+| `RATE_LIMIT_CACHE_ALIAS` | `shared` (caché de BD entre workers) | Recomendada |
+| `ADMIN_TOTP_REQUIRED` | `False` hasta enrolar el admin | Opcional |
 | `PYTHON_VERSION` | `3.12.1` | Opcional |
 
 Reglas:
@@ -74,10 +76,12 @@ La base de datos es un proyecto de **InsForge** en la región `eu-central`.
 2. Añádela en Render → servicio `syntaxsprint` → **Environment** como
    `DATABASE_URL`. Debe incluir `?sslmode=require`.
 
-3. El Start Command ejecuta `migrate` en cada deploy. También puedes hacerlo a mano:
+3. El Start Command ejecuta `migrate` y `createcachetable` en cada deploy (la tabla
+   de caché compartida del rate limiting). También puedes hacerlo a mano:
 
    ```bash
    python syntax_sprint/manage.py migrate --noinput
+   python syntax_sprint/manage.py createcachetable
    ```
 
 4. Verifica las tablas:
@@ -95,6 +99,7 @@ python syntax_sprint/manage.py dumpdata --natural-foreign --natural-primary \
 
 # 2. Configura DATABASE_URL (InsForge) y aplica migraciones
 python syntax_sprint/manage.py migrate --noinput
+python syntax_sprint/manage.py createcachetable
 
 # 3. Carga los datos
 python syntax_sprint/manage.py loaddata backup.json
@@ -114,7 +119,7 @@ En Render → **Settings**:
 | Campo | Valor |
 | --- | --- |
 | Build Command | `pip install -r requirements.txt && python syntax_sprint/manage.py collectstatic --noinput` |
-| Start Command | `python syntax_sprint/manage.py migrate --noinput && gunicorn --chdir syntax_sprint syntax_sprint.wsgi:application --bind 0.0.0.0:$PORT` |
+| Start Command | `python syntax_sprint/manage.py migrate --noinput && python syntax_sprint/manage.py createcachetable && gunicorn --chdir syntax_sprint syntax_sprint.wsgi:application --bind 0.0.0.0:$PORT` |
 | Health Check Path | `/` |
 
 El repositorio incluye `render.yaml` como blueprint. Si el servicio ya existe, el
@@ -213,3 +218,23 @@ Si devuelve 404:
 - Rotar cualquier secreto que haya estado en un repo público.
 - Mantener el repositorio privado hasta que la rotación esté completa.
 - Revisar `audits/security/` antes de cada despliegue grande.
+
+### Activar la 2FA del admin
+
+1. En Render → **Shell** (o en local con la `DATABASE_URL` de producción):
+
+   ```bash
+   python syntax_sprint/manage.py enroll_admin_totp --username <staff>
+   ```
+
+   El comando imprime el secreto y la URI `otpauth://`. Añádelo a la app de
+   autenticación y limpia la terminal.
+
+2. Cambia `ADMIN_TOTP_REQUIRED` a `True` en Render → **Environment**.
+3. Entra en `/admin/`: pedirá el código de 6 dígitos.
+4. Para desactivarlo: `enroll_admin_totp --username <staff> --disable` y pon la
+   variable a `False`.
+
+> Si se activa sin enrolar, el admin queda bloqueado (403 con instrucciones). El
+> comando de desactivación se puede ejecutar desde la Shell de Render sin pasar por
+> la web.

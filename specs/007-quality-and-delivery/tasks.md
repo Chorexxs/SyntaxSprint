@@ -101,6 +101,11 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
     sí publica `python-3.12.1-linux-24.04-x64`. Así Render, CI y local siguen en 3.12.1.
     Verificado en el run 20: los 14 pasos en verde.
 
+- [x] **T007-24** Ejecutar las pruebas de frontend en CI.
+  - Requisitos: `RF-007-11`, `RNF-007-02`
+  - Archivos: `.github/workflows/ci.yml`, `package.json`
+  - Evidencia: paso "Probar el JavaScript" con `npm run test:js` (8 tests).
+
 ## Fase 5 — Documentación
 
 - [x] **T007-14** Corregir el árbol de directorios del README y la versión de Django.

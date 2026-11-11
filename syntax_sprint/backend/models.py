@@ -26,3 +26,20 @@ class SnippetRequest(models.Model):
 
     def __str__(self) -> str:
         return f"{self.language} {self.status_code} ({self.duration_ms} ms)"
+
+
+class AdminTOTP(models.Model):
+    """Dispositivo TOTP de un administrador (spec 012)."""
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="admin_totp",
+    )
+    secret = models.CharField(max_length=32)
+    confirmed = models.BooleanField(default=False)
+    last_counter = models.BigIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"TOTP de {self.user.username}"

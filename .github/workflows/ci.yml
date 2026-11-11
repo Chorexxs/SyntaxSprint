@@ -57,6 +57,9 @@ jobs:
           npm run build:css
           git diff --exit-code -- syntax_sprint/static/css/tailwind.css
 
+      - name: Probar el JavaScript
+        run: npm run test:js
+
       - name: Comprobar dependencias
         run: python specs/tools/check_dependencies.py --strict
 

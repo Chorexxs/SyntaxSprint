@@ -38,6 +38,7 @@ DEBUG = config("DEBUG", cast=bool)
 ALLOWED_HOSTS = _csv_env("ALLOWED_HOSTS")
 CSRF_TRUSTED_ORIGINS = _csv_env("CSRF_TRUSTED_ORIGINS")
 TRUST_PROXY_HEADERS = config("TRUST_PROXY_HEADERS", default=False, cast=bool)
+ADMIN_TOTP_REQUIRED = config("ADMIN_TOTP_REQUIRED", default=False, cast=bool)
 LOGIN_URL = "login"
 
 # Render expone el hostname publico y termina el TLS en su proxy.
@@ -73,6 +74,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'backend.middleware.ContentSecurityPolicyMiddleware',
+    'backend.middleware.AdminTOTPMiddleware',
     'backend.middleware.AdminLoginRateLimitMiddleware',
 ]
 
@@ -114,6 +116,20 @@ if DATABASE_URL:
         DATABASES["default"].setdefault("OPTIONS", {}).setdefault(
             "connect_timeout", 5
         )
+
+# Rate limiting: LocMem en local/tests y caché de base de datos (compartida entre
+# workers) en producción. La tabla la crea `manage.py createcachetable`.
+RATE_LIMIT_CACHE_ALIAS = config("RATE_LIMIT_CACHE_ALIAS", default="default")
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    },
+    "shared": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "syntax_sprint_cache",
+    },
+}
 
 
 # Password validation

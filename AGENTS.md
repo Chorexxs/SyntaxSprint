@@ -20,7 +20,7 @@ historial del usuario y calcula promedios.
 | JavaScript | Vanilla ES6+ (clase `TypingTest`); jQuery 3.x permitido |
 | Servidor | Gunicorn (`syntax_sprint.wsgi`) |
 | Configuración | `python-decouple` + `.env` |
-| Pruebas | `django.test.TestCase` (58 tests, suite en verde) |
+| Pruebas | `django.test.TestCase` (74 tests) y Vitest (8 tests JS) |
 | Lint | `pylint`, `isort` |
 | App principal | `backend` |
 
@@ -38,7 +38,7 @@ SyntaxSprint/
 │   ├── constitution.md
 │   ├── traceability.md
 │   ├── templates/
-│   └── 000-overview/ … 007-quality-and-delivery/
+│   └── 000-overview/ … 012-admin-2fa/
 └── syntax_sprint/               # BASE_DIR
     ├── manage.py
     ├── db.sqlite3
@@ -67,6 +67,9 @@ pip install -r ../requirements-dev.txt
 npm install
 npm run build:css
 
+# Pruebas de frontend (Vitest + jsdom)
+npm run test:js
+
 # Verificación de dependencias (sin red)
 python ../specs/tools/check_dependencies.py --strict
 
@@ -87,6 +90,13 @@ python manage.py check --deploy
 # Analítica de producto (spec 011)
 python manage.py analytics_report --days 28
 python manage.py purge_analytics --days 90
+
+# Caché compartida del rate limiting (producción)
+python manage.py createcachetable
+
+# 2FA del admin (spec 012)
+python manage.py enroll_admin_totp --username <staff>
+python manage.py enroll_admin_totp --username <staff> --disable
 
 # Lint e imports (desde la raíz)
 isort --check-only syntax_sprint/
@@ -115,8 +125,9 @@ gunicorn syntax_sprint.wsgi:application --bind 0.0.0.0:8000
 | POST | `/save_typing_test_result` | `save_typing_test_result` | Sí | `{message}` |
 | — | `/admin/` | Django Admin | Staff | HTML |
 
-Modelos: `TypingTestResult(user, wpm, accuracy, date)` y
-`SnippetRequest(created_at, language, status_code, duration_ms)`.
+Modelos: `TypingTestResult(user, wpm, accuracy, date)`,
+`SnippetRequest(created_at, language, status_code, duration_ms)` y
+`AdminTOTP(user, secret, confirmed, last_counter, created_at)`.
 
 ## 5. Convenciones de código
 
@@ -302,7 +313,7 @@ Al terminar:
 
 ## 8. Deuda técnica conocida (priorizada)
 
-Estado verificado el 2026-11-11: `manage.py check` 0 issues, `manage.py test` 58 tests
+Estado verificado el 2026-11-11: `manage.py check` 0 issues, `manage.py test` 74 tests
 OK, `isort --check-only` sin avisos, `pylint` 10.00/10 y `code_metrics.py --strict` sin
 incumplimientos. La antigua deuda "suite de pruebas vacía" ya está cerrada.
 

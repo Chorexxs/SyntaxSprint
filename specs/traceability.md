@@ -201,17 +201,29 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-011-07 | T011-01 | campos del modelo sin datos personales | ✅ |
 | RF-011-08 | T011-08 | CA-011-11 | ✅ |
 
+## 012 — 2FA del admin
+
+| Requisito | Tarea | Verificación | Estado |
+| --- | --- | --- | --- |
+| RF-012-01 | T012-03, T012-04 | CA-012-01 | ✅ |
+| RF-012-02 | T012-03 | CA-012-02 | ✅ |
+| RF-012-03 | T012-01, T012-03 | CA-012-03, CA-012-04 | ✅ |
+| RF-012-04 | T012-03 | CA-012-05 | ✅ |
+| RF-012-05 | T012-02, T012-05 | CA-012-06 | ✅ |
+| RF-012-06 | T012-04 | CA-012-07 | ✅ |
+
 ## Notas de verificación
 
 | Comprobación | Comando | Resultado |
 | --- | --- | --- |
 | Sistema | `manage.py check` | 0 issues |
-| Pruebas | `manage.py test` | 58 tests OK (46,5 s, medido con cobertura) |
+| Pruebas | `manage.py test` | 74 tests OK (52,6 s, medido con cobertura) |
+| Pruebas JS | `npm run test:js` | 8 tests OK (Vitest + jsdom) |
 | Imports | `isort --check-only syntax_sprint/` | Sin avisos |
 | Lint | `pylint backend --rcfile=../.pylintrc` | 10.00/10 |
 | CI | `.github/workflows/ci.yml` (run 20) | 14 pasos en verde |
 | Arquitectura | `specs/tools/code_metrics.py` | 0 funciones fuera de umbral; vistas por dominio |
-| Cobertura | `coverage run --source=backend manage.py test` + `coverage report` | 99 % (761 sentencias, 10 sin cubrir) |
+| Cobertura | `coverage run --source=backend manage.py test` + `coverage report` | 98 % (1014 sentencias, 25 sin cubrir) |
 | Dependencias | `specs/tools/check_dependencies.py --strict` | OK (0 sin uso, runtime coherente) |
 | Vulnerabilidades | `pip-audit -r requirements.txt` | 0 avisos |
 | BD versionada | `git ls-files \| grep db.sqlite3` | Sin resultados |
@@ -253,7 +265,8 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | 009 | 14 | 14 | 0 | 0 |
 | 010 | 12 | 12 | 0 | 0 |
 | 011 | 8 | 8 | 0 | 0 |
-| **Total** | **134** | **134** | **0** | **0** |
+| 012 | 6 | 6 | 0 | 0 |
+| **Total** | **140** | **140** | **0** | **0** |
 
 > La matriz se actualiza al cerrar cada tarea. Un requisito no puede pasar a ✅ sin su
 > verificación ejecutada.

@@ -34,7 +34,8 @@ specs/
 ├── 008-code-audit/            # Auditoría de código y arquitectura bajo demanda
 ├── 009-cybersecurity/         # Auditoría de seguridad y filtraciones bajo demanda
 ├── 010-dependencies/          # Actualización de dependencias bajo demanda
-└── 011-analytics/             # Analítica de producto sin datos personales
+├── 011-analytics/             # Analítica de producto sin datos personales
+└── 012-admin-2fa/             # Verificación en dos pasos del admin
 ```
 
 Los informes generados por las auditorías viven fuera de `specs/`:

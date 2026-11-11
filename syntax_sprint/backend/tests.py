@@ -5,21 +5,25 @@ from datetime import timedelta
 from io import StringIO
 from unittest import mock
 
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.db import DatabaseError, connection
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 from django.utils import timezone
 
 from .analytics import (PURGE_CACHE_KEY, share_of_users_with_results,
                         snippet_error_rate, tests_per_active_user_per_week)
-from .models import SnippetRequest, TypingTestResult
+from .models import AdminTOTP, SnippetRequest, TypingTestResult
 from .snippets import CODE_SNIPPETS, validate_catalog
+from .totp import (code_for_counter, current_counter, generate_secret,
+                   provisioning_uri, verify_code)
+from .two_factor import SESSION_KEY
 
 PASSWORD = "".join(("Str0ng", "-Pass!2026"))
 User = get_user_model()
@@ -660,6 +664,16 @@ class AnalyticsTests(TestCase):
         self.assertTrue(SnippetRequest.objects.filter(pk=leftover.pk).exists())
 
 
+class CacheConfigTests(TestCase):
+    """Configuración de la caché del rate limiting."""
+
+    def test_shared_cache_backend_is_database(self):
+        self.assertIn("DatabaseCache", settings.CACHES["shared"]["BACKEND"])
+
+    def test_default_alias_is_local(self):
+        self.assertEqual(settings.RATE_LIMIT_CACHE_ALIAS, "default")
+
+
 class RateLimitTests(TestCase):
     """Límites del endpoint de fragmentos y del login del admin."""
 
@@ -704,3 +718,166 @@ class RateLimitTests(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertIsNone(cache.get("ratelimit:admin-login:127.0.0.1"))
+
+
+class TwoFactorTests(TestCase):
+    """TOTP del admin (spec 012)."""
+
+    def setUp(self):
+        cache.clear()
+        self.staff = User.objects.create_user(
+            username="staff",
+            email="staff@example.com",
+            password=PASSWORD,
+            is_staff=True,
+        )
+        self.secret = generate_secret()
+        self.device = AdminTOTP.objects.create(
+            user=self.staff, secret=self.secret, confirmed=True
+        )
+
+    def _valid_code(self) -> str:
+        return code_for_counter(self.secret, current_counter())
+
+    def test_totp_round_trip_and_replay(self):
+        at = 1_700_000_000
+        code = code_for_counter(self.secret, current_counter(at))
+
+        valid, counter = verify_code(self.secret, code, 0, at=at)
+        replay, _ = verify_code(self.secret, code, counter, at=at)
+
+        self.assertTrue(valid)
+        self.assertFalse(replay)
+
+    def test_totp_rejects_malformed_codes(self):
+        at = 1_700_000_000
+        for code in ("", "12345", "1234567", "abcdef", "12 345"):
+            self.assertFalse(verify_code(self.secret, code, 0, at=at)[0])
+
+    def test_totp_rejects_wrong_code(self):
+        at = 1_700_000_000
+        with mock.patch("backend.totp.code_for_counter", return_value="000000"):
+            self.assertFalse(verify_code(self.secret, "111111", 0, at=at)[0])
+
+    def test_provisioning_uri(self):
+        uri = provisioning_uri(self.secret, "staff")
+
+        self.assertTrue(uri.startswith("otpauth://totp/SyntaxSprint:staff"))
+        self.assertIn(f"secret={self.secret}", uri)
+        self.assertIn("digits=6", uri)
+
+    def test_middleware_redirects_staff_without_verification(self):
+        self.client.force_login(self.staff)
+
+        with override_settings(ADMIN_TOTP_REQUIRED=True):
+            response = self.client.get("/admin/")
+
+        self.assertRedirects(response, reverse("admin_2fa"))
+
+    def test_middleware_allows_verified_session(self):
+        self.client.force_login(self.staff)
+        session = self.client.session
+        session[SESSION_KEY] = True
+        session.save()
+
+        with override_settings(ADMIN_TOTP_REQUIRED=True):
+            response = self.client.get("/admin/")
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_middleware_disabled_by_default(self):
+        self.client.force_login(self.staff)
+
+        response = self.client.get("/admin/")
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_middleware_ignores_anonymous(self):
+        with override_settings(ADMIN_TOTP_REQUIRED=True):
+            response = self.client.get("/admin/")
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/admin/login/", response.url)
+
+    def test_verify_sets_session(self):
+        self.client.force_login(self.staff)
+
+        with override_settings(ADMIN_TOTP_REQUIRED=True):
+            response = self.client.post(
+                reverse("admin_2fa"), {"code": self._valid_code()}
+            )
+
+        self.assertRedirects(response, reverse("admin:index"))
+        self.assertTrue(self.client.session.get(SESSION_KEY))
+
+    def test_verify_rejects_wrong_code(self):
+        self.client.force_login(self.staff)
+
+        with override_settings(ADMIN_TOTP_REQUIRED=True):
+            response = self.client.post(reverse("admin_2fa"), {"code": "12345"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Código incorrecto", response.content.decode())
+        self.assertFalse(self.client.session.get(SESSION_KEY))
+
+    def test_verify_requires_device(self):
+        other = User.objects.create_user(
+            username="staff2",
+            email="staff2@example.com",
+            password=PASSWORD,
+            is_staff=True,
+        )
+        self.client.force_login(other)
+
+        with override_settings(ADMIN_TOTP_REQUIRED=True):
+            response = self.client.get(reverse("admin_2fa"))
+
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("enroll_admin_totp", response.content.decode())
+
+    def test_non_staff_cannot_access_verify(self):
+        user = User.objects.create_user(
+            username="plain", email="plain@example.com", password=PASSWORD
+        )
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("admin_2fa"))
+
+        self.assertRedirects(response, reverse("index"))
+
+    def test_enroll_and_disable_command(self):
+        other = User.objects.create_user(
+            username="staff3",
+            email="staff3@example.com",
+            password=PASSWORD,
+            is_staff=True,
+        )
+        output = StringIO()
+
+        call_command("enroll_admin_totp", "--username", "staff3", stdout=output)
+
+        self.assertTrue(AdminTOTP.objects.filter(user=other, confirmed=True).exists())
+        self.assertIn("otpauth://totp/", output.getvalue())
+
+        call_command(
+            "enroll_admin_totp",
+            "--username",
+            "staff3",
+            "--disable",
+            stdout=StringIO(),
+        )
+
+        self.assertFalse(AdminTOTP.objects.filter(user=other).exists())
+
+    def test_enroll_command_rejects_non_staff(self):
+        user = User.objects.create_user(
+            username="plain2", email="plain2@example.com", password=PASSWORD
+        )
+
+        with self.assertRaises(CommandError):
+            call_command(
+                "enroll_admin_totp",
+                "--username",
+                user.username,
+                stdout=StringIO(),
+            )

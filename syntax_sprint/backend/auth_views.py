@@ -6,13 +6,12 @@ from django.contrib import auth, messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.password_validation import validate_password
-from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods, require_POST
 
-from .ratelimit import client_ip
+from .ratelimit import client_ip, get_counter, increment_counter, reset_counter
 
 LOGIN_ATTEMPTS_LIMIT = 5
 LOGIN_ATTEMPTS_TIMEOUT = 300
@@ -97,18 +96,18 @@ def login(request: HttpRequest) -> HttpResponse:
         return HttpResponseBadRequest("Faltan datos obligatorios.")
 
     cache_key = _login_attempts_key(request, username)
-    attempts = cache.get(cache_key, 0)
+    attempts = get_counter(cache_key)
     if attempts >= LOGIN_ATTEMPTS_LIMIT:
         messages.error(request, "Demasiados intentos. Inténtalo de nuevo más tarde.")
         return redirect("login")
 
     user = auth.authenticate(request, username=username, password=password)
     if user is None:
-        cache.set(cache_key, attempts + 1, timeout=LOGIN_ATTEMPTS_TIMEOUT)
+        increment_counter(cache_key, LOGIN_ATTEMPTS_TIMEOUT)
         messages.error(request, "Usuario o contraseña incorrectos.")
         return redirect("login")
 
-    cache.delete(cache_key)
+    reset_counter(cache_key)
     auth.login(request, user)
     return redirect("index")
 

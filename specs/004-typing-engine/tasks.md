@@ -111,6 +111,12 @@ Referencia: `specs/004-typing-engine/spec.md`
     `keysToTrack` y el bloque de duraciones de `endTest`; `node --check` OK y sin
     referencias restantes. `RF-004-15` eliminado de la spec y la trazabilidad.
 
+- [x] **T004-16** Añadir pruebas automatizadas de las fórmulas y del conteo del motor.
+  - Requisitos: `RNF-004-06`
+  - Archivos: `tests/js/script.test.js`, `vitest.config.mjs`, `package.json`
+  - Evidencia: 8 tests con Vitest + jsdom (`computeWpm`, `computeAccuracy` y
+    `TypingTest.countTypedChars`); `npm run test:js` en verde y en CI.
+
 ## Deuda técnica / Backlog
 
 - [ ] Tests automatizados de frontend (Vitest + jsdom o Playwright).
@@ -127,3 +133,4 @@ Referencia: `specs/004-typing-engine/spec.md`
 | 2026-11-11 | T004-10 y T004-13 cerradas: contadores recalculados y temporizador único |
 | 2026-11-11 | T004-11 cerrada: WPM y precisión como funciones puras |
 | 2026-11-11 | T004-15 cerrada: métricas avanzadas eliminadas por no usarse |
+| 2026-11-11 | T004-16: pruebas de frontend con Vitest + jsdom |

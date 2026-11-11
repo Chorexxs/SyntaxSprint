@@ -4,11 +4,14 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
+from django.conf import settings
 from django.http import HttpRequest, HttpResponse
+from django.shortcuts import redirect
 
 from .ratelimit import (ADMIN_LOGIN_LIMIT, ADMIN_LOGIN_PATH,
                         ADMIN_LOGIN_WINDOW_SECONDS, is_rate_limited,
                         reset_rate_limit)
+from .two_factor import SESSION_KEY as ADMIN_TOTP_SESSION_KEY
 
 # Sin `unsafe-inline`: el tema se inicializa con un script externo y Tailwind está
 # compilado localmente, así que no hay scripts ni estilos en línea.
@@ -38,6 +41,41 @@ class ContentSecurityPolicyMiddleware:
         response = self.get_response(request)
         response.headers.setdefault("Content-Security-Policy", CSP_POLICY)
         return response
+
+
+ADMIN_TOTP_PREFIX = "/admin/"
+ADMIN_TOTP_EXEMPT_PREFIXES = (
+    "/admin/login/",
+    "/admin/logout/",
+    "/admin/2fa/",
+    "/admin/jsi18n/",
+)
+
+
+class AdminTOTPMiddleware:
+    """Exige el código TOTP al staff cuando la función está activada."""
+
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]) -> None:
+        self.get_response = get_response
+
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        if not settings.ADMIN_TOTP_REQUIRED:
+            return self.get_response(request)
+
+        path = request.path
+        if not path.startswith(ADMIN_TOTP_PREFIX) or path.startswith(
+            ADMIN_TOTP_EXEMPT_PREFIXES
+        ):
+            return self.get_response(request)
+
+        user = request.user
+        if (
+            user.is_authenticated
+            and user.is_staff
+            and not request.session.get(ADMIN_TOTP_SESSION_KEY)
+        ):
+            return redirect("admin_2fa")
+        return self.get_response(request)
 
 
 class AdminLoginRateLimitMiddleware:

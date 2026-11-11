@@ -1,15 +1,27 @@
-"""Límites de peticiones por IP sobre la caché de Django."""
+"""Límites de peticiones por IP sobre una caché compartida opcional."""
 
 from __future__ import annotations
 
-from django.core.cache import cache
+import logging
+
+from django.conf import settings
+from django.core.cache import caches
+from django.core.cache.backends.base import BaseCache
+from django.db import DatabaseError
 from django.http import HttpRequest
+
+logger = logging.getLogger(__name__)
 
 SNIPPET_LIMIT = 120
 SNIPPET_WINDOW_SECONDS = 60
 ADMIN_LOGIN_LIMIT = 5
 ADMIN_LOGIN_WINDOW_SECONDS = 300
 ADMIN_LOGIN_PATH = "/admin/login/"
+
+
+def _cache() -> BaseCache:
+    """Devuelve la caché configurada para los contadores."""
+    return caches[settings.RATE_LIMIT_CACHE_ALIAS]
 
 
 def client_ip(request: HttpRequest) -> str:
@@ -32,18 +44,61 @@ def is_rate_limited(
     limit: int,
     window_seconds: int,
 ) -> bool:
-    """Cuenta la petición y devuelve ``True`` si supera el límite."""
+    """Cuenta la petición y devuelve ``True`` si supera el límite.
+
+    Si la caché no está disponible se permite la petición y se registra el
+    fallo: un rate limit roto no debe bloquear el sitio.
+    """
     key = rate_limit_key(request, scope)
-    if cache.add(key, 1, timeout=window_seconds):
-        return False
+    cache = _cache()
     try:
-        count = cache.incr(key)
-    except ValueError:
-        cache.set(key, 1, timeout=window_seconds)
+        if cache.add(key, 1, timeout=window_seconds):
+            return False
+        try:
+            count = cache.incr(key)
+        except ValueError:
+            cache.set(key, 1, timeout=window_seconds)
+            return False
+    except DatabaseError:
+        logger.exception("Caché de rate limiting no disponible")
         return False
     return count > limit
 
 
 def reset_rate_limit(request: HttpRequest, scope: str) -> None:
     """Reinicia el contador tras una operación correcta."""
-    cache.delete(rate_limit_key(request, scope))
+    try:
+        _cache().delete(rate_limit_key(request, scope))
+    except DatabaseError:
+        logger.exception("No se pudo reiniciar el contador de rate limiting")
+
+
+def get_counter(key: str) -> int:
+    """Devuelve el valor del contador (0 si no existe o falla la caché)."""
+    try:
+        return _cache().get(key, 0)
+    except DatabaseError:
+        logger.exception("No se pudo leer el contador de intentos")
+        return 0
+
+
+def increment_counter(key: str, window_seconds: int) -> None:
+    """Suma uno al contador, creándolo con la ventana indicada."""
+    cache = _cache()
+    try:
+        if cache.add(key, 1, timeout=window_seconds):
+            return
+        try:
+            cache.incr(key)
+        except ValueError:
+            cache.set(key, 1, timeout=window_seconds)
+    except DatabaseError:
+        logger.exception("No se pudo incrementar el contador de intentos")
+
+
+def reset_counter(key: str) -> None:
+    """Elimina el contador."""
+    try:
+        _cache().delete(key)
+    except DatabaseError:
+        logger.exception("No se pudo reiniciar el contador de intentos")

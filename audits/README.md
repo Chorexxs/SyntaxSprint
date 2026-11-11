@@ -46,4 +46,5 @@ audits/
 > afectados.
 >
 > Remediación 2026-11-11: SEC-016…SEC-021 y AUD-013…AUD-015 cerrados en el mismo día
-> del informe; queda AUD-016 (INFO).
+> del informe; queda AUD-016 (INFO). Después se añadieron caché compartida del rate
+> limit y 2FA del admin (spec 012).

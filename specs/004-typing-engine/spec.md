@@ -110,6 +110,7 @@ TypingTest.state
 | RNF-004-03 | El DOM no debe re-renderizarse completo en cada tecla (solo clases). |
 | RNF-004-04 | Accesible por teclado y con instrucciones visibles. |
 | RNF-004-05 | Tolerante a fallos de red: el test debe completarse aunque el guardado falle. |
+| RNF-004-06 | Las fórmulas y el conteo del motor deben tener pruebas automatizadas en JS. |
 
 ## 8. Criterios de aceptación
 

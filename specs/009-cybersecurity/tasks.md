@@ -180,8 +180,9 @@ Referencia: `specs/009-cybersecurity/spec.md`
   - Evidencia: `AdminLoginRateLimitMiddleware` limita `/admin/login/` a 5 POST por IP
     cada 5 minutos, responde 429 y reinicia el contador tras un login correcto. Tests
     `test_admin_login_returns_429_after_limit` y
-    `test_admin_successful_login_resets_counter`. La 2FA sigue en backlog.
-  - DoD: rate limiting en `/admin/login/`. ✅ (2FA pendiente en backlog)
+    `test_admin_successful_login_resets_counter`. La 2FA ya está disponible en la spec
+    012 (`ADMIN_TOTP_REQUIRED`).
+  - DoD: rate limiting en `/admin/login/` y 2FA disponible. ✅
 
 - [x] **T009-31** Programar la purga de analítica y limitar el endpoint de fragmentos.
   - Requisitos: `RF-009-11`, `RF-009-06`, `RF-003-09`
@@ -213,6 +214,16 @@ Referencia: `specs/009-cybersecurity/spec.md`
     cambio.
   - DoD: cada `uses:` apunta a un SHA completo. ✅
 
+- [x] **T009-35** Compartir el contador de rate limiting entre workers.
+  - Requisitos: `RF-009-07`, `RNF-009-02`
+  - Archivos: `syntax_sprint/settings.py`, `backend/ratelimit.py`, `render.yaml`,
+    `DEPLOY.md`
+  - Evidencia: alias `shared` con `DatabaseCache` y `RATE_LIMIT_CACHE_ALIAS=shared` en
+    Render; `createcachetable` en el arranque. Local y tests siguen con `LocMemCache`.
+    Sonda con BD temporal: primera petición permitida, segunda bloqueada, reset y fila
+    en `syntax_sprint_cache`.
+  - DoD: con varios workers el contador se comparte. ✅
+
 ## Deuda técnica / Backlog
 
 - [ ] Pre-commit hook con `scan_secrets.py` y `gitleaks`.
@@ -222,7 +233,6 @@ Referencia: `specs/009-cybersecurity/spec.md`
 - [ ] Cabecera CSP.
 - [ ] Notificación a usuarios ante brecha (procedimiento legal).
 - [ ] Auditoría de dependencias en CI.
-- [ ] Caché compartida (Redis o caché de BD) para el rate limiting con varios workers.
 
 ## Historial
 
@@ -236,3 +246,4 @@ Referencia: `specs/009-cybersecurity/spec.md`
 | 2026-11-11 | CSP estricta y Tailwind compilado localmente (sin CDN ni `unsafe-inline`) |
 | 2026-11-11 | Reauditoría post-analítica: 0 CRÍTICAS/ALTAS; 3 MEDIAS y 3 BAJAS nuevas |
 | 2026-11-11 | Remediación completa: SEC-016…SEC-021 cerradas (rate limits, purga, HSTS, pinning) |
+| 2026-11-11 | Caché compartida del rate limit (T009-35) y 2FA del admin (spec 012) |
