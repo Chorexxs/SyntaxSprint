@@ -53,12 +53,14 @@ Referencia: `specs/004-typing-engine/spec.md`
     correctos con 100 % de precisión; pegar 1 correcto + 4 erróneos muestra 20 % y tras
     un backspace, 25 %.
 
-- [ ] **T004-11** Extraer `computeWpm()` y `computeAccuracy()` como funciones puras y reutilizarlas.
+- [x] **T004-11** Extraer `computeWpm()` y `computeAccuracy()` como funciones puras y reutilizarlas.
   - Requisitos: `RF-004-04`, `RF-004-05`
   - Archivos: `script.js`
   - DoD: mismo resultado en vivo y al final; sin duplicar fórmulas.
-  - Estado: pendiente. La fórmula de WPM está duplicada en `updateLiveStats` (l. 451)
-    y `endTest` (l. 486); la de precisión en l. 459 y l. 491.
+  - Evidencia: ambas funciones viven junto a `keysToTrack` y las usan
+    `updateLiveStats` y `endTest`. Verificado en Chrome: `computeWpm(5, 1) = 1`
+    (`CA-004-02`), `computeAccuracy(8, 2) = 80` (`CA-004-03`), vacío = 100 % y
+    tiempo 0 = 0 WPM.
 
 - [x] **T004-12** Eliminar el atributo `value=""` del `<textarea>` y añadir `aria-label`.
   - Requisito: `RNF-004-04`
@@ -98,3 +100,4 @@ Referencia: `specs/004-typing-engine/spec.md`
 | --- | --- |
 | 2026-11-10 | Auditoría del motor existente y plan de correcciones |
 | 2026-11-11 | T004-10 y T004-13 cerradas: contadores recalculados y temporizador único |
+| 2026-11-11 | T004-11 cerrada: WPM y precisión como funciones puras |
