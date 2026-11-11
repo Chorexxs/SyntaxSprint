@@ -122,25 +122,23 @@ Referencia: `specs/008-code-audit/spec.md`
 
 ## Fase 5 — Hallazgos de la reauditoría (2026-11-11)
 
-- [ ] **T008-18** Corregir el comentario obsoleto de `theme.js`.
+- [x] **T008-18** Corregir el comentario obsoleto de `theme.js`.
   - Requisito: `RF-008-09`
   - Archivos: `static/js/theme.js`
-  - Evidencia: el comentario dice "script inline"; `base.html:12` carga
-    `theme-init.js` (AUD-013, BAJA).
-  - DoD: el comentario describe el archivo externo.
+  - Evidencia: el comentario ahora dice que `theme-init.js` se carga desde
+    `base.html:12` (AUD-013, BAJA).
 
-- [ ] **T008-19** Configurar `LOGGING` con formato, nivel y handler de consola.
+- [x] **T008-19** Configurar `LOGGING` con formato, nivel y handler de consola.
   - Requisitos: `RF-008-11`, `RF-008-04`
   - Archivos: `syntax_sprint/settings.py`
-  - Evidencia: sin `LOGGING`, Django usa el default a stderr; `analytics.py:16` depende
-    de ese default (AUD-014, BAJA).
-  - DoD: logs con timestamp, nivel y logger de `backend`; verificado en local.
+  - Evidencia: bloque `LOGGING` con formato `{levelname} {asctime} {name} {message}`,
+    handler de consola y logger `backend` a INFO (AUD-014, BAJA).
 
-- [ ] **T008-20** Renombrar `_client_ip` para reflejar que lee `REMOTE_ADDR`.
+- [x] **T008-20** Renombrar `_client_ip` para reflejar que lee `REMOTE_ADDR`.
   - Requisito: `RF-008-11`
-  - Archivos: `backend/auth_views.py`
-  - Evidencia: `auth_views.py:81-83` (AUD-015, BAJA; coordinado con `T009-29`).
-  - DoD: nombre sin ambigüedad y tests en verde.
+  - Archivos: `backend/auth_views.py`, `backend/ratelimit.py`
+  - Evidencia: `client_ip()` centralizado en `ratelimit.py` y clave
+    `_login_attempts_key()` sin ambigüedad (AUD-015, BAJA; coordina con `T009-29`).
 
 - [ ] **T008-21** Pasar un único `since` a las métricas del informe.
   - Requisito: `RF-008-03`

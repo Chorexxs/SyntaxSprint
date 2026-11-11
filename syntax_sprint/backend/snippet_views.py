@@ -8,6 +8,7 @@ from django.http import HttpRequest, JsonResponse
 from django.views.decorators.http import require_http_methods
 
 from .analytics import record_snippet_request
+from .ratelimit import SNIPPET_LIMIT, SNIPPET_WINDOW_SECONDS, is_rate_limited
 from .snippets import pick_snippet
 from .validators import InvalidPayload, parse_language, read_json
 
@@ -15,6 +16,9 @@ from .validators import InvalidPayload, parse_language, read_json
 @require_http_methods(["GET", "POST"])
 def get_python_function(request: HttpRequest) -> JsonResponse:
     """Devuelve un fragmento de código aleatorio del lenguaje solicitado."""
+    if is_rate_limited(request, "snippet", SNIPPET_LIMIT, SNIPPET_WINDOW_SECONDS):
+        return JsonResponse({"error": "Demasiadas peticiones"}, status=429)
+
     started = time.monotonic()
     language = "python"
     if request.method == "POST":

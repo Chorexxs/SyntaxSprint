@@ -68,6 +68,13 @@ Referencia: `specs/003-snippet-service/spec.md`
   - Evidencia: `test_randomness_returns_at_least_three_names` hace 20 POST reales a
     Python y exige ≥ 3 nombres distintos, sin manipular la semilla.
 
+- [x] **T003-11** Limitar el endpoint a 120 peticiones por minuto e IP con respuesta 429.
+  - Requisito: `RF-003-09`
+  - Archivos: `backend/ratelimit.py`, `backend/snippet_views.py`
+  - Evidencia: `RateLimitTests.test_snippet_endpoint_returns_429_after_limit` fuerza el
+    límite a 2 y comprueba 200, 200 y 429 con `{"error": "Demasiadas peticiones"}`.
+    La petición rechazada no genera evento de analítica.
+
 ## Deuda técnica / Backlog
 
 - [ ] Añadir alias `/api/snippets/random` manteniendo la ruta antigua.
@@ -81,3 +88,4 @@ Referencia: `specs/003-snippet-service/spec.md`
 | --- | --- |
 | 2026-11-10 | Auditoría del catálogo y contrato actuales |
 | 2026-11-11 | T003-08/09/10 cerradas: validación al importar, catálogo completo y aleatoriedad |
+| 2026-11-11 | T003-11: límite de 120 peticiones/min por IP (429) tras la auditoría |

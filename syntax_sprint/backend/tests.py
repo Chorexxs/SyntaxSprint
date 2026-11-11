@@ -9,14 +9,15 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.management import call_command
+from django.core.management.base import CommandError
 from django.db import DatabaseError, connection
 from django.test import Client, TestCase
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 from django.utils import timezone
 
-from .analytics import (share_of_users_with_results, snippet_error_rate,
-                        tests_per_active_user_per_week)
+from .analytics import (PURGE_CACHE_KEY, share_of_users_with_results,
+                        snippet_error_rate, tests_per_active_user_per_week)
 from .models import SnippetRequest, TypingTestResult
 from .snippets import CODE_SNIPPETS, validate_catalog
 
@@ -122,7 +123,27 @@ class AuthTests(TestCase):
         )
         self.assertRedirects(response, reverse("login"))
         self.assertNotIn("_auth_user_id", self.client.session)
-        self.assertGreaterEqual(cache.get("login-attempts:127.0.0.1", 0), 5)
+        self.assertGreaterEqual(cache.get("login-attempts:tester:127.0.0.1", 0), 5)
+
+    def test_login_rate_limit_is_per_username(self):
+        User.objects.create_user(
+            username="tester", email="tester@example.com", password=PASSWORD
+        )
+        User.objects.create_user(
+            username="otro", email="otro@example.com", password=PASSWORD
+        )
+        for _ in range(5):
+            self.client.post(
+                reverse("login"),
+                {"username": "tester", "password": "incorrecta"},
+            )
+
+        response = self.client.post(
+            reverse("login"), {"username": "otro", "password": PASSWORD}
+        )
+
+        self.assertRedirects(response, reverse("index"))
+        self.assertIn("_auth_user_id", self.client.session)
 
     def test_logout_requires_post(self):
         User.objects.create_user(
@@ -473,6 +494,9 @@ class CsrfTests(TestCase):
 class AnalyticsTests(TestCase):
     """Registro de peticiones y métricas de producto (spec 011)."""
 
+    def setUp(self):
+        cache.clear()
+
     def _post_language(self, language: str):
         return self.client.post(
             reverse("get_python_function"),
@@ -604,3 +628,79 @@ class AnalyticsTests(TestCase):
         self.assertFalse(model_admin.has_add_permission(request))
         self.assertFalse(model_admin.has_change_permission(request))
         self.assertFalse(model_admin.has_delete_permission(request))
+
+    def test_purge_commands_reject_non_positive_days(self):
+        with self.assertRaises(CommandError):
+            call_command("purge_analytics", "--days", "0")
+        with self.assertRaises(CommandError):
+            call_command("analytics_report", "--days", "-1")
+
+    def test_opportunistic_purge_runs_once_per_day(self):
+        old = SnippetRequest.objects.create(
+            language="python", status_code=200, duration_ms=1
+        )
+        SnippetRequest.objects.filter(pk=old.pk).update(
+            created_at=timezone.now() - timedelta(days=100)
+        )
+
+        self.client.get(reverse("get_python_function"))
+
+        self.assertFalse(SnippetRequest.objects.filter(pk=old.pk).exists())
+        self.assertIsNotNone(cache.get(PURGE_CACHE_KEY))
+
+        leftover = SnippetRequest.objects.create(
+            language="python", status_code=200, duration_ms=1
+        )
+        SnippetRequest.objects.filter(pk=leftover.pk).update(
+            created_at=timezone.now() - timedelta(days=100)
+        )
+
+        self.client.get(reverse("get_python_function"))
+
+        self.assertTrue(SnippetRequest.objects.filter(pk=leftover.pk).exists())
+
+
+class RateLimitTests(TestCase):
+    """Límites del endpoint de fragmentos y del login del admin."""
+
+    def setUp(self):
+        cache.clear()
+
+    def test_snippet_endpoint_returns_429_after_limit(self):
+        with mock.patch("backend.snippet_views.SNIPPET_LIMIT", 2):
+            first = self.client.get(reverse("get_python_function"))
+            second = self.client.get(reverse("get_python_function"))
+            third = self.client.get(reverse("get_python_function"))
+
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+        self.assertEqual(third.status_code, 429)
+        self.assertEqual(third.json()["error"], "Demasiadas peticiones")
+
+    def test_admin_login_returns_429_after_limit(self):
+        for _ in range(5):
+            response = self.client.post(
+                "/admin/login/", {"username": "x", "password": "y"}
+            )
+            self.assertNotEqual(response.status_code, 429)
+
+        blocked = self.client.post("/admin/login/", {"username": "x", "password": "y"})
+
+        self.assertEqual(blocked.status_code, 429)
+        self.assertIn("Demasiados intentos", blocked.content.decode())
+
+    def test_admin_successful_login_resets_counter(self):
+        User.objects.create_superuser(
+            username="admin", email="admin@example.com", password=PASSWORD
+        )
+        for _ in range(4):
+            self.client.post(
+                "/admin/login/", {"username": "admin", "password": "incorrecta"}
+            )
+
+        response = self.client.post(
+            "/admin/login/", {"username": "admin", "password": PASSWORD}
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIsNone(cache.get("ratelimit:admin-login:127.0.0.1"))

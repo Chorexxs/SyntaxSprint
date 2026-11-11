@@ -128,3 +128,15 @@ manage.py shell            # sonda de latencia del endpoint
 - La puntuación de dimensiones es una rúbrica fija, comparable entre ejecuciones, no una
   medida física.
 - La auditoría es de solo lectura: los hallazgos no se corrigen aquí.
+
+## 10. Remediación aplicada (2026-11-11)
+
+| Hallazgo | Acción | Estado |
+| --- | --- | --- |
+| AUD-013 | Comentario de `theme.js` corregido: el tema lo fija `theme-init.js` | ✅ (`T008-18`) |
+| AUD-014 | Bloque `LOGGING` con formato, handler de consola y logger `backend` | ✅ (`T008-19`) |
+| AUD-015 | `client_ip()` centralizado en `ratelimit.py`; clave de login sin ambigüedad | ✅ (`T008-20`) |
+| AUD-016 | Un solo `since` por informe | Abierto (`T008-21`, INFO) |
+
+> Verificación tras la remediación: 58 tests OK, cobertura 99 %, `pylint` 10.00/10,
+> `isort` limpio y `code_metrics --strict` sin incumplimientos.

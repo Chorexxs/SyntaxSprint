@@ -44,3 +44,6 @@ audits/
 > repositorio es privado, Pages devuelve 404 y la `SECRET_KEY` de producción está
 > rotada. Quedan la revocación de API keys y el reset de contraseñas de los usuarios
 > afectados.
+>
+> Remediación 2026-11-11: SEC-016…SEC-020 y AUD-013…AUD-015 cerrados en el mismo día
+> del informe; quedan SEC-021 (pinning de Actions) y AUD-016 (INFO).

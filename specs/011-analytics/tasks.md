@@ -52,6 +52,14 @@ Referencia: `specs/011-analytics/spec.md`
     `code_metrics.py --strict` sin incumplimientos; `check_dependencies.py --strict` OK.
     `specs/traceability.md`, `specs/000-overview/spec.md` y `plan.md` actualizados.
 
+- [x] **T011-08** Purga oportunista diaria y validación de ventanas.
+  - Requisitos: `RF-011-04`, `RF-011-08`
+  - Archivos: `backend/analytics.py`, `backend/management/commands/`
+  - Evidencia: `maybe_purge_snippet_requests` usa `cache.add` con clave diaria;
+    `purge_analytics --days 0` y `analytics_report --days -1` lanzan `CommandError`.
+    Tests `test_opportunistic_purge_runs_once_per_day` y
+    `test_purge_commands_reject_non_positive_days` (SEC-018/SEC-019).
+
 ## Deuda técnica / Backlog
 
 - [ ] Panel de métricas en `/admin/` con series temporales.
@@ -64,4 +72,5 @@ Referencia: `specs/011-analytics/spec.md`
 | Fecha | Cambio | Autor |
 | --- | --- | --- |
 | 2026-11-11 | Creación de la spec, el plan y las tareas | Agente |
-| 2026-11-11 | Implementación completa y verificación en verde | Agente |
+| 2026-11-11 | Implementación completa y verificación en verde |
+| 2026-11-11 | Endurecimiento tras auditoría: purga diaria, validación de días y rate limit (T011-08, T003-11) | Agente |

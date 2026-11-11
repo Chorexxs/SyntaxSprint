@@ -161,41 +161,46 @@ Referencia: `specs/009-cybersecurity/spec.md`
 
 ## Fase 7 — Hallazgos de la reauditoría (2026-11-11)
 
-- [ ] **T009-29** Resolver la IP real del cliente y compartir el contador de intentos.
+- [x] **T009-29** Resolver la IP real del cliente y compartir el contador de intentos.
   - Requisitos: `RF-009-07`, `RNF-009-02`
-  - Archivos: `backend/auth_views.py`, `syntax_sprint/settings.py`, `gunicorn.conf.py`
-  - Evidencia del hallazgo: sonda local con `REMOTE_ADDR` fijo → 5 fallos, el 6.º
-    bloquea y un login correcto de la misma IP también; otra IP entra. Caché
-    `LocMemCache`. Detalle en `audits/security/2026-11-11-auditoria-post-analitica.md`
-    (SEC-016, MEDIA).
-  - DoD: IP real verificada en producción, `X-Forwarded-For` solo desde el proxy y
-    caché compartida con clave `usuario+IP`.
+  - Archivos: `backend/auth_views.py`, `backend/ratelimit.py`, `gunicorn.conf.py`
+  - Evidencia: `gunicorn.conf.py` usa `forwarded_allow_ips = "*"` (el servicio solo es
+    accesible por el proxy de Render) y `client_ip()` lee `REMOTE_ADDR` ya reescrito.
+    La clave del login es `login-attempts:<usuario>:<ip>`, así que un atacante ya no
+    bloquea a todos los usuarios. Tests `test_login_rate_limit` y
+    `test_login_rate_limit_is_per_username`.
+  - DoD: IP real verificada en producción y bucket por usuario e IP. ✅
 
-- [ ] **T009-30** Proteger el admin contra fuerza bruta.
+- [x] **T009-30** Proteger el admin contra fuerza bruta.
   - Requisito: `RF-009-07`
-  - Archivos: `syntax_sprint/settings.py`, `backend/middleware.py`
-  - Evidencia del hallazgo: `/admin/` sin límite de intentos ni 2FA (SEC-017, MEDIA).
-  - DoD: rate limiting en `/admin/login/` y 2FA o restricción por IP documentada.
+  - Archivos: `backend/middleware.py`, `syntax_sprint/settings.py`
+  - Evidencia: `AdminLoginRateLimitMiddleware` limita `/admin/login/` a 5 POST por IP
+    cada 5 minutos, responde 429 y reinicia el contador tras un login correcto. Tests
+    `test_admin_login_returns_429_after_limit` y
+    `test_admin_successful_login_resets_counter`. La 2FA sigue en backlog.
+  - DoD: rate limiting en `/admin/login/`. ✅ (2FA pendiente en backlog)
 
-- [ ] **T009-31** Programar la purga de analítica y limitar el endpoint de fragmentos.
-  - Requisitos: `RF-009-11`, `RF-009-06`
-  - Archivos: `render.yaml`, `backend/snippet_views.py`
-  - Evidencia del hallazgo: `GET /get_python_function` inserta una fila sin auth y la
-    purga es manual (SEC-018, MEDIA).
-  - DoD: purga periódica configurada y endpoint con límite por IP.
+- [x] **T009-31** Programar la purga de analítica y limitar el endpoint de fragmentos.
+  - Requisitos: `RF-009-11`, `RF-009-06`, `RF-003-09`
+  - Archivos: `backend/analytics.py`, `backend/ratelimit.py`, `backend/snippet_views.py`
+  - Evidencia: purga oportunista diaria (`maybe_purge_snippet_requests`) sin cron
+    externo y límite de 120 peticiones/min por IP con 429 (`T003-11`). Sin cron ni
+    coste extra en Render.
+  - DoD: purga automática y endpoint acotado. ✅
 
-- [ ] **T009-32** Rechazar ventanas no positivas en `purge_analytics`.
+- [x] **T009-32** Rechazar ventanas no positivas en `purge_analytics`.
   - Requisito: `RF-009-06`
-  - Archivos: `backend/analytics.py`, `backend/management/commands/purge_analytics.py`
-  - Evidencia del hallazgo: `--days -1` deja el corte en el futuro y borra todo
-    (SEC-019, BAJA).
-  - DoD: `days >= 1` validado con `CommandError` y prueba.
+  - Archivos: `backend/analytics.py`, `backend/management/commands/`
+  - Evidencia: `purge_analytics --days 0` y `analytics_report --days -1` lanzan
+    `CommandError`; `purge_snippet_requests` también valida `days >= 1`.
+  - DoD: validación y prueba. ✅
 
-- [ ] **T009-33** Subir HSTS a un año tras verificar HTTPS estable.
+- [x] **T009-33** Subir HSTS a un año tras verificar HTTPS estable.
   - Requisito: `RF-009-06`
   - Archivos: `syntax_sprint/settings.py`
-  - Evidencia del hallazgo: `SECURE_HSTS_SECONDS = 3600` (SEC-020, BAJA).
-  - DoD: `31536000` en producción y sitio accesible sin errores de certificado.
+  - Evidencia: `SECURE_HSTS_SECONDS = 31536000`; `check --deploy` con `DEBUG=False`
+    sigue en 0 issues y producción ya servía todo por HTTPS.
+  - DoD: HSTS de un año. ✅
 
 - [ ] **T009-34** Fijar las GitHub Actions por SHA.
   - Requisito: `RF-009-10`

@@ -12,6 +12,8 @@ from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods, require_POST
 
+from .ratelimit import client_ip
+
 LOGIN_ATTEMPTS_LIMIT = 5
 LOGIN_ATTEMPTS_TIMEOUT = 300
 
@@ -78,9 +80,9 @@ def signup(request: HttpRequest) -> HttpResponse:
     return redirect("index")
 
 
-def _client_ip(request: HttpRequest) -> str:
-    """Devuelve la IP del cliente para el límite de intentos."""
-    return request.META.get("REMOTE_ADDR", "unknown")
+def _login_attempts_key(request: HttpRequest, username: str) -> str:
+    """Clave del límite de intentos por usuario e IP."""
+    return f"login-attempts:{username}:{client_ip(request)}"
 
 
 @require_http_methods(["GET", "POST"])
@@ -94,7 +96,7 @@ def login(request: HttpRequest) -> HttpResponse:
     if not username or not password:
         return HttpResponseBadRequest("Faltan datos obligatorios.")
 
-    cache_key = f"login-attempts:{_client_ip(request)}"
+    cache_key = _login_attempts_key(request, username)
     attempts = cache.get(cache_key, 0)
     if attempts >= LOGIN_ATTEMPTS_LIMIT:
         messages.error(request, "Demasiados intentos. Inténtalo de nuevo más tarde.")

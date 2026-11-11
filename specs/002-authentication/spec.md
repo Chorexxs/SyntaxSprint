@@ -62,7 +62,7 @@ todos los mensajes de error son visibles.
 | Contraseña repetida | `password == password2` obligatorio. |
 | Sesión | `auth.login` tras registro o login correcto. |
 | Logout | Solo por usuario autenticado y únicamente por POST; un GET responde 405. |
-| Límite de intentos | 5 fallos por IP en 5 minutos; superado el límite se rechaza con mensaje genérico. |
+| Límite de intentos | 5 fallos por usuario e IP en 5 minutos; al superarlo se rechaza incluso una contraseña correcta hasta que caduque la ventana. |
 
 ## 6. Contratos
 

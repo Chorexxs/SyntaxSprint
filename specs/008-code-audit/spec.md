@@ -280,6 +280,9 @@ Crear `audits/code/AAAA-MM-DD-<alcance>.md` usando
 > Reauditoría post-analítica del 2026-11-11:
 > `audits/code/2026-11-11-auditoria-post-analitica.md` → **8.55/10 (B)**, 0 ALTA y
 > 4 hallazgos menores (AUD-013…AUD-016).
+>
+> Remediación del 2026-11-11: AUD-013, AUD-014 y AUD-015 cerrados (`T008-18`…`T008-20`);
+> AUD-016 (INFO) queda en `T008-21`.
 
 ## 13. Fuera de alcance
 

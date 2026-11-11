@@ -1,7 +1,7 @@
 /**
  * Tema claro/oscuro de SyntaxSprint.
  *
- * El atributo `data-theme` inicial lo fija un script inline en `base.html`
+ * El atributo `data-theme` inicial lo fija `theme-init.js` desde `base.html`
  * antes del primer pintado para evitar FOUC. Este archivo gestiona el botón,
  * los iconos y la persistencia en localStorage.
  */

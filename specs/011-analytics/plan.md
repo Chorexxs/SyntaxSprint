@@ -47,7 +47,8 @@ Migración necesaria: sí (`0002_snippetrequest`). Reversible: sí (`DeleteModel
 Cliente → POST /get_python_function
   → vista: mide t0 → valida payload → pick_snippet
   → analytics.record_snippet_request(language, status, t0)
-       └─ INSERT en SnippetRequest (fail-open)
+       ├─ INSERT en SnippetRequest (fail-open)
+       └─ purga oportunista: como máximo una vez al día (caché)
   → JsonResponse
 ```
 
@@ -119,6 +120,7 @@ Lighthouse: mide con `lighthouse https://syntaxsprint.onrender.com/`
 ## 9. Notas de despliegue
 
 - Migraciones: `0002_snippetrequest` se aplica con `manage.py migrate` en el arranque.
+- Purga: oportunista (una vez al día por proceso) y manual; no requiere cron.
 - Variables de entorno: ninguna nueva.
 - Estáticos: sin cambios.
 - Sin cookies ni scripts de terceros: la CSP actual no se toca.

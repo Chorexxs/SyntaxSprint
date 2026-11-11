@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from django.core.management.base import BaseCommand, CommandParser
+from django.core.management.base import (BaseCommand, CommandError,
+                                         CommandParser)
 
 from ...analytics import DEFAULT_WINDOW_DAYS, build_report
 
@@ -26,7 +27,10 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args: Any, **options: Any) -> None:
-        report = build_report(options["days"])
+        days = options["days"]
+        if days < 1:
+            raise CommandError("--days debe ser mayor o igual que 1")
+        report = build_report(days)
         self.stdout.write(f"== Analítica (últimos {report['days']} días) ==")
 
         if (

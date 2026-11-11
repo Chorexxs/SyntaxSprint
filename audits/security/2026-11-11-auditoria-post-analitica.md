@@ -120,3 +120,18 @@ manage.py shell                                       # sondas de rate limit y c
   instrumentación (SEC-016 queda como riesgo a verificar).
 - No se probaron ataques de fuerza bruta contra producción para no afectar al servicio.
 - Una auditoría reduce el riesgo; no demuestra la ausencia total de vulnerabilidades.
+
+## 10. Remediación aplicada (2026-11-11)
+
+| Hallazgo | Acción | Evidencia | Estado |
+| --- | --- | --- | --- |
+| SEC-016 | `forwarded_allow_ips = "*"` para que `REMOTE_ADDR` sea la IP real y contador `usuario+IP` | `gunicorn.conf.py`, `backend/ratelimit.py:22-33`, `auth_views.py`; tests de rate limit | ✅ |
+| SEC-017 | Límite de 5 POST/300 s por IP en `/admin/login/` con reset tras login correcto | `backend/middleware.py`, `settings.py`; 2 tests | ✅ (2FA en backlog) |
+| SEC-018 | Purga oportunista diaria (sin cron) y límite de 120 peticiones/min en el endpoint | `backend/analytics.py:22-90`, `backend/snippet_views.py`; tests | ✅ |
+| SEC-019 | `purge_analytics` y `analytics_report` rechazan `days < 1` | `CommandError`; test | ✅ |
+| SEC-020 | HSTS a un año | `settings.py:186`; `check --deploy` 0 issues | ✅ |
+| SEC-021 | Pin de Actions por SHA | — | Abierto (`T009-34`) |
+
+> Verificación tras la remediación: 58 tests OK, cobertura 99 %, `pylint` 10.00/10,
+> `isort` limpio y `check --deploy` 0 issues. No se reejecutó la auditoría completa;
+> los estados anteriores son la foto del commit `8e39fc0`.

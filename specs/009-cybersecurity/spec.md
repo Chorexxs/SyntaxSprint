@@ -338,6 +338,9 @@ y las 6 cuentas más las 2 contraseñas hardcodeadas deben considerarse comprome
 > `audits/security/2026-11-11-auditoria-post-analitica.md` → riesgo **MEDIO**, 0
 > CRÍTICAS y 0 ALTAS reales, 3 MEDIAS y 3 BAJAS abiertas (SEC-016…SEC-021). Las 3
 > ALTAS del historial se confirmaron como falsos positivos (SEC-022).
+>
+> Remediación del 2026-11-11: SEC-016, SEC-017, SEC-018, SEC-019 y SEC-020 cerradas
+> (`T009-29`…`T009-33`); queda SEC-021 (pinning de Actions) en `T009-34`.
 
 ## 14. Fuera de alcance
 

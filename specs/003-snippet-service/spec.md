@@ -47,6 +47,7 @@ puede fallar con JSON malformado.
 | RF-003-06 | El sistema debe incluir al menos 15 fragmentos por lenguaje. | Media |
 | RF-003-07 | Cuando el cuerpo JSON es inválido, el sistema debe responder 400, no 500. | Alta |
 | RF-003-08 | El sistema no debe revelar el catálogo completo en una sola respuesta. | Baja |
+| RF-003-09 | Cuando una misma IP supera 120 peticiones por minuto, el sistema debe responder 429 y no entregar el fragmento. | Media |
 
 ## 5. Reglas de negocio y validaciones
 
@@ -57,6 +58,7 @@ puede fallar con JSON malformado.
 | Cuerpo vacío en POST | `python`. |
 | Cuerpo no-JSON | responder 400 con `{"error": ...}`. |
 | Selección | `random.choice` uniforme sobre la lista del lenguaje. |
+| Límite de abuso | 120 peticiones por minuto e IP; al superarlo se responde 429 sin registrar evento. |
 | Respuesta | `application/json`, sin caché explícita. |
 
 ## 6. Contratos
@@ -73,8 +75,8 @@ puede fallar con JSON malformado.
 
 | Método | Ruta | Auth | Errores |
 | --- | --- | --- | --- |
-| GET | `/get_python_function` | No | 200 |
-| POST | `/get_python_function` | No | 400 JSON inválido |
+| GET | `/get_python_function` | No | 200, 429 si se supera el límite |
+| POST | `/get_python_function` | No | 400 JSON inválido, 429 si se supera el límite |
 
 ### Lenguajes soportados
 
@@ -104,6 +106,7 @@ puede fallar con JSON malformado.
 - **CA-003-03** Dado un GET, entonces recibo un fragmento de Python.
 - **CA-003-04** Dado un cuerpo `no-json`, entonces recibo 400 y el servidor no lanza excepción.
 - **CA-003-05** Dado 20 llamadas seguidas, entonces aparecen al menos 3 fragmentos distintos de Python (aleatoriedad).
+- **CA-003-06** Dadas 121 peticiones por minuto desde la misma IP, entonces la última responde 429 con `{"error": "Demasiadas peticiones"}`.
 
 ## 9. Fuera de alcance
 

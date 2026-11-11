@@ -7,6 +7,7 @@ import time
 from datetime import datetime, timedelta
 
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.db import DatabaseError
 from django.db.models import Count, Q
 from django.utils import timezone
@@ -17,6 +18,8 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_WINDOW_DAYS = 28
 DEFAULT_RETENTION_DAYS = 90
+PURGE_CACHE_KEY = "analytics:last-purge"
+PURGE_CACHE_TIMEOUT = 86400
 
 
 def record_snippet_request(language: str, status_code: int, started: float) -> None:
@@ -28,6 +31,7 @@ def record_snippet_request(language: str, status_code: int, started: float) -> N
             status_code=status_code,
             duration_ms=duration_ms,
         )
+        maybe_purge_snippet_requests()
     except DatabaseError:
         logger.exception("No se pudo registrar el evento de fragmento")
 
@@ -82,5 +86,15 @@ def build_report(days: int = DEFAULT_WINDOW_DAYS) -> dict[str, float | int | Non
 
 def purge_snippet_requests(days: int = DEFAULT_RETENTION_DAYS) -> int:
     """Elimina los eventos más antiguos que la retención y devuelve el total."""
+    if days < 1:
+        raise ValueError("La retención debe ser de al menos un día")
     deleted, _ = SnippetRequest.objects.filter(created_at__lt=_window_start(days)).delete()
     return deleted
+
+
+def maybe_purge_snippet_requests(days: int = DEFAULT_RETENTION_DAYS) -> int:
+    """Ejecuta la purga como máximo una vez al día."""
+    today = timezone.localdate().isoformat()
+    if not cache.add(PURGE_CACHE_KEY, today, timeout=PURGE_CACHE_TIMEOUT):
+        return 0
+    return purge_snippet_requests(days)

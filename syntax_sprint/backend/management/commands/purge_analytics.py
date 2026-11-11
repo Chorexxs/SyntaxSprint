@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from django.core.management.base import BaseCommand, CommandParser
+from django.core.management.base import (BaseCommand, CommandError,
+                                         CommandParser)
 
 from ...analytics import DEFAULT_RETENTION_DAYS, purge_snippet_requests
 
@@ -21,5 +22,8 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args: Any, **options: Any) -> None:
-        deleted = purge_snippet_requests(options["days"])
+        days = options["days"]
+        if days < 1:
+            raise CommandError("--days debe ser mayor o igual que 1")
+        deleted = purge_snippet_requests(days)
         self.stdout.write(f"{deleted} eventos eliminados")

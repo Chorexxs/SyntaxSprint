@@ -65,6 +65,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-003-06 | T003-01 | 15 por lenguaje | ✅ |
 | RF-003-07 | T003-06 | CA-003-04 | ✅ |
 | RF-003-08 | — | respuesta única | ✅ |
+| RF-003-09 | T003-11 | CA-003-06 | ✅ |
 
 ## 004 — Motor de typing
 
@@ -198,18 +199,19 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-011-05 | T011-05 | CA-011-09 | ✅ |
 | RF-011-06 | T011-02, T011-04 | CA-011-07 | ✅ |
 | RF-011-07 | T011-01 | campos del modelo sin datos personales | ✅ |
+| RF-011-08 | T011-08 | CA-011-11 | ✅ |
 
 ## Notas de verificación
 
 | Comprobación | Comando | Resultado |
 | --- | --- | --- |
 | Sistema | `manage.py check` | 0 issues |
-| Pruebas | `manage.py test` | 52 tests OK (30,7 s, medido con cobertura) |
+| Pruebas | `manage.py test` | 58 tests OK (46,5 s, medido con cobertura) |
 | Imports | `isort --check-only syntax_sprint/` | Sin avisos |
 | Lint | `pylint backend --rcfile=../.pylintrc` | 10.00/10 |
 | CI | `.github/workflows/ci.yml` (run 20) | 14 pasos en verde |
 | Arquitectura | `specs/tools/code_metrics.py` | 0 funciones fuera de umbral; vistas por dominio |
-| Cobertura | `coverage run --source=backend manage.py test` + `coverage report` | 99 % (651 sentencias, 6 sin cubrir) |
+| Cobertura | `coverage run --source=backend manage.py test` + `coverage report` | 99 % (761 sentencias, 10 sin cubrir) |
 | Dependencias | `specs/tools/check_dependencies.py --strict` | OK (0 sin uso, runtime coherente) |
 | Vulnerabilidades | `pip-audit -r requirements.txt` | 0 avisos |
 | BD versionada | `git ls-files \| grep db.sqlite3` | Sin resultados |
@@ -242,7 +244,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | 000 | 11 | 11 | 0 | 0 |
 | 001 | 9 | 9 | 0 | 0 |
 | 002 | 11 | 11 | 0 | 0 |
-| 003 | 8 | 8 | 0 | 0 |
+| 003 | 9 | 9 | 0 | 0 |
 | 004 | 15 | 15 | 0 | 0 |
 | 005 | 12 | 12 | 0 | 0 |
 | 006 | 10 | 10 | 0 | 0 |
@@ -250,8 +252,8 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | 008 | 12 | 12 | 0 | 0 |
 | 009 | 14 | 14 | 0 | 0 |
 | 010 | 12 | 12 | 0 | 0 |
-| 011 | 7 | 7 | 0 | 0 |
-| **Total** | **132** | **132** | **0** | **0** |
+| 011 | 8 | 8 | 0 | 0 |
+| **Total** | **134** | **134** | **0** | **0** |
 
 > La matriz se actualiza al cerrar cada tarea. Un requisito no puede pasar a ✅ sin su
 > verificación ejecutada.
