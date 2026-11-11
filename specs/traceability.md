@@ -164,11 +164,11 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-009-07 | T009-17 | CA-009-01 | ✅ |
 | RF-009-08 | T009-13, T009-14, T009-15 | CA-009-07 | ✅ |
 | RF-009-09 | T009-18 | CA-009-01 | ✅ |
-| RF-009-10 | T009-19, T009-20 | CA-009-08 | 🟡 |
+| RF-009-10 | T009-19, T009-20 | CA-009-08 | ✅ |
 | RF-009-11 | T009-05 | CA-009-01 | ✅ |
 | RF-009-12 | T009-02 | CA-009-05 | ✅ |
 | RF-009-13 | T009-01 | CA-009-06 | ✅ |
-| RF-009-14 | T009-06, T009-07 | CA-009-06 | 🟡 |
+| RF-009-14 | T009-06, T009-07 | CA-009-06 | ✅ |
 
 ## 010 — Dependencias
 
@@ -233,9 +233,9 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | 006 | 10 | 8 | 1 | 1 |
 | 007 | 11 | 9 | 2 | 0 |
 | 008 | 12 | 10 | 2 | 0 |
-| 009 | 14 | 12 | 2 | 0 |
+| 009 | 14 | 14 | 0 | 0 |
 | 010 | 12 | 12 | 0 | 0 |
-| **Total** | **125** | **114** | **10** | **1** |
+| **Total** | **125** | **116** | **8** | **1** |
 
 > La matriz se actualiza al cerrar cada tarea. Un requisito no puede pasar a ✅ sin su
 > verificación ejecutada.

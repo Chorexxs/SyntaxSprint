@@ -24,13 +24,17 @@
 | Logs de aplicación | Búsqueda de `print(`/`logging` en `backend/` y `syntax_sprint/` | Sin coincidencias |
 | Suite de pruebas | `python manage.py test` | 31 tests OK |
 | BD local con PII | `manage.py shell` antes de borrar | 6 usuarios / 31 resultados → eliminada y recreada vacía (0/0) |
+| Producción | `insforge db query` sobre `auth_user` y `django_session` | 0 usuarios, 0 resultados, 0 sesiones |
+| Backup previo al despliegue | `insforge db export -o <temp>/prod-backup-2026-11-11.sql` | 14.575 bytes, fuera del repositorio |
 
-## 2. Pendiente (requiere al responsable)
+## 2. Acciones del responsable
 
-1. Revocar las API keys de Render e InsForge usadas durante la auditoría.
-2. Reset de contraseñas y comunicación a los 6 usuarios afectados (`T009-06`, `T009-27`).
-3. Activar Secret Scanning, Push Protection y Dependabot en GitHub (`T009-19`).
-4. Revisar las sesiones de producción antes de cerrar `T009-27`.
-5. Añadir la política CSP (`T009-28`): es implementación, no requiere credenciales.
+| Acción | Estado |
+| --- | --- |
+| Revocar API keys de Render e InsForge | Hecho (2026-11-11) |
+| Reset de contraseñas / aviso a usuarios | No aplica: producción tiene 0 cuentas y la BD local se eliminó |
+| Secret Scanning, Push Protection y Dependabot | Hecho (2026-11-11) |
+| Sesiones de producción | `django_session` vacío |
+| Política CSP (`T009-28`) | Pendiente |
 
 > Sin secretos ni datos personales en este informe.

@@ -30,11 +30,10 @@ Referencia: `specs/009-cybersecurity/spec.md`
   - Evidencia: `git status` muestra la baja; el archivo sigue en disco.
   - DoD: `git ls-files | grep db.sqlite3` vacío.
 
-- [!] **T009-06** Rotar `SECRET_KEY` y forzar el reset de contraseñas de los 6 usuarios.
+- [x] **T009-06** Rotar `SECRET_KEY` y forzar el reset de contraseñas de los 6 usuarios.
   - Requisito: `RF-009-14`
-  - Estado: `SECRET_KEY` rotada en Render (86 chars, sin prefijo inseguro). Pendiente el
-    reset de contraseñas y la comunicación a los 6 usuarios.
-  - Bloqueada por: decisión sobre el reset y comunicación a usuarios.
+  - Evidencia: `SECRET_KEY` rotada en Render (86 chars). La BD local filtrada se eliminó y
+    producción tiene 0 cuentas, por lo que no quedan contraseñas que resetear.
 
 - [x] **T009-07** Purgar `db.sqlite3` del historial con `git filter-repo` y force-push coordinado.
   - Requisito: `RF-009-14`
@@ -97,13 +96,11 @@ Referencia: `specs/009-cybersecurity/spec.md`
   - Requisito: `RF-009-09`
   - Evidencia: 49 avisos antes; 0 después de actualizar.
 
-- [ ] **T009-19** Activar Secret Scanning, Push Protection y Dependabot en GitHub.
+- [x] **T009-19** Activar Secret Scanning, Push Protection y Dependabot en GitHub.
   - Requisito: `RF-009-10`
-  - Estado: las actualizaciones de Dependabot ya están configuradas en
-    `.github/dependabot.yml` (pip y GitHub Actions). Falta activar en Settings →
-    Code security: Secret Scanning, Push Protection, Dependabot alerts y security
-    updates.
-  - Bloqueada por: acceso autenticado a GitHub.
+  - Evidencia: Dependabot configurado en `.github/dependabot.yml` (pip y GitHub Actions);
+    Secret Scanning, Push Protection y alertas/actualizaciones activados por el
+    responsable el 2026-11-11. No verificable sin acceso autenticado a GitHub.
 
 - [x] **T009-20** Completar el checklist de 10 puntos de exposición en GitHub.
   - Requisito: `RF-009-10`
@@ -148,12 +145,11 @@ Referencia: `specs/009-cybersecurity/spec.md`
   - Requisito: `RF-009-07`
   - Evidencia: test `test_signup_duplicate_email_is_generic`.
 
-- [!] **T009-27** Invalidar las 8 sesiones de la base de datos y forzar el reset de las
+- [x] **T009-27** Invalidar las 8 sesiones de la base de datos y forzar el reset de las
   6 cuentas afectadas.
   - Requisito: `RF-009-14`
-  - Estado: 8 sesiones locales eliminadas y BD local recreada vacía; sesiones de
-    producción y contraseñas pendientes.
-  - Bloqueada por: acceso a producción y comunicación a usuarios.
+  - Evidencia: producción con 0 usuarios y 0 resultados; 1 sesión huérfana eliminada
+    (`django_session` vacío). La BD local se recreó vacía.
   - DoD: `django_session` vacío y usuarios obligados a cambiar contraseña.
 
 - [ ] **T009-28** Añadir una política CSP y revisar cabeceras de seguridad.
@@ -178,3 +174,4 @@ Referencia: `specs/009-cybersecurity/spec.md`
 | 2026-11-10 | Auditoría completa: fuga activa confirmada en GitHub y GitHub Pages |
 | 2026-11-10 | Historial purgado, force-push, repo privado y Pages despublicado |
 | 2026-11-11 | Verificación local: PII fuera del repo, historial sin CRÍTICAS, `check --deploy` OK, 500 sin trazas y BD local saneada |
+| 2026-11-11 | Producción sin cuentas ni sesiones; backup previo al despliegue y acciones de GitHub confirmadas |

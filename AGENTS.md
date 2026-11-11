@@ -297,11 +297,10 @@ cerrada.
 | Prioridad | Deuda | Feature | Tarea |
 | --- | --- | --- | --- |
 | 1 | Sin política CSP ni revisión de cabeceras | 009 | T009-28 |
-| 2 | Secret Scanning, Push Protection y Dependabot sin activar | 009 | T009-19 |
 
 > No quedan hallazgos **CRÍTICOS** abiertos. Evidencia:
-> `audits/security/2026-11-11-verificacion.md`. Pendiente de terceros: revocar las API
-> keys expuestas y resetear las contraseñas de los usuarios afectados.
+> `audits/security/2026-11-11-verificacion.md`. Único pendiente de seguridad: la política
+> CSP (`T009-28`).
 
 ## 9. Seguridad — reglas rápidas
 
