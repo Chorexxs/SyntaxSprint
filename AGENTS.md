@@ -296,14 +296,13 @@ cerrada.
 
 | Prioridad | Deuda | Feature | Tarea |
 | --- | --- | --- | --- |
-| 1 | 53 líneas > 100 en `snippets.py` y 7 en `script.js` | 008 | T008-09 |
-| 2 | Pérdida de contadores al pegar y reinicio sin limpiar intervalo | 004 | T004-10, T004-13 |
-| 3 | Mensajes de registro divergentes de la spec (genéricos a propósito) | 002 | RF-002-02, RF-002-03 |
-| 4 | `TEMPLATES[0]["DIRS"]` conserva la ruta heredada del padre | 001 | T001-04 |
-| 5 | **`db.sqlite3` versionada con 6 usuarios y 31 resultados (PII)** | 009 | T009-05…T009-08 |
-| 6 | **`SECRET_KEY` y 2 contraseñas hardcodeadas en el historial** | 009 | T009-06, T009-07 |
+| 1 | Pérdida de contadores al pegar y reinicio sin limpiar intervalo | 004 | T004-10, T004-13 |
+| 2 | Mensajes de registro divergentes de la spec (genéricos a propósito) | 002 | RF-002-02, RF-002-03 |
+| 3 | `TEMPLATES[0]["DIRS"]` conserva la ruta heredada del padre | 001 | T001-04 |
+| 4 | **`db.sqlite3` versionada con 6 usuarios y 31 resultados (PII)** | 009 | T009-05…T009-08 |
+| 5 | **`SECRET_KEY` y 2 contraseñas hardcodeadas en el historial** | 009 | T009-06, T009-07 |
 
-> Los puntos 5 y 6 son **CRÍTICOS**. Están documentados en
+> Los puntos 4 y 5 son **CRÍTICOS**. Están documentados en
 > `audits/security/2026-11-10-linea-base.md` y requieren autorización para la purga del
 > historial.
 

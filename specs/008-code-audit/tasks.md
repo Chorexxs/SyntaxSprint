@@ -54,8 +54,11 @@ Referencia: `specs/008-code-audit/spec.md`
 - [x] **T008-09** Reducir las 61 líneas > 100 caracteres de `views.py` y las 7 de `script.js`.
   - Requisito: `RF-008-11`
   - DoD: `pylint` sin `line-too-long` en esos archivos.
-  - Estado: parcial. `views.py` tiene 7 líneas y 0 líneas largas; quedan 53 en
-    `backend/snippets.py` (datos del catálogo), 7 en `script.js` y 2 en la migración.
+  - Evidencia: `code_metrics.py` ya no reporta líneas largas en `snippets.py` (53 → 0)
+    ni en `script.js` (7 → 0); `pylint --enable=line-too-long` da 10.00/10 en
+    `snippets.py`. El catálogo se reformateó sin cambiar sus 120 fragmentos y
+    `node --check` valida el JS. Las 2 líneas de la migración se mantienen por ser
+    autogeneradas (ver `plan.md` §11).
 
 - [x] **T008-10** Añadir anotaciones de tipo a las 9 funciones sin tipar.
   - Requisito: `RF-008-11`
@@ -126,3 +129,4 @@ Referencia: `specs/008-code-audit/spec.md`
 | 2026-11-10 | Verificación: imports limpios (`T008-07`), `isort` sin avisos (`T008-08`), `innerHTML` eliminado (`T008-12`) |
 | 2026-11-10 | Catálogo extraído a `snippets.py`; `get_python_function` de 151 a 16 líneas (`T008-06`) |
 | 2026-11-10 | Vistas separadas por dominio y validación extraída; `views.py` de 183 a 7 líneas (`T008-10`, `T008-11`) |
+| 2026-11-11 | Catálogo y JS sin líneas > 100; migración excluida por ser autogenerada (`T008-09`) |

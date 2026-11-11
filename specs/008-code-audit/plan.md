@@ -117,3 +117,15 @@ Requiere `SECRET_KEY`, `DEBUG` y `ALLOWED_HOSTS` en el entorno.
 - Sí se pueden ejecutar `pylint`, `isort` y `code_metrics` en CI como *quality gate*
   objetivo (ver `007`).
 - Los informes se guardan en git para conservar la tendencia.
+
+## 11. Remediación de líneas largas (T008-09)
+
+- `backend/snippets.py` (53 líneas): el catálogo pasa a un formato de una entrada por
+  bloque, partiendo el literal de `code` por sus saltos de línea reales con concatenación
+  implícita. El reformateo se verificó comparando el diccionario importado antes y
+  después: los 120 fragmentos son idénticos.
+- `static/js/script.js` (7 líneas): se parten las listas de teclas y tres condiciones
+  largas en variables intermedias; `node --check` confirma la sintaxis.
+- `backend/migrations/0001_initial.py` (2 líneas): se mantiene sin tocar. Es código
+  autogenerado y la constitución (art. 3.3) prohíbe editar migraciones aplicadas; se
+  regenerará si el modelo cambia.
