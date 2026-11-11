@@ -24,13 +24,13 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
   - Evidencia: 6 casos en verde (válido, JSON inválido, claves ausentes, rangos,
     `GET` → 405, aislamiento entre usuarios).
 
-- [ ] **T007-04** Crear `ProfileTests` con 4 casos (login, aislamiento, promedios, vacío).
+- [x] **T007-04** Crear `ProfileTests` con 4 casos (login, aislamiento, promedios, vacío).
   - Requisitos: `RF-007-01`
   - Archivos: `backend/tests.py`
-  - Estado: parcial. No existe la clase `ProfileTests`; login y aislamiento están
-    cubiertos por `AuthTests.test_profile_requires_login` y
-    `ResultTests.test_user_cannot_see_other_results`. Faltan los tests de promedios y
-    de estado vacío.
+  - Evidencia: `ProfileTests.test_requires_login`, `test_isolation_between_users`,
+    `test_averages` (60/90 + 80/100 → 70/95) y `test_empty_state` (0/0 y "no results
+    yet"). Los dos primeros se movieron desde `AuthTests` y `ResultTests` para no
+    duplicarlos. Suite total: 30 tests.
 
 - [x] **T007-05** Alcanzar ≥ 80 % de cobertura en `backend/` y documentar el comando.
   - Requisito: `RNF-007-02`
