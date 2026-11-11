@@ -5,12 +5,16 @@
  */
 
 const keysToTrack = new Set([
-  'Numpad0', 'Numpad1', 'Numpad2', 'Numpad3', 'Numpad4', 'Numpad5', 'Numpad6', 'Numpad7', 'Numpad8', 'Numpad9',
-  'NumpadMultiply', 'NumpadAdd', 'NumpadSubtract', 'NumpadDivide', 'NumpadDecimal', 'NumpadEqual',
-  'Digit0', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9',
+  'Numpad0', 'Numpad1', 'Numpad2', 'Numpad3', 'Numpad4', 'Numpad5',
+  'Numpad6', 'Numpad7', 'Numpad8', 'Numpad9',
+  'NumpadMultiply', 'NumpadAdd', 'NumpadSubtract', 'NumpadDivide',
+  'NumpadDecimal', 'NumpadEqual',
+  'Digit0', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6',
+  'Digit7', 'Digit8', 'Digit9',
   'Backquote', 'Minus', 'Equal',
-  'KeyA', 'KeyB', 'KeyC', 'KeyD', 'KeyE', 'KeyF', 'KeyG', 'KeyH', 'KeyI', 'KeyJ', 'KeyK', 'KeyL', 'KeyM',
-  'KeyN', 'KeyO', 'KeyP', 'KeyQ', 'KeyR', 'KeyS', 'KeyT', 'KeyU', 'KeyV', 'KeyW', 'KeyX', 'KeyY', 'KeyZ',
+  'KeyA', 'KeyB', 'KeyC', 'KeyD', 'KeyE', 'KeyF', 'KeyG', 'KeyH', 'KeyI',
+  'KeyJ', 'KeyK', 'KeyL', 'KeyM', 'KeyN', 'KeyO', 'KeyP', 'KeyQ', 'KeyR',
+  'KeyS', 'KeyT', 'KeyU', 'KeyV', 'KeyW', 'KeyX', 'KeyY', 'KeyZ',
   'BracketLeft', 'BracketRight', 'Backslash',
   'Semicolon', 'Quote', 'Comma', 'Period', 'Slash',
   'Space', 'Enter', 'Tab', 'IntlBackslash',
@@ -188,7 +192,8 @@ class TypingTest {
       this.state.afkHistory.push(this.state.currentAfk);
       this.state.currentAfk = true;
 
-      if (this.state.errorHistory.length > 0 && this.state.errorHistory[this.state.errorHistory.length - 1]?.count > 0) {
+      const lastError = this.state.errorHistory[this.state.errorHistory.length - 1];
+      if (this.state.errorHistory.length > 0 && lastError?.count > 0) {
         this.state.errorHistory.push({ count: 0, words: [] });
       }
 
@@ -285,7 +290,12 @@ class TypingTest {
       return;
     }
 
-    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown'].includes(key)) {
+    const navigationKeys = [
+      'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+      'Home', 'End', 'PageUp', 'PageDown',
+    ];
+
+    if (navigationKeys.includes(key)) {
       e.preventDefault();
       this.elements.wordsInput.focus();
       setTimeout(() => {
@@ -439,7 +449,8 @@ class TypingTest {
 
     Object.keys(this.state.keyDownData).forEach((code) => {
       if (this.state.duration.array.length > 0) {
-        const avgDuration = this.state.duration.array.reduce((a, b) => a + b, 0) / this.state.duration.array.length;
+        const durations = this.state.duration.array;
+        const avgDuration = durations.reduce((a, b) => a + b, 0) / durations.length;
         this.state.duration.array.push(avgDuration);
       }
       delete this.state.keyDownData[code];
