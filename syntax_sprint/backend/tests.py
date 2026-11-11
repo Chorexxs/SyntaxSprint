@@ -333,7 +333,8 @@ class SecurityHeadersTests(TestCase):
         self.assertIsNotNone(policy)
         for directive in (
             "default-src 'self'",
-            "https://cdn.tailwindcss.com",
+            "script-src 'self'",
+            "style-src 'self' https://fonts.googleapis.com",
             "https://fonts.gstatic.com",
             "object-src 'none'",
             "base-uri 'self'",
@@ -341,6 +342,8 @@ class SecurityHeadersTests(TestCase):
             "frame-ancestors 'none'",
         ):
             self.assertIn(directive, policy)
+        self.assertNotIn("'unsafe-inline'", policy)
+        self.assertNotIn("cdn.tailwindcss.com", policy)
 
     def test_csp_header_on_not_found(self):
         response = self.client.get("/ruta-inexistente/")

@@ -6,13 +6,12 @@ from collections.abc import Callable
 
 from django.http import HttpRequest, HttpResponse
 
-# `unsafe-inline` es necesario para el script de tema que evita el FOUC y para el
-# Tailwind Play CDN, que inyecta estilos y configuración en línea. Se puede endurecer
-# con hashes/nonces cuando Tailwind se compile localmente (T007).
+# Sin `unsafe-inline`: el tema se inicializa con un script externo y Tailwind está
+# compilado localmente, así que no hay scripts ni estilos en línea.
 CSP_DIRECTIVES = (
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "script-src 'self'",
+    "style-src 'self' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data:",
     "connect-src 'self'",
