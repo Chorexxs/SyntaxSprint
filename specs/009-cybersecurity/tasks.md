@@ -99,8 +99,11 @@ Referencia: `specs/009-cybersecurity/spec.md`
 
 - [ ] **T009-19** Activar Secret Scanning, Push Protection y Dependabot en GitHub.
   - Requisito: `RF-009-10`
+  - Estado: las actualizaciones de Dependabot ya están configuradas en
+    `.github/dependabot.yml` (pip y GitHub Actions). Falta activar en Settings →
+    Code security: Secret Scanning, Push Protection, Dependabot alerts y security
+    updates.
   - Bloqueada por: acceso autenticado a GitHub.
-  - DoD: captura o estado documentado en el informe.
 
 - [x] **T009-20** Completar el checklist de 10 puntos de exposición en GitHub.
   - Requisito: `RF-009-10`
