@@ -283,6 +283,10 @@ Crear `audits/code/AAAA-MM-DD-<alcance>.md` usando
 >
 > Remediación del 2026-11-11: AUD-013, AUD-014 y AUD-015 cerrados (`T008-18`…`T008-20`);
 > AUD-016 (INFO) queda en `T008-21`.
+>
+> Auditoría post-2FA del 2026-11-11:
+> `audits/code/2026-11-11-auditoria-post-2fa.md` → **8.25/10 (B)**, 0 ALTA, 2 MEDIA
+> (AUD-017, AUD-018) y 8 BAJAS (AUD-019…AUD-026), con tareas `T008-22`…`T008-31`.
 
 ## 13. Fuera de alcance
 

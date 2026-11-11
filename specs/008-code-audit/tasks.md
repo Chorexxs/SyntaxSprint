@@ -146,6 +146,69 @@ Referencia: `specs/008-code-audit/spec.md`
   - Evidencia: `build_report` recalcula la ventana por métrica (AUD-016, INFO).
   - DoD: una sola resolución de ventana por informe.
 
+## Fase 6 — Hallazgos de la auditoría post-2FA (2026-11-11)
+
+- [ ] **T008-22** Limitar los intentos de código en `/admin/2fa/`.
+  - Requisitos: `RF-008-11`, `RF-009-07`
+  - Archivos: `backend/two_factor.py`, `backend/ratelimit.py`
+  - Evidencia: la vista no llama a `is_rate_limited` y está exenta del middleware
+    (AUD-017, MEDIA). Detalle en `audits/code/2026-11-11-auditoria-post-2fa.md`.
+  - DoD: 5 intentos/300 s por IP con 429 y registro del bloqueo.
+
+- [ ] **T008-23** Invalidar las sesiones verificadas al rotar o desactivar el TOTP.
+  - Requisitos: `RF-008-11`, `RF-009-07`
+  - Archivos: `backend/middleware.py`, `backend/management/commands/enroll_admin_totp.py`
+  - Evidencia: el middleware solo comprueba `admin_totp_ok` (AUD-018, MEDIA).
+  - DoD: versión de dispositivo en sesión o borrado de sesiones del usuario.
+
+- [ ] **T008-24** Evitar que el secreto TOTP quede en los logs de la Shell.
+  - Requisitos: `RF-008-11`, `RNF-009-01`
+  - Archivos: `enroll_admin_totp.py`
+  - Evidencia: imprime secreto y URI en stdout (AUD-019, BAJA).
+  - DoD: opción `--write <archivo>` o enrolamiento de un solo uso.
+
+- [ ] **T008-25** Separar la caché del rate limit de auth y del endpoint de fragmentos.
+  - Requisitos: `RF-008-11`, `RF-008-12`
+  - Archivos: `backend/ratelimit.py`, `syntax_sprint/settings.py`
+  - Evidencia: el alias `shared` se usa en el endpoint caliente (AUD-020, BAJA).
+  - DoD: auth en caché compartida y fragmentos en LocMem o Redis.
+
+- [ ] **T008-26** Unificar el incremento de contadores y validar el alias de caché.
+  - Requisitos: `RF-008-11`, `RNF-008-02`
+  - Archivos: `backend/ratelimit.py`
+  - Evidencia: lógica duplicada y solo se captura `DatabaseError` (AUD-021, BAJA).
+  - DoD: helper único y error controlado ante alias inválido.
+
+- [ ] **T008-27** Hacer atómica la actualización de `last_counter`.
+  - Requisitos: `RF-008-11`, `RNF-008-02`
+  - Archivos: `backend/two_factor.py`
+  - Evidencia: lectura-modificación-escritura sin bloqueo (AUD-022, BAJA).
+  - DoD: actualización condicional y prueba de concurrencia básica.
+
+- [ ] **T008-28** Añadir `@never_cache` a la verificación 2FA.
+  - Requisitos: `RF-008-11`, `RNF-009-02`
+  - Archivos: `backend/two_factor.py`
+  - Evidencia: página con CSRF y estado de sesión sin cabeceras de no-caché (AUD-023, BAJA).
+  - DoD: cabecera `Cache-Control: no-store` en `/admin/2fa/`.
+
+- [ ] **T008-29** Hacer los tests de configuración independientes del entorno.
+  - Requisitos: `RF-008-04`, `RNF-008-02`
+  - Archivos: `backend/tests.py`
+  - Evidencia: dos tests leen settings reales (AUD-024, BAJA).
+  - DoD: `override_settings` explícito y verde con variables de entorno distintas.
+
+- [ ] **T008-30** Actualizar Vitest y eliminar los avisos de `npm audit`.
+  - Requisitos: `RF-008-11`, `RF-010-04`
+  - Archivos: `package.json`, `package-lock.json`, `.github/workflows/ci.yml`
+  - Evidencia: 6 avisos dev (tinypool/vitest 2.1.9) (AUD-025, BAJA).
+  - DoD: `npm audit` sin avisos y Node 20 en CI en verde.
+
+- [ ] **T008-31** Ampliar los tests de frontend a DOM y eventos.
+  - Requisitos: `RF-008-11`, `RNF-004-06`
+  - Archivos: `tests/js/script.test.js`
+  - Evidencia: solo fórmulas y `countTypedChars` (AUD-026, BAJA).
+  - DoD: tests de `updateDisplay`, `handlePaste` y reinicio con jsdom.
+
 ## Deuda técnica / Backlog
 
 - [ ] Medir duplicación real con `pylint`/`jscpd`.
@@ -165,3 +228,4 @@ Referencia: `specs/008-code-audit/spec.md`
 | 2026-11-11 | Catálogo y JS sin líneas > 100; migración excluida por ser autogenerada (`T008-09`) |
 | 2026-11-11 | Perfil con 5 consultas y lenguajes extensibles; reauditoría 8.8 (B) (`T008-14`, `T008-15`, `T008-17`) |
 | 2026-11-11 | Reauditoría post-analítica: 8.55 (B), 0 ALTA y 4 hallazgos menores |
+| 2026-11-11 | Auditoría post-2FA: 8.25 (B), 0 ALTA, 2 MEDIA y 8 BAJAS |
