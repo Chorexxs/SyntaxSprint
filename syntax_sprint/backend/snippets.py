@@ -313,6 +313,34 @@ CODE_SNIPPETS = {
 }
 
 
+def _validate_snippet(language: str, index: int, snippet: object) -> None:
+    """Valida una entrada individual del catálogo."""
+    if not isinstance(snippet, dict):
+        raise ValueError(f"{language}[{index}] no es un diccionario")
+    for key in ("name", "code"):
+        value = snippet.get(key)
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError(f"{language}[{index}] tiene '{key}' vacío o inválido")
+
+
+def validate_catalog(
+    catalog: dict[str, list[dict[str, str]]] | None = None,
+) -> None:
+    """Valida que cada fragmento tenga `name` y `code` no vacíos (RNF-003-03)."""
+    data = CODE_SNIPPETS if catalog is None else catalog
+    if not data:
+        raise ValueError("El catálogo de fragmentos está vacío")
+
+    for language, snippets in data.items():
+        if not snippets:
+            raise ValueError(f"El lenguaje {language!r} no tiene fragmentos")
+        for index, snippet in enumerate(snippets):
+            _validate_snippet(language, index, snippet)
+
+
+validate_catalog()
+
+
 def pick_snippet(language: str) -> dict[str, str]:
     """Devuelve un fragmento aleatorio del lenguaje indicado.
 

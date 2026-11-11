@@ -8,6 +8,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 
 from .models import TypingTestResult
+from .snippets import CODE_SNIPPETS, validate_catalog
 
 PASSWORD = "".join(("Str0ng", "-Pass!2026"))
 User = get_user_model()
@@ -182,6 +183,54 @@ class SnippetTests(TestCase):
     def test_put_not_allowed(self):
         response = self.client.put(reverse("get_python_function"))
         self.assertEqual(response.status_code, 405)
+
+    def test_catalog_is_complete(self):
+        self.assertEqual(len(CODE_SNIPPETS), 8)
+        for language, snippets in CODE_SNIPPETS.items():
+            with self.subTest(language=language):
+                self.assertEqual(len(snippets), 15)
+                for snippet in snippets:
+                    self.assertTrue(snippet["name"].strip())
+                    self.assertTrue(snippet["code"].strip())
+
+    def test_validate_catalog_rejects_invalid_entries(self):
+        cases = [
+            {},
+            {"python": []},
+            {"python": [{"name": "", "code": "x"}]},
+            {"python": [{"name": "Ejemplo", "code": "  "}]},
+            {"python": [{"name": "Ejemplo"}]},
+            {"python": ["no-es-un-dict"]},
+        ]
+        for catalog in cases:
+            with self.subTest(catalog=catalog):
+                with self.assertRaises(ValueError):
+                    validate_catalog(catalog)
+
+    def test_every_language_returns_a_snippet(self):
+        for language, snippets in CODE_SNIPPETS.items():
+            response = self.client.post(
+                reverse("get_python_function"),
+                data=json.dumps({"language": language}),
+                content_type="application/json",
+            )
+            payload = response.json()
+            with self.subTest(language=language):
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(set(payload), {"name", "code"})
+                self.assertIn(payload["name"], [item["name"] for item in snippets])
+                self.assertTrue(payload["code"].strip())
+
+    def test_randomness_returns_at_least_three_names(self):
+        names = set()
+        for _ in range(20):
+            response = self.client.post(
+                reverse("get_python_function"),
+                data=json.dumps({"language": "python"}),
+                content_type="application/json",
+            )
+            names.add(response.json()["name"])
+        self.assertGreaterEqual(len(names), 3)
 
 
 class ResultTests(TestCase):

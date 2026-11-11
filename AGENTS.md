@@ -20,7 +20,7 @@ historial del usuario y calcula promedios.
 | JavaScript | Vanilla ES6+ (clase `TypingTest`); jQuery 3.x permitido |
 | Servidor | Gunicorn (`syntax_sprint.wsgi`) |
 | Configuración | `python-decouple` + `.env` |
-| Pruebas | `django.test.TestCase` (33 tests, suite en verde) |
+| Pruebas | `django.test.TestCase` (37 tests, suite en verde) |
 | Lint | `pylint`, `isort` |
 | App principal | `backend` |
 
@@ -297,7 +297,7 @@ Al terminar:
 
 ## 8. Deuda técnica conocida (priorizada)
 
-Estado verificado el 2026-11-11: `manage.py check` 0 issues, `manage.py test` 33 tests
+Estado verificado el 2026-11-11: `manage.py check` 0 issues, `manage.py test` 37 tests
 OK, `isort --check-only` sin avisos, `pylint` 10.00/10 y `code_metrics.py --strict` sin
 incumplimientos. La antigua deuda "suite de pruebas vacía" ya está cerrada.
 

@@ -115,7 +115,7 @@ puede fallar con JSON malformado.
 
 | Riesgo | Impacto | Mitigación |
 | --- | --- | --- |
-| Catálogo con 53 líneas > 100 caracteres en `snippets.py` | Legibilidad | T008-09 |
+| Catálogo con 53 líneas > 100 caracteres en `snippets.py` | Legibilidad | Resuelto: reformateado en `T008-09` |
 | Validación solo en cliente | Lenguaje inválido cae a Python silenciosamente | Documentado en RF-003-03 |
 | Nombre del endpoint confuso | Deuda de nomenclatura | Mantener por compatibilidad; documentar alias en backlog |
 

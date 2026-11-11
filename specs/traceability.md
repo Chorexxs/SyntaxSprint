@@ -4,7 +4,7 @@ Actualizada: 2026-11-11
 Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 
 > Verificación ejecutada el 2026-11-11: `manage.py check` → 0 issues,
-> `manage.py test` → 33 tests OK, `isort --check-only syntax_sprint/` → sin avisos.
+> `manage.py test` → 37 tests OK, `isort --check-only syntax_sprint/` → sin avisos.
 > Ver las notas al final para las divergencias código ↔ spec.
 
 ## 000 — Visión de producto
@@ -212,8 +212,8 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
    Es una decisión de seguridad de `T002-09`/`T009-14` no reflejada aún en la spec.
 3. **RF-006-03**: resuelto por `T006-06`/`T006-07`. `base.html` fija `data-theme` con
    un script inline antes del primer pintado, por lo que ya no hay FOUC.
-4. **RF-003-01 / RF-003-06**: el catálogo de 8 lenguajes × 15 fragmentos existe, pero
-   no hay test que lo valide completo (`T003-09` pendiente).
+4. **RF-003-01 / RF-003-06**: resuelto por `T003-09`. El catálogo de 8 lenguajes × 15
+   fragmentos se valida completo en `test_catalog_is_complete`.
 5. **RF-004-15**: las métricas avanzadas (`spacing`, `duration`, `afkHistory`,
    `errorHistory`) se calculan pero no se usan; su destino sigue sin decidir
    (`T004-15`).

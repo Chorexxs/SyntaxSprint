@@ -44,22 +44,29 @@ Referencia: `specs/003-snippet-service/spec.md`
   - Evidencia: test `test_put_not_allowed`.
   - DoD: `PUT` devuelve 405.
 
-- [ ] **T003-08** Validar en tiempo de importación que cada snippet tenga `name` y `code` no vacíos.
+- [x] **T003-08** Validar en tiempo de importación que cada snippet tenga `name` y `code` no vacíos.
   - Requisito: `RNF-003-03`
   - Archivos: `backend/snippets.py`
   - DoD: un fragmento inválido falla al arrancar, no en producción.
+  - Evidencia: `validate_catalog()` se ejecuta al importar el módulo y valida todas las
+    entradas; `_validate_snippet()` concentra las comprobaciones. Tests
+    `test_validate_catalog_rejects_invalid_entries` (catálogo vacío, lenguaje sin
+    fragmentos, `name`/`code` vacíos, clave ausente y entrada que no es un dict).
 
 ## Fase 3 — Verificación
 
-- [ ] **T003-09** Tests de contrato: válido, desconocido, GET, JSON inválido, catálogo completo.
+- [x] **T003-09** Tests de contrato: válido, desconocido, GET, JSON inválido, catálogo completo.
   - Archivos: `backend/tests.py`
   - DoD: 5 casos del plan en verde.
-  - Estado: 4 de 5 casos en `SnippetTests` (válido, desconocido, GET, JSON inválido).
-    Falta el caso de catálogo completo (8 claves × 15 fragmentos).
+  - Evidencia: los 5 casos en `SnippetTests`, incluido `test_catalog_is_complete`
+    (8 lenguajes × 15 fragmentos con `name`/`code`) y
+    `test_every_language_returns_a_snippet` (contrato `{name, code}` por lenguaje).
 
-- [ ] **T003-10** Test de aleatoriedad con al menos 3 nombres distintos en 20 llamadas.
+- [x] **T003-10** Test de aleatoriedad con al menos 3 nombres distintos en 20 llamadas.
   - Requisito: `RF-003-02`
   - DoD: no usa `random.seed` global; usa `unittest.mock.patch` si es necesario.
+  - Evidencia: `test_randomness_returns_at_least_three_names` hace 20 POST reales a
+    Python y exige ≥ 3 nombres distintos, sin manipular la semilla.
 
 ## Deuda técnica / Backlog
 
@@ -73,3 +80,4 @@ Referencia: `specs/003-snippet-service/spec.md`
 | Fecha | Cambio |
 | --- | --- |
 | 2026-11-10 | Auditoría del catálogo y contrato actuales |
+| 2026-11-11 | T003-08/09/10 cerradas: validación al importar, catálogo completo y aleatoriedad |
