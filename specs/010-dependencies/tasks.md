@@ -57,9 +57,9 @@ Referencia: `specs/010-dependencies/spec.md`
   - Requisitos: `RF-010-02`, `RNF-010-02`
   - Archivos: `render.yaml`, `.github/workflows/ci.yml`, `AGENTS.md`
   - DoD: no hay dos versiones distintas declaradas.
-  - Evidencia: `.python-version` = 3.12.1 (local y Render); el CI fija `3.12` desde
-    `T007-23` porque el runner no publica el patch exacto; `render.yaml` declara 3.12.1 y
-    el verificador comprueba que coincida con `.python-version`.
+  - Evidencia: `.python-version` = 3.12.1; el CI lo lee con `python-version-file` sobre
+    `ubuntu-24.04` (`T007-23`); `render.yaml` declara 3.12.1 y el verificador comprueba
+    que coincidan.
 
 - [x] **T010-08** Fijar la versión del CDN de Tailwind o migrar a build local.
   - Requisito: `RF-010-02`

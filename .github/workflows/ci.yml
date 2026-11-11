@@ -17,7 +17,8 @@ concurrency:
 jobs:
   quality:
     name: Lint, check y pruebas
-    runs-on: ubuntu-latest
+    # ubuntu-latest (26.04) ya no publica el patch 3.12.1 que exige .python-version.
+    runs-on: ubuntu-24.04
     env:
       # Valores exclusivos de CI. No son secretos de producción.
       SECRET_KEY: ci-only-placeholder-key-not-used-in-production-0000000000
@@ -32,9 +33,7 @@ jobs:
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
-          # Se fija el minor, no el patch: ubuntu-latest (26.04) no publica 3.12.1
-          # y `python-version-file` resolvía exactamente ese patch y fallaba.
-          python-version: "3.12"
+          python-version-file: ".python-version"
           cache: pip
           cache-dependency-path: |
             requirements.txt

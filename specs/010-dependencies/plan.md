@@ -72,7 +72,7 @@ No hay `package.json` ni `node_modules`: no existe ecosistema npm que actualizar
 
 | Recurso | Versión | Fuente |
 | --- | --- | --- |
-| Python | 3.12.1 local / 3.12 en CI | `.python-version` y `.github/workflows/ci.yml` |
+| Python | 3.12.1 | `.python-version` (CI lo lee; runner fijado en 24.04) |
 | Render | 3.12.1 | `render.yaml`, validado por el verificador |
 | `actions/checkout` | v4 | `.github/workflows/ci.yml` |
 | `actions/setup-python` | v5 | `.github/workflows/ci.yml` |

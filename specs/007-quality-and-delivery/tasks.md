@@ -91,14 +91,14 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
     --rcfile=../.pylintrc` (con `pylint-django`) → **10.00/10** y 0 mensajes; se añadió
     `.pylintrc` y docstrings de módulo en `admin`, `apps`, `models` y `urls`.
 
-- [x] **T007-23** Fijar la versión de Python del CI al minor, no al patch exacto.
+- [x] **T007-23** Fijar el runner del CI a una imagen que publique el patch de `.python-version`.
   - Requisitos: `RF-007-11`, `RNF-007-02`
   - Archivos: `.github/workflows/ci.yml`
-  - DoD: el workflow instala Python y llega a ejecutar la suite en `main`.
-  - Evidencia: el run 17 falló en `Configurar Python` con
-    `The version '3.12.1' ... was not found for Ubuntu 26.04`; el run 18 (docs) repitió
-    el fallo. `setup-python` usa ahora `python-version: "3.12"`. `.python-version` sigue
-    en 3.12.1 para local y Render.
+  - DoD: el workflow instala Python 3.12.1 y llega a ejecutar la suite en `main`.
+  - Evidencia: los runs 17 y 18 fallaron en `Configurar Python` con
+    `The version '3.12.1' ... was not found for Ubuntu 26.04`. `setup-python` sigue
+    leyendo `.python-version` y el job usa `runs-on: ubuntu-24.04`, donde el manifiesto
+    sí publica `python-3.12.1-linux-24.04-x64`. Así Render, CI y local siguen en 3.12.1.
 
 ## Fase 5 — Documentación
 
