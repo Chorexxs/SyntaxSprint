@@ -48,6 +48,18 @@
           </tbody>
         </table>
       </div>
+
+      {% if page_obj.has_other_pages %}
+      <nav class="flex items-center justify-center gap-4 mt-6 text-sm" aria-label="Paginación del historial">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="text-[var(--caret)] hover:underline">anterior</a>
+        {% endif %}
+        <span class="text-[var(--text-sub)]">página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="text-[var(--caret)] hover:underline">siguiente</a>
+        {% endif %}
+      </nav>
+      {% endif %}
       {% else %}
       <div class="text-center py-12">
         <p class="text-[var(--text-sub)] mb-6">no results yet</p>

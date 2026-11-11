@@ -252,6 +252,31 @@ class ResultTests(TestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0].user, self.user)
 
+    def test_profile_paginates_history(self):
+        for index in range(45):
+            TypingTestResult.objects.create(
+                user=self.user, wpm=40 + index % 10, accuracy=90
+            )
+
+        first_page = self.client.get(reverse("profile"))
+        self.assertEqual(len(first_page.context["results"]), 20)
+        self.assertEqual(first_page.context["page_obj"].paginator.num_pages, 3)
+        self.assertTrue(first_page.context["page_obj"].has_next())
+        self.assertContains(first_page, "página 1 de 3")
+
+        last_page = self.client.get(reverse("profile"), {"page": 3})
+        self.assertEqual(len(last_page.context["results"]), 5)
+        self.assertFalse(last_page.context["page_obj"].has_next())
+
+    def test_profile_out_of_range_page_returns_last_page(self):
+        for _ in range(25):
+            TypingTestResult.objects.create(user=self.user, wpm=50, accuracy=95)
+
+        response = self.client.get(reverse("profile"), {"page": 99})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["page_obj"].number, 2)
+        self.assertEqual(len(response.context["results"]), 5)
+
 
 class CsrfTests(TestCase):
     """El token CSRF debe existir en la portada y proteger los POST."""

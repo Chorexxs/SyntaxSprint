@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db.models import Avg
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
@@ -27,12 +28,14 @@ def save_typing_test_result(request: HttpRequest) -> JsonResponse:
 
 @login_required(login_url="login")
 def profile(request: HttpRequest) -> HttpResponse:
-    """Muestra el historial y los promedios del usuario autenticado."""
+    """Muestra el historial paginado y los promedios del usuario autenticado."""
     results = TypingTestResult.objects.filter(user=request.user).order_by("-date")
     stats = results.aggregate(avg_wpm=Avg("wpm"), avg_accuracy=Avg("accuracy"))
+    page_obj = Paginator(results, 20).get_page(request.GET.get("page"))
 
     context = {
-        "results": results,
+        "results": page_obj,
+        "page_obj": page_obj,
         "avg_wpm": stats["avg_wpm"] or 0,
         "avg_accuracy": stats["avg_accuracy"] or 0,
     }
