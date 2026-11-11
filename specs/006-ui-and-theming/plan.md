@@ -125,3 +125,37 @@ Checklist:
 
 - Sin migraciones.
 - Invalidar caché de CSS/JS tras el refactor.
+
+## 10. Decisiones posteriores (2026-11-11)
+
+### T006-12 — Tokens ajustados por contraste
+
+La medición inicial con la fórmula WCAG daba ratios muy por debajo de AA:
+
+| Par | Antes | Después |
+| --- | ---: | ---: |
+| Oscuro `--text-sub` sobre `--bg-primary` | 2.17:1 | 4.54:1 |
+| Oscuro `--text-sub` sobre `--bg-secondary` | 2.28:1 | 4.77:1 |
+| Claro `--text-sub` sobre `--bg-primary` | 2.40:1 | 5.69:1 |
+| Claro `--text-sub` sobre `--bg-secondary` | 2.13:1 | 5.06:1 |
+| Oscuro `--error` sobre `--bg-primary` | 2.70:1 | 4.98:1 |
+| Claro `--error` sobre `--bg-primary` | 3.69:1 | 4.99:1 |
+| Claro `--success` sobre `--bg-primary` | 2.78:1 | 4.70:1 |
+
+Se ajustaron también `--error` y `--success` porque se usan en texto de 14 px
+(mensajes de login/signup y prompt en móvil), donde AA exige 4.5:1. `--text-main` y
+`--success` en oscuro ya cumplían.
+
+Decisiones asociadas:
+
+- El footer pierde la opacidad `/60`: el texto atenuado incumplía AA.
+- `::placeholder` usa `--text-sub` con `opacity: 1` para no heredar el gris por defecto
+  del navegador.
+- `#language-select` recibe un `<label class="sr-only">`; axe lo marcaba como
+  `select-name` crítico aunque T006-10 solo cubría login y signup.
+
+Limitación de verificación: en el entorno de pruebas el CDN de Tailwind no fue
+alcanzable, así que `axe-core` se ejecutó con `color-contrast` desactivado (el resto de
+reglas WCAG 2.1 AA pasa en `/`, `/login` y `/signup`). Los ratios se calcularon con la
+fórmula de luminancia relativa de WCAG 2.1. Lighthouse sigue pendiente en T006-13/T006-14.
+

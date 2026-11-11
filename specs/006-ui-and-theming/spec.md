@@ -60,7 +60,7 @@ cualquier cambio visual.
 | Atributo | `data-theme` en `<html>`. |
 | Tema por defecto | `dark`. |
 | Tokens | `--bg-primary`, `--bg-secondary`, `--text-main`, `--text-sub`, `--text-active`, `--caret`, `--success`, `--error`. |
-| Contraste | Texto principal ≥ 4.5:1 sobre su fondo. |
+| Contraste | Todo el texto ≥ 4.5:1 sobre su fondo (WCAG AA). |
 
 ## 6. Contratos
 
@@ -71,11 +71,11 @@ cualquier cambio visual.
 | `--bg-primary` | `#323437` | `#f5f5f5` | Fondo de página |
 | `--bg-secondary` | `#2d3135` | `#e8e8e8` | Tarjetas y inputs |
 | `--text-main` | `#d1d0c5` | `#323437` | Texto principal |
-| `--text-sub` | `#646669` | `#a0a0a0` | Texto secundario |
+| `--text-sub` | `#9a9ca1` | `#5f6165` | Texto secundario |
 | `--text-active` | `#d1d0c5` | `#323437` | Énfasis |
 | `--caret` | `#d1d0c5` | `#323437` | Cursor y CTA |
-| `--success` | `#9ece9a` | `#44a844` | Carácter correcto |
-| `--error` | `#ca4754` | `#d95050` | Carácter incorrecto |
+| `--success` | `#9ece9a` | `#2e7d32` | Carácter correcto |
+| `--error` | `#e58a90` | `#c0392b` | Carácter incorrecto |
 
 ### Estructura de plantilla propuesta
 
@@ -119,8 +119,8 @@ templates/base.html
 | Tema duplicado en 4 plantillas | Inconsistencias | T006-04 |
 | `*:focus { outline: none }` | Inaccesible | T006-05 |
 | Tailwind por CDN | Warning de producción y dependencia de red | 007 |
-| `--text-sub` con bajo contraste en claro | WCAG | T006-06 |
-| `--text-sub` sobre `--bg-secondary` en oscuro | Contraste límite | Verificar y ajustar |
+| `--text-sub` con bajo contraste en claro | WCAG | T006-12: resuelto (`#5f6165`) |
+| `--text-sub` sobre `--bg-secondary` en oscuro | WCAG | T006-12: resuelto (`#9a9ca1`) |
 
 ## 11. Referencias de código
 

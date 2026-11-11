@@ -79,10 +79,16 @@ Referencia: `specs/006-ui-and-theming/spec.md`
   - Evidencia: `role="alert"` presente en los bloques de mensajes de login y signup;
     los tres `<th>` de `profile.html:35-37` llevan `scope="col"`.
 
-- [ ] **T006-12** Revisar contraste de `--text-sub` en ambos temas y ajustar si < 4.5:1.
+- [x] **T006-12** Revisar contraste de `--text-sub` en ambos temas y ajustar si < 4.5:1.
   - Requisito: `RNF-000-05`
-  - Archivos: `static/css/styles.css`
-  - DoD: Lighthouse Accessibility ≥ 95.
+  - Archivos: `static/css/styles.css`, `templates/base.html`, `templates/index.html`
+  - DoD: ratios WCAG AA ≥ 4.5:1 medidos con la fórmula de luminancia relativa;
+    Lighthouse ≥ 95 queda para T006-13/T006-14.
+  - Evidencia: `--text-sub` pasa de 2.17–2.40:1 a 4.54–5.69:1; `--error` a 4.98/4.99:1
+    y `--success` claro a 4.70:1. Footer sin opacidad `/60`, `::placeholder` con el token
+    y `<label>` para `#language-select`. Detalle y limitaciones en `plan.md` §10.
+  - Nota: `axe-core` (WCAG 2.1 AA, sin `color-contrast` por falta del CDN de Tailwind en
+    el entorno) no reporta violaciones en `/`, `/login` ni `/signup`.
 
 ## Fase 4 — Verificación
 
@@ -110,3 +116,4 @@ Referencia: `specs/006-ui-and-theming/spec.md`
 | 2026-11-10 | Auditoría de plantillas y tokens |
 | 2026-11-11 | T006-08 cerrada: foco visible con `:focus-visible` |
 | 2026-11-11 | T006-10 y T006-11 cerradas: labels accesibles y `scope="col"` |
+| 2026-11-11 | T006-12 cerrada: tokens ajustados a contraste WCAG AA |
