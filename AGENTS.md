@@ -290,13 +290,13 @@ Al terminar:
 
 ## 8. Deuda técnica conocida (priorizada)
 
-Estado verificado el 2026-11-10: `manage.py check` 0 issues, `manage.py test` 26 tests
+Estado verificado el 2026-11-11: `manage.py check` 0 issues, `manage.py test` 26 tests
 OK, `isort --check-only` sin avisos. La antigua deuda "suite de pruebas vacía" ya está
 cerrada.
 
 | Prioridad | Deuda | Feature | Tarea |
 | --- | --- | --- | --- |
-| 1 | `outline: none` global y controles sin nombre accesible | 006 | T006-08, T006-10, T006-11 |
+| 1 | Contraste de `--text-sub` sin verificar en ambos temas (WCAG AA) | 006 | T006-12 |
 | 2 | Historial del perfil sin paginación | 005 | T005-08 |
 | 3 | Faltan tests de promedios, cascada, estado vacío y `ProfileTests` | 005/007 | T005-12, T007-04 |
 | 4 | 53 líneas > 100 en `snippets.py` y 7 en `script.js` | 008 | T008-09 |

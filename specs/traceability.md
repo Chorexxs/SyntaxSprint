@@ -113,7 +113,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-006-04 | T006-05 | CA-006-06 | ✅ |
 | RF-006-05 | T006-04, T006-13 | CA-006-03 | 🟡 |
 | RF-006-06 | T006-03 | manual: estados visuales | ✅ |
-| RF-006-07 | T006-08, T006-10, T006-11 | CA-006-04 | 🟡 |
+| RF-006-07 | T006-08, T006-10, T006-11 | CA-006-04 | ✅ |
 | RF-006-08 | T006-09 | CA-006-05 | ✅ |
 | RF-006-09 | T006-15 | preferencia SO | ⬜ |
 | RF-006-10 | T006-05 | favicon/título | ✅ |
@@ -230,12 +230,12 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | 003 | 8 | 8 | 0 | 0 |
 | 004 | 16 | 11 | 5 | 0 |
 | 005 | 12 | 11 | 0 | 1 |
-| 006 | 10 | 7 | 2 | 1 |
+| 006 | 10 | 8 | 1 | 1 |
 | 007 | 11 | 9 | 2 | 0 |
 | 008 | 12 | 10 | 2 | 0 |
 | 009 | 14 | 11 | 3 | 0 |
 | 010 | 12 | 12 | 0 | 0 |
-| **Total** | **125** | **105** | **18** | **2** |
+| **Total** | **125** | **106** | **17** | **2** |
 
 > La matriz se actualiza al cerrar cada tarea. Un requisito no puede pasar a ✅ sin su
 > verificación ejecutada.

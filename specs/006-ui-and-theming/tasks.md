@@ -65,16 +65,19 @@ Referencia: `specs/006-ui-and-theming/spec.md`
   - Evidencia: `aria-label` inicial en `base.html` y `theme.js` actualiza
     `aria-label` y `aria-pressed` según el tema activo.
 
-- [ ] **T006-10** Añadir labels accesibles a los inputs de login y signup.
+- [x] **T006-10** Añadir labels accesibles a los inputs de login y signup.
   - Requisito: `RF-006-07`
   - Archivos: `templates/login.html`, `templates/signup.html`
-  - Estado: pendiente. Los 6 `<input>` no tienen `<label>` asociado ni `aria-label`.
+  - Evidencia: los 6 inputs tienen `<label for="...">` con clase `sr-only` e `id` único
+    (`login-username`, `login-password`, `signup-username`, `signup-email`,
+    `signup-password`, `signup-password2`). Verificado en Chrome: `input.labels`
+    devuelve "Usuario", "Contraseña", "Correo electrónico" y "Confirmar contraseña".
 
-- [ ] **T006-11** Añadir `role="alert"` a los mensajes y `scope="col"` a la tabla.
+- [x] **T006-11** Añadir `role="alert"` a los mensajes y `scope="col"` a la tabla.
   - Requisito: `RF-006-07`
-  - Archivos: `templates/*.html`
-  - Estado: parcial. `role="alert"` ya está en login y signup; falta `scope="col"` en
-    los `<th>` de `profile.html:91-93`.
+  - Archivos: `templates/login.html`, `templates/signup.html`, `templates/profile.html`
+  - Evidencia: `role="alert"` presente en los bloques de mensajes de login y signup;
+    los tres `<th>` de `profile.html:35-37` llevan `scope="col"`.
 
 - [ ] **T006-12** Revisar contraste de `--text-sub` en ambos temas y ajustar si < 4.5:1.
   - Requisito: `RNF-000-05`
@@ -106,3 +109,4 @@ Referencia: `specs/006-ui-and-theming/spec.md`
 | --- | --- |
 | 2026-11-10 | Auditoría de plantillas y tokens |
 | 2026-11-11 | T006-08 cerrada: foco visible con `:focus-visible` |
+| 2026-11-11 | T006-10 y T006-11 cerradas: labels accesibles y `scope="col"` |
