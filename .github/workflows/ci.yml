@@ -32,7 +32,9 @@ jobs:
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
-          python-version-file: ".python-version"
+          # Se fija el minor, no el patch: ubuntu-latest (26.04) no publica 3.12.1
+          # y `python-version-file` resolvía exactamente ese patch y fallaba.
+          python-version: "3.12"
           cache: pip
           cache-dependency-path: |
             requirements.txt
