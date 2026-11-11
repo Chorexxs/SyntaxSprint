@@ -12,7 +12,9 @@
         {% csrf_token %}
 
         <div>
+          <label for="signup-username" class="sr-only">Usuario</label>
           <input
+            id="signup-username"
             type="text"
             name="username"
             placeholder="username"
@@ -22,7 +24,9 @@
         </div>
 
         <div>
+          <label for="signup-email" class="sr-only">Correo electrónico</label>
           <input
+            id="signup-email"
             type="email"
             name="email"
             placeholder="email"
@@ -32,7 +36,9 @@
         </div>
 
         <div>
+          <label for="signup-password" class="sr-only">Contraseña</label>
           <input
+            id="signup-password"
             type="password"
             name="password"
             placeholder="password"
@@ -42,7 +48,9 @@
         </div>
 
         <div>
+          <label for="signup-password2" class="sr-only">Confirmar contraseña</label>
           <input
+            id="signup-password2"
             type="password"
             name="password2"
             placeholder="confirm password"
