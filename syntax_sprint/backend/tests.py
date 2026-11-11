@@ -313,6 +313,16 @@ class ProfileTests(TestCase):
         self.assertContains(response, "no results yet")
         self.assertContains(response, reverse("index"))
 
+    def test_deleting_user_deletes_results(self):
+        user = User.objects.create_user(
+            username="tester", email="tester@example.com", password=PASSWORD
+        )
+        TypingTestResult.objects.create(user=user, wpm=60, accuracy=95)
+
+        user.delete()
+
+        self.assertEqual(TypingTestResult.objects.count(), 0)
+
 
 class CsrfTests(TestCase):
     """El token CSRF debe existir en la portada y proteger los POST."""
