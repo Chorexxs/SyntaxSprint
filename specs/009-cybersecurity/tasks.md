@@ -107,9 +107,11 @@ Referencia: `specs/009-cybersecurity/spec.md`
   - Estado: checklist documentado; Pages y visibilidad pendientes.
   - DoD: checklist firmado en `audits/security/`.
 
-- [ ] **T009-21** Verificar que logs y errores no exponen PII ni rutas internas.
+- [x] **T009-21** Verificar que logs y errores no exponen PII ni rutas internas.
   - Requisitos: `RF-009-11`, `RF-009-08`
-  - DoD: `DEBUG=False` muestra 500 genérico; logs sin emails.
+  - Evidencia: con `DEBUG=False`, una vista que lanza `ValueError` devuelve 500 con el
+    cuerpo genérico "Server Error (500)", sin traza ni rutas internas. No hay `print()`
+    ni `logging` propios en `backend/` ni en `syntax_sprint/`.
 
 ## Fase 5 — Reauditoría
 
@@ -172,4 +174,4 @@ Referencia: `specs/009-cybersecurity/spec.md`
 | 2026-11-10 | Creación del procedimiento, escáner y línea base crítica |
 | 2026-11-10 | Auditoría completa: fuga activa confirmada en GitHub y GitHub Pages |
 | 2026-11-10 | Historial purgado, force-push, repo privado y Pages despublicado |
-| 2026-11-11 | Verificación local: PII fuera del repo, historial sin CRÍTICAS, `check --deploy` OK y BD local saneada |
+| 2026-11-11 | Verificación local: PII fuera del repo, historial sin CRÍTICAS, `check --deploy` OK, 500 sin trazas y BD local saneada |

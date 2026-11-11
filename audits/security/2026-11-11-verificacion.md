@@ -20,6 +20,8 @@
 | GitHub Pages | `HEAD .../SyntaxSprint/syntax_sprint/db.sqlite3` | 404 |
 | Remoto `main` | `git ls-remote origin refs/heads/main` | `9de0453` (igual que local) |
 | Configuración de producción | `DEBUG=False python manage.py check --deploy` | 0 issues |
+| Error 500 sin trazas | Vista que lanza `ValueError` con `DEBUG=False` | 500 con "Server Error (500)", sin traza ni rutas internas |
+| Logs de aplicación | Búsqueda de `print(`/`logging` en `backend/` y `syntax_sprint/` | Sin coincidencias |
 | Suite de pruebas | `python manage.py test` | 31 tests OK |
 | BD local con PII | `manage.py shell` antes de borrar | 6 usuarios / 31 resultados → eliminada y recreada vacía (0/0) |
 
