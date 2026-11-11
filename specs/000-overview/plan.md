@@ -96,7 +96,7 @@ SyntaxSprint/
 | ADR-02 | Catálogo de snippets en memoria (`backend/snippets.py`) | Evitar BD para contenido estático | Un módulo de datos grande; se mantiene aparte de las vistas |
 | ADR-03 | Cálculo de WPM en cliente | Feedback en tiempo real | Resultado manipulable; validar en servidor |
 | ADR-04 | SQLite | Simplicidad y despliegue barato | Límites de concurrencia |
-| ADR-05 | Tailwind por CDN | Sin paso de build | Dependencia de red; versión fijada en 3.4.19 |
+| ADR-05 | Tailwind por CDN | Sin paso de build | Dependencia de red; versión fijada en 3.4.17 |
 | ADR-06 | Sesiones de Django | Stack nativo | Sin API tokens |
 
 ## 6. Deuda técnica transversal

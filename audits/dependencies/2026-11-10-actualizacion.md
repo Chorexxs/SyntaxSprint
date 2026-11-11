@@ -54,11 +54,12 @@ python specs/tools/check_dependencies.py --strict
 
 | Recurso | Antes | Después |
 | --- | --- | --- |
-| Tailwind CSS (CDN) | Sin versión | `https://cdn.tailwindcss.com/3.4.19` |
+| Tailwind CSS (CDN) | Sin versión | `https://cdn.tailwindcss.com/3.4.17` |
 | JetBrains Mono (Google Fonts) | Gestionada por Google | Sin cambio |
 
-La última 3.x es 3.4.19; la 4.3.5 requiere una migración de configuración y queda como
-tarea separada (`T006`/`T007`, build local).
+La última 3.x es 3.4.17; la 4.3.5 requiere una migración de configuración y queda como
+tarea separada (`T006`/`T007`, build local). El 2026-11-11 se corrigió la versión fijada:
+`3.4.19` no existe en el CDN y hacía que Tailwind no cargara.
 
 ### 2.5 Runtime y CI
 

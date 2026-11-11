@@ -65,8 +65,9 @@ Referencia: `specs/010-dependencies/spec.md`
   - Archivos: `syntax_sprint/templates/*.html`
   - Coordina con: `006`/`007` (eliminar CDN).
   - DoD: la versión usada está declarada explícitamente.
-  - Evidencia: las 4 plantillas cargan `cdn.tailwindcss.com/3.4.19` (última 3.x).
-    La 4.3.5 requiere migración y queda como deuda de `006`.
+  - Evidencia: `base.html` carga `cdn.tailwindcss.com/3.4.17` (última 3.x). La 3.4.19
+    fijada antes no existe y fue corregida el 2026-11-11. La 4.3.5 requiere migración y
+    queda como deuda de `006`.
 
 ## Fase 4 — Automatización complementaria
 

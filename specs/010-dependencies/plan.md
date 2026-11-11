@@ -62,7 +62,7 @@ queda en el backlog.
 
 | Recurso | Origen | Versión |
 | --- | --- | --- |
-| Tailwind CSS | `https://cdn.tailwindcss.com/3.4.19` | 3.4.19 (fijada) |
+| Tailwind CSS | `https://cdn.tailwindcss.com/3.4.17` | 3.4.17 (fijada) |
 | JetBrains Mono | Google Fonts | Gestionada por Google |
 | JavaScript | Propio (`static/js`) | — |
 
