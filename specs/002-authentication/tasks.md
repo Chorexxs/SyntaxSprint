@@ -65,10 +65,13 @@ Referencia: `specs/002-authentication/spec.md`
 
 ## Deuda técnica / Backlog
 
-- [ ] Rate limiting por IP en login (django-axes o middleware propio).
+- [x] Rate limiting por IP en login (django-axes o middleware propio).
+  - Resuelto con caché de Django: 5 intentos / 300 s (`auth_views.py:15-16,97-105`),
+    cubierto por `AuthTests` (`T002-11`).
 - [ ] Recuperación de contraseña por email.
 - [ ] Verificación de email.
-- [ ] Unificar los cuatro bloques de toggle de tema en `base.html` (ver 006).
+- [x] Unificar los cuatro bloques de toggle de tema en `base.html` (ver 006).
+  - Resuelto por `T006-06`: un único `#theme-toggle` y `static/js/theme.js`.
 
 ## Historial
 

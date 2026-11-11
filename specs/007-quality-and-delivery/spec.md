@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 | --- | --- |
-| Estado | Pendiente |
+| Estado | Implementada |
 | Versión | 1.0 |
 | Depende de | 001…006 |
 | Archivos principales | `backend/tests.py`, `settings.py`, `requirements.txt`, `README.md`, `.github/workflows/` |

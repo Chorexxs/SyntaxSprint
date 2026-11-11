@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 | --- | --- |
-| Estado | Implementada parcialmente |
+| Estado | Implementada (backlog en `tasks.md`) |
 | Versión | 1.0 |
 | Depende de | 000-overview |
 | Archivos principales | `syntax_sprint/settings.py`, `syntax_sprint/urls.py`, `backend/apps.py`, `backend/admin.py`, `requirements.txt` |

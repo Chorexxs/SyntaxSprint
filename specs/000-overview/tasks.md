@@ -15,16 +15,24 @@ Referencia: `specs/000-overview/spec.md`
 - [x] **T000-08** Definir el procedimiento de auditoría de seguridad (spec 009).
 - [x] **T000-09** Definir el procedimiento de actualización de dependencias (spec 010).
 
+> `T000-05` sigue abierta porque exige la aprobación explícita del responsable del
+> proyecto. `T000-06` sigue abierta: las métricas están definidas en
+> `specs/000-overview/spec.md` §7, pero no hay analítica que las mida.
+
 ## Milestones
 
 | Milestone | Contenido | Estado |
 | --- | --- | --- |
 | **M1 — Documentación** | specs 000–007, AGENTS.md, trazabilidad | [x] |
-| **M2 — Red de seguridad** | Tests de auth, snippets y resultados (007 fase 1) | [ ] |
-| **M3 — Correcciones funcionales** | CSRF en portada, validación de resultados, redirects de login | [ ] |
-| **M4 — Accesibilidad y UI** | Nombres accesibles, contraste, deduplicar tema | [ ] |
-| **M5 — Producción** | Settings seguros, CI, estáticos, README alineado | [ ] |
+| **M2 — Red de seguridad** | Tests de auth, snippets y resultados (007 fase 1) | [x] |
+| **M3 — Correcciones funcionales** | CSRF en portada, validación de resultados, redirects de login | [x] |
+| **M4 — Accesibilidad y UI** | Nombres accesibles, contraste, deduplicar tema | [x] |
+| **M5 — Producción** | Settings seguros, CI, estáticos, README alineado | [x] |
 | **M6 — Gobernanza** | Auditorías de código y seguridad bajo demanda + línea base | [x] |
+
+> Evidencia de M2–M5 (2026-11-11): 39 tests en verde, cobertura del backend 99 %,
+> `pylint` 10.00/10, CI en `.github/workflows/ci.yml`, WhiteNoise + `render.yaml` y
+> sitio en producción. Tareas: T007-01…T007-22, T002-07/T002-09, T005-05, T006-05…T006-08.
 
 ## Mapa de dependencias entre funcionalidades
 
@@ -65,3 +73,4 @@ Referencia: `specs/000-overview/spec.md`
 | Fecha | Cambio |
 | --- | --- |
 | 2026-11-10 | Creación del roadmap y estructura SDD |
+| 2026-11-11 | Cierre de M2–M5 con evidencia verificada; T000-05 y T000-06 quedan abiertas |

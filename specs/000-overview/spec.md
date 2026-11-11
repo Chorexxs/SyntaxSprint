@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 | --- | --- |
-| Estado | Implementada (con deuda técnica) |
+| Estado | Implementada (backlog en `tasks.md`) |
 | Versión | 1.0 |
 | Depende de | — |
 | Archivos principales | `syntax_sprint/`, `backend/`, `templates/`, `static/` |
@@ -24,7 +24,7 @@ usuario para medir su progreso.
 2. Medir WPM y precisión de forma consistente y comprensible.
 3. Persistir cada resultado y mostrar historial y promedios por usuario.
 4. Ofrecer una experiencia minimalista, rápida y con tema claro/oscuro.
-5. Funcionar con una pila sencilla y desplegable: Django + SQLite + Gunicorn.
+5. Funcionar con una pila sencilla y desplegable: Django + PostgreSQL (InsForge) + Gunicorn.
 
 ### No objetivos
 
@@ -46,13 +46,13 @@ usuario para medir su progreso.
 
 | ID | Capacidad | Spec | Estado |
 | --- | --- | --- | --- |
-| C1 | Configuración del proyecto y del entorno | `001-foundation` | Implementada parcialmente |
-| C2 | Registro, login, logout y sesiones | `002-authentication` | Implementada parcialmente |
+| C1 | Configuración del proyecto y del entorno | `001-foundation` | Implementada |
+| C2 | Registro, login, logout y sesiones | `002-authentication` | Implementada |
 | C3 | Catálogo y entrega de fragmentos de código | `003-snippet-service` | Implementada |
 | C4 | Motor de test de mecanografía | `004-typing-engine` | Implementada |
-| C5 | Persistencia de resultados, perfil e historial | `005-results-and-profile` | Implementada parcialmente |
+| C5 | Persistencia de resultados, perfil e historial | `005-results-and-profile` | Implementada |
 | C6 | Sistema visual, temas y responsividad | `006-ui-and-theming` | Implementada |
-| C7 | Calidad, pruebas, seguridad y despliegue | `007-quality-and-delivery` | Pendiente |
+| C7 | Calidad, pruebas, seguridad y despliegue | `007-quality-and-delivery` | Implementada |
 | C8 | Auditoría de código y arquitectura bajo demanda | `008-code-audit` | Implementada (procedimiento) |
 | C9 | Auditoría de ciberseguridad y filtraciones bajo demanda | `009-cybersecurity` | Implementada (procedimiento) |
 | C10 | Inventario y actualización de dependencias bajo demanda | `010-dependencies` | Implementada (procedimiento) |
@@ -117,7 +117,7 @@ usuario para medir su progreso.
 | Fragmentos demasiado largos para 30 s | Mala experiencia | Limitar a ≤ 15 líneas; validar en tests manuales |
 | Guardado silencioso fallido | Pérdida de progreso | Mostrar estado y registrar errores (ver 005) |
 | Dependencia de CDN de Tailwind | Caída del CDN rompe estilos | Resuelto: build local (2026-11-11) |
-| Sin pruebas automatizadas | Regresiones frecuentes | Prioridad máxima en 007 |
+| Sin pruebas automatizadas | Regresiones frecuentes | Resuelto: 39 tests y 99 % de cobertura (T007-01…T007-05) |
 
 ## 11. Referencias
 

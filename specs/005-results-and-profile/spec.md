@@ -2,10 +2,10 @@
 
 | Campo | Valor |
 | --- | --- |
-| Estado | Implementada parcialmente |
+| Estado | Implementada (backlog en `tasks.md`) |
 | Versión | 1.0 |
 | Depende de | 002-authentication, 004-typing-engine |
-| Archivos principales | `backend/models.py`, `backend/views.py`, `templates/profile.html`, `backend/migrations/0001_initial.py` |
+| Archivos principales | `backend/models.py`, `backend/result_views.py`, `templates/profile.html`, `backend/migrations/0001_initial.py` |
 
 ## 1. Contexto y problema
 

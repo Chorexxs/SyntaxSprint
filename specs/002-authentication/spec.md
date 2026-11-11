@@ -2,10 +2,10 @@
 
 | Campo | Valor |
 | --- | --- |
-| Estado | Implementada parcialmente |
+| Estado | Implementada (backlog en `tasks.md`) |
 | Versión | 1.0 |
 | Depende de | 001-foundation |
-| Archivos principales | `backend/views.py`, `templates/login.html`, `templates/signup.html`, `syntax_sprint/urls.py` |
+| Archivos principales | `backend/auth_views.py`, `templates/login.html`, `templates/signup.html`, `syntax_sprint/urls.py` |
 
 ## 1. Contexto y problema
 
@@ -61,7 +61,8 @@ todos los mensajes de error son visibles.
 | Contraseña | Debe pasar `AUTH_PASSWORD_VALIDATORS` (mínimo 8, no común, no numérica). |
 | Contraseña repetida | `password == password2` obligatorio. |
 | Sesión | `auth.login` tras registro o login correcto. |
-| Logout | Solo por usuario autenticado; idealmente POST (ver deuda). |
+| Logout | Solo por usuario autenticado y únicamente por POST; un GET responde 405. |
+| Límite de intentos | 5 fallos por IP en 5 minutos; superado el límite se rechaza con mensaje genérico. |
 
 ## 6. Contratos
 
@@ -71,7 +72,8 @@ todos los mensajes de error son visibles.
 | POST | `/login` | No | `username`, `password` | 302 → `/` | 302 → `/login` con mensaje |
 | GET | `/signup` | No | — | `signup.html` | — |
 | POST | `/signup` | No | `username`, `email`, `password`, `password2` | 302 → `/` | 302 → `/signup` con mensaje |
-| GET | `/logout` | Sí | — | 302 → `/` | 302 a login si no autenticado |
+| GET | `/logout` | Sí | — | — | 405 `Method Not Allowed` |
+| POST | `/logout` | Sí | — | 302 → `/` | 302 a login si no autenticado |
 
 ## 7. Requisitos no funcionales
 
@@ -95,7 +97,6 @@ todos los mensajes de error son visibles.
 
 - Recuperación de contraseña.
 - 2FA.
-- Bloqueo por intentos fallidos (ver deuda).
 
 ## 10. Riesgos y deuda técnica
 
@@ -105,10 +106,10 @@ todos los mensajes de error son visibles.
 | No se ejecutan validadores de contraseña | Cuentas débiles | T002-06 |
 | `request.POST["campo"]` lanza `KeyError` | Error 500 | T002-08 |
 | Logout por GET | CSRF/logout forzado | T002-09 |
-| Sin rate limiting | Fuerza bruta | Backlog 007 |
+| Sin rate limiting | Fuerza bruta | Resuelto: 5 intentos/300 s por IP en `auth_views.py` |
 
 ## 11. Referencias de código
 
-- `backend/views.py` → `signup`, `login`, `logout`
+- `backend/auth_views.py` → `signup`, `login`, `logout`
 - `templates/login.html`, `templates/signup.html`
-- `settings.py` → `AUTH_PASSWORD_VALIDATORS`
+- `syntax_sprint/syntax_sprint/settings.py` → `AUTH_PASSWORD_VALIDATORS`

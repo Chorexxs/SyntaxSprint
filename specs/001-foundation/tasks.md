@@ -76,7 +76,8 @@ Referencia: `specs/001-foundation/spec.md`
 
 - [ ] Añadir `.env.test` o fixtures para tests reproducibles.
 - [ ] Documentar rotación de `SECRET_KEY`.
-- [ ] Evaluar `whitenoise` para servir estáticos sin servidor web (ver 007).
+- [x] Evaluar `whitenoise` para servir estáticos sin servidor web (ver 007).
+  - Resuelto por `T007-17`: WhiteNoise configurado en `STORAGES` con `DEBUG=False`.
 
 ## Historial
 
