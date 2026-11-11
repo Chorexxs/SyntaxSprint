@@ -42,8 +42,14 @@ html {
   font-size: 16px;
 }
 
-/* Remove default focus outline */
-*:focus {
+/* Foco visible solo para navegación por teclado (RF-006-07, RNF-006-03) */
+:focus-visible {
+  outline: 2px solid var(--caret);
+  outline-offset: 2px;
+}
+
+/* La interacción con puntero no necesita el anillo de foco */
+:focus:not(:focus-visible) {
   outline: none;
 }
 
