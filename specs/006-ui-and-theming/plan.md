@@ -155,8 +155,17 @@ Decisiones asociadas:
 - `#language-select` recibe un `<label class="sr-only">`; axe lo marcaba como
   `select-name` crítico aunque T006-10 solo cubría login y signup.
 
-Limitación de verificación: en el entorno de pruebas el CDN de Tailwind no fue
-alcanzable, así que `axe-core` se ejecutó con `color-contrast` desactivado (el resto de
-reglas WCAG 2.1 AA pasa en `/`, `/login` y `/signup`). Los ratios se calcularon con la
-fórmula de luminancia relativa de WCAG 2.1. Lighthouse sigue pendiente en T006-13/T006-14.
+### T006-13/14/15 — Verificación y preferencia del sistema
+
+Con Tailwind compilado (2026-11-11) se completó la verificación:
+
+- Responsive: 320/768/1440 px en las 4 páginas sin scroll horizontal ni elementos fuera
+  del viewport.
+- Tema claro/oscuro persistente entre páginas y recarga; la preferencia guardada gana
+  sobre la del sistema.
+- `theme-init.js`: preferencia guardada > `prefers-color-scheme` > oscuro.
+- Lighthouse (desktop): Accessibility 100, Best Practices 100, SEO 100.
+
+La limitación anterior de `axe-core` (CDN de Tailwind inalcanzable) desapareció al
+compilar Tailwind localmente; los ratios se calcularon con la fórmula de WCAG 2.1.
 

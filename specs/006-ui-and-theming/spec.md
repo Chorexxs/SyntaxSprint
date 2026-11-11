@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 | --- | --- |
-| Estado | Implementada parcialmente |
+| Estado | Implementada |
 | Versión | 1.0 |
 | Depende de | 001-foundation |
 | Archivos principales | `templates/*.html`, `static/css/styles.css`, `static/icon/icon.svg` |
@@ -41,7 +41,7 @@ cualquier cambio visual.
 
 | ID | Requisito | Prioridad |
 | --- | --- | --- |
-| RF-006-01 | El sistema debe iniciar en tema oscuro cuando no hay preferencia guardada. | Alta |
+| RF-006-01 | El sistema debe iniciar en tema oscuro cuando no hay preferencia guardada ni del sistema; si el SO prefiere claro, aplica `RF-006-09`. | Alta |
 | RF-006-02 | Cuando el usuario pulsa el toggle, el sistema debe alternar el tema y guardarlo en `localStorage`. | Alta |
 | RF-006-03 | Al cargar cualquier página, el sistema debe aplicar el tema guardado antes del primer pintado. | Alta |
 | RF-006-04 | Todas las páginas deben compartir header, footer y tokens de color. | Alta |
@@ -58,7 +58,7 @@ cualquier cambio visual.
 | --- | --- |
 | Clave de tema | `localStorage["theme"]` con valores `dark` o `light`. |
 | Atributo | `data-theme` en `<html>`. |
-| Tema por defecto | `dark`. |
+| Tema por defecto | `dark`, salvo `prefers-color-scheme: light` sin preferencia guardada. |
 | Tokens | `--bg-primary`, `--bg-secondary`, `--text-main`, `--text-sub`, `--text-active`, `--caret`, `--success`, `--error`. |
 | Contraste | Todo el texto ≥ 4.5:1 sobre su fondo (WCAG AA). |
 

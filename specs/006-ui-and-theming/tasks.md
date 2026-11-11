@@ -82,25 +82,32 @@ Referencia: `specs/006-ui-and-theming/spec.md`
 - [x] **T006-12** Revisar contraste de `--text-sub` en ambos temas y ajustar si < 4.5:1.
   - Requisito: `RNF-000-05`
   - Archivos: `static/css/styles.css`, `templates/base.html`, `templates/index.html`
-  - DoD: ratios WCAG AA ≥ 4.5:1 medidos con la fórmula de luminancia relativa;
-    Lighthouse ≥ 95 queda para T006-13/T006-14.
+  - DoD: ratios WCAG AA ≥ 4.5:1 y Lighthouse Accessibility ≥ 95.
   - Evidencia: `--text-sub` pasa de 2.17–2.40:1 a 4.54–5.69:1; `--error` a 4.98/4.99:1
     y `--success` claro a 4.70:1. Footer sin opacidad `/60`, `::placeholder` con el token
     y `<label>` para `#language-select`. Detalle y limitaciones en `plan.md` §10.
-  - Nota: `axe-core` (WCAG 2.1 AA, sin `color-contrast` por falta del CDN de Tailwind en
-    el entorno) no reporta violaciones en `/`, `/login` ni `/signup`.
+  - Nota: con Tailwind compilado, Lighthouse (desktop) da **Accessibility 100**,
+    Best Practices 100 y SEO 100; `axe-core` no reporta violaciones.
 
 ## Fase 4 — Verificación
 
-- [ ] **T006-13** Checklist responsive en 320, 768 y 1440 px.
+- [x] **T006-13** Checklist responsive en 320, 768 y 1440 px.
   - Requisitos: `RF-006-05`, `CA-006-03`
+  - Evidencia: las 4 páginas en 320/768/1440 px con Chrome: `innerWidth = clientWidth =
+    scrollWidth` y ningún elemento fuera del viewport. A 320 px el selector y el botón
+    caben, logo y nav no se solapan y el prompt usa 14 px.
 
-- [ ] **T006-14** Checklist de tema entre las 4 páginas y recarga.
+- [x] **T006-14** Checklist de tema entre las 4 páginas y recarga.
   - Requisitos: `CA-006-01`, `CA-006-02`
+  - Evidencia: con tema claro guardado, las 4 páginas y la recarga mantienen
+    `data-theme="light"` y fondo `#f5f5f5`; con oscuro, `#323437`. La preferencia
+    guardada prevalece sobre la del sistema.
 
-- [ ] **T006-15** Respetar `prefers-color-scheme` cuando no hay preferencia.
+- [x] **T006-15** Respetar `prefers-color-scheme` cuando no hay preferencia.
   - Requisito: `RF-006-09`
-  - Archivos: `theme.js`
+  - Archivos: `static/js/theme-init.js`
+  - Evidencia: con `localStorage` vacío, emular `prefers-color-scheme: light` aplica el
+    tema claro y `dark` aplica el oscuro; con una preferencia guardada, esta gana.
 
 ## Deuda técnica / Backlog
 
@@ -121,3 +128,4 @@ Referencia: `specs/006-ui-and-theming/spec.md`
 | 2026-11-11 | T006-10 y T006-11 cerradas: labels accesibles y `scope="col"` |
 | 2026-11-11 | T006-12 cerrada: tokens ajustados a contraste WCAG AA |
 | 2026-11-11 | Tailwind compilado localmente; CDN y scripts inline eliminados |
+| 2026-11-11 | T006-13/14/15 cerradas: responsive, tema y `prefers-color-scheme` |

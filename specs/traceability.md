@@ -18,7 +18,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-000-05 | `000-overview/spec.md` | T005-02 | CA-005-01 | ✅ |
 | RF-000-06 | `000-overview/spec.md` | T005-03, T005-04 | CA-005-05 | ✅ |
 | RF-000-07 | `000-overview/spec.md` | T006-02 | CA-006-02 | ✅ |
-| RF-000-08 | `000-overview/spec.md` | T006-04, T006-13 | CA-006-03 | 🟡 |
+| RF-000-08 | `000-overview/spec.md` | T006-04, T006-13 | CA-006-03 | ✅ |
 | RF-000-09 | `000-overview/spec.md` | T000-07, T008-01 | CA-008-01 | ✅ |
 | RF-000-10 | `000-overview/spec.md` | T000-08, T009-01 | CA-009-01 | ✅ |
 
@@ -111,11 +111,11 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-006-02 | T006-02, T006-06 | CA-006-02 | ✅ |
 | RF-006-03 | T006-01, T006-07 | sin FOUC | ✅ |
 | RF-006-04 | T006-05 | CA-006-06 | ✅ |
-| RF-006-05 | T006-04, T006-13 | CA-006-03 | 🟡 |
+| RF-006-05 | T006-04, T006-13 | CA-006-03 | ✅ |
 | RF-006-06 | T006-03 | manual: estados visuales | ✅ |
 | RF-006-07 | T006-08, T006-10, T006-11 | CA-006-04 | ✅ |
 | RF-006-08 | T006-09 | CA-006-05 | ✅ |
-| RF-006-09 | T006-15 | preferencia SO | ⬜ |
+| RF-006-09 | T006-15 | preferencia SO | ✅ |
 | RF-006-10 | T006-05 | favicon/título | ✅ |
 
 ## 007 — Calidad y despliegue
@@ -224,18 +224,18 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 
 | Feature | Total | ✅ | 🟡 | ⬜ |
 | --- | ---: | ---: | ---: | ---: |
-| 000 | 10 | 9 | 1 | 0 |
+| 000 | 10 | 10 | 0 | 0 |
 | 001 | 9 | 9 | 0 | 0 |
 | 002 | 11 | 11 | 0 | 0 |
 | 003 | 8 | 8 | 0 | 0 |
 | 004 | 16 | 14 | 2 | 0 |
 | 005 | 12 | 12 | 0 | 0 |
-| 006 | 10 | 8 | 1 | 1 |
+| 006 | 10 | 10 | 0 | 0 |
 | 007 | 11 | 11 | 0 | 0 |
 | 008 | 12 | 10 | 2 | 0 |
 | 009 | 14 | 14 | 0 | 0 |
 | 010 | 12 | 12 | 0 | 0 |
-| **Total** | **125** | **118** | **6** | **1** |
+| **Total** | **125** | **121** | **3** | **0** |
 
 > La matriz se actualiza al cerrar cada tarea. Un requisito no puede pasar a ✅ sin su
 > verificación ejecutada.
