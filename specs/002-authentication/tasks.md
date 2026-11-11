@@ -76,9 +76,7 @@ Referencia: `specs/002-authentication/spec.md`
 | --- | --- |
 | 2026-11-10 | Auditoría del flujo actual y definición de endurecimiento |
 | 2026-11-10 | Verificación contra código: 12 tests de `AuthTests` en verde |
+| 2026-11-11 | `RF-002-02` y `RF-002-03` alineados con el mensaje genérico |
 
-> Divergencia código ↔ spec: `RF-002-02` y `RF-002-03` piden los literales
-> "Email already exists" / "Username already exists". La implementación usa un mensaje
-> genérico ("No se pudo crear la cuenta…") para evitar enumeración de usuarios, tal como
-> decidió `T009-26`. Se mantiene el comportamiento seguro; el requisito queda 🟡 hasta
-> que la spec se actualice.
+> `RF-002-02` y `RF-002-03` se actualizaron el 2026-11-11 para exigir un mensaje genérico
+> que evite la enumeración de usuarios (`T009-26`), alineando la spec con el código.

@@ -296,9 +296,8 @@ cerrada.
 
 | Prioridad | Deuda | Feature | Tarea |
 | --- | --- | --- | --- |
-| 1 | Mensajes de registro divergentes de la spec (genéricos a propósito) | 002 | RF-002-02, RF-002-03 |
-| 2 | Sin política CSP ni revisión de cabeceras | 009 | T009-28 |
-| 3 | Secret Scanning, Push Protection y Dependabot sin activar | 009 | T009-19 |
+| 1 | Sin política CSP ni revisión de cabeceras | 009 | T009-28 |
+| 2 | Secret Scanning, Push Protection y Dependabot sin activar | 009 | T009-19 |
 
 > No quedan hallazgos **CRÍTICOS** abiertos. Evidencia:
 > `audits/security/2026-11-11-verificacion.md`. Pendiente de terceros: revocar las API

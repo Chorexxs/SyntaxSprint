@@ -41,8 +41,8 @@ todos los mensajes de error son visibles.
 | ID | Requisito | Prioridad |
 | --- | --- | --- |
 | RF-002-01 | Cuando un visitante envía el formulario de registro con datos válidos, el sistema debe crear la cuenta e iniciar sesión automáticamente. | Alta |
-| RF-002-02 | Cuando el email ya existe, el sistema debe mostrar "Email already exists" y no crear la cuenta. | Alta |
-| RF-002-03 | Cuando el username ya existe, el sistema debe mostrar "Username already exists" y no crear la cuenta. | Alta |
+| RF-002-02 | Cuando el email ya existe, el sistema debe rechazar el registro con un mensaje genérico que no revele si la cuenta existe. | Alta |
+| RF-002-03 | Cuando el username ya existe, el sistema debe rechazar el registro con el mismo mensaje genérico que `RF-002-02`. | Alta |
 | RF-002-04 | Cuando las contraseñas no coinciden, el sistema debe mostrar "Passwords do not match". | Alta |
 | RF-002-05 | Cuando las credenciales son válidas, el sistema debe iniciar sesión y redirigir a `/`. | Alta |
 | RF-002-06 | Cuando las credenciales son inválidas, el sistema debe mostrar "Invalid username or password". | Alta |
@@ -85,7 +85,7 @@ todos los mensajes de error son visibles.
 ## 8. Criterios de aceptación
 
 - **CA-002-01** Dado un visitante, cuando se registra con datos nuevos, entonces queda autenticado y ve la portada.
-- **CA-002-02** Dado un email registrado, cuando intento registrarme, entonces vuelvo a `/signup` con el mensaje de email duplicado.
+- **CA-002-02** Dado un email registrado, cuando intento registrarme, entonces vuelvo a `/signup` con el mensaje genérico de registro rechazado, sin revelar si el email existe.
 - **CA-002-03** Dadas dos contraseñas distintas, cuando envío el formulario, entonces no se crea el usuario.
 - **CA-002-04** Dado un usuario autenticado, cuando visito `/profile`, entonces veo mi perfil.
 - **CA-002-05** Dado un visitante, cuando visito `/profile`, entonces soy redirigido a `/login` (no a `/accounts/login/`).

@@ -41,8 +41,8 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | Requisito | Tarea | Verificación | Estado |
 | --- | --- | --- | --- |
 | RF-002-01 | T002-01 | CA-002-01 | ✅ |
-| RF-002-02 | T002-02, T002-10 | CA-002-02 | 🟡 |
-| RF-002-03 | T002-02 | CA-002-02 | 🟡 |
+| RF-002-02 | T002-02, T002-10 | CA-002-02 | ✅ |
+| RF-002-03 | T002-02 | CA-002-02 | ✅ |
 | RF-002-04 | T002-03 | CA-002-03 | ✅ |
 | RF-002-05 | T002-01, T002-04 | CA-002-04 | ✅ |
 | RF-002-06 | T002-04 | CA-002-05 | ✅ |
@@ -226,7 +226,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | --- | ---: | ---: | ---: | ---: |
 | 000 | 10 | 9 | 1 | 0 |
 | 001 | 9 | 9 | 0 | 0 |
-| 002 | 11 | 9 | 2 | 0 |
+| 002 | 11 | 11 | 0 | 0 |
 | 003 | 8 | 8 | 0 | 0 |
 | 004 | 16 | 14 | 2 | 0 |
 | 005 | 12 | 12 | 0 | 0 |
@@ -235,7 +235,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | 008 | 12 | 10 | 2 | 0 |
 | 009 | 14 | 12 | 2 | 0 |
 | 010 | 12 | 12 | 0 | 0 |
-| **Total** | **125** | **112** | **12** | **1** |
+| **Total** | **125** | **114** | **10** | **1** |
 
 > La matriz se actualiza al cerrar cada tarea. Un requisito no puede pasar a ✅ sin su
 > verificación ejecutada.
