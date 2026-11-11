@@ -194,6 +194,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | Pruebas | `manage.py test` | 39 tests OK (24,6 s, medido con cobertura) |
 | Imports | `isort --check-only syntax_sprint/` | Sin avisos |
 | Lint | `pylint backend --rcfile=../.pylintrc` | 10.00/10 |
+| CI | `.github/workflows/ci.yml` (run 20) | 14 pasos en verde |
 | Arquitectura | `specs/tools/code_metrics.py` | 0 funciones fuera de umbral; vistas por dominio |
 | Cobertura | `coverage run --source=backend manage.py test` + `coverage report` | 99 % (459 sentencias, 5 sin cubrir) |
 | Dependencias | `specs/tools/check_dependencies.py --strict` | OK (0 sin uso, runtime coherente) |

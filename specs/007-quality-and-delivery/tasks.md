@@ -99,6 +99,7 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
     `The version '3.12.1' ... was not found for Ubuntu 26.04`. `setup-python` sigue
     leyendo `.python-version` y el job usa `runs-on: ubuntu-24.04`, donde el manifiesto
     sí publica `python-3.12.1-linux-24.04-x64`. Así Render, CI y local siguen en 3.12.1.
+    Verificado en el run 20: los 14 pasos en verde.
 
 ## Fase 5 — Documentación
 
