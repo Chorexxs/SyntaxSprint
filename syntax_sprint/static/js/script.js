@@ -100,9 +100,8 @@ class TypingTest {
     });
 
     window.addEventListener('blur', () => {
-      if (this.state.active && this.state.timerInterval) {
-        clearInterval(this.state.timerInterval);
-        this.state.timerInterval = null;
+      if (this.state.active) {
+        this.stopTimer();
       }
     });
 
@@ -111,6 +110,7 @@ class TypingTest {
   }
 
   async startTest() {
+    this.stopTimer();
     const language = this.elements.languageSelect.value;
 
     try {
@@ -183,6 +183,7 @@ class TypingTest {
   }
 
   startTimer() {
+    this.stopTimer();
     this.state.timerInterval = setInterval(() => {
       this.state.timeLeft--;
       this.elements.timer.textContent = this.state.timeLeft;
@@ -201,6 +202,13 @@ class TypingTest {
         this.endTest();
       }
     }, 1000);
+  }
+
+  stopTimer() {
+    if (this.state.timerInterval !== null) {
+      clearInterval(this.state.timerInterval);
+      this.state.timerInterval = null;
+    }
   }
 
   handleGlobalKeydown = (e) => {
@@ -239,30 +247,38 @@ class TypingTest {
     if (!this.state.active || this.state.isComposing) return;
 
     const typedLength = e.target.value.length;
-    const prevLength = this.state.totalChars;
-    const inputValue = this.elements.wordsInput.value;
-
-    if (typedLength > prevLength) {
-      for (let i = prevLength; i < typedLength && i < this.state.currentCode.length; i++) {
-        const typedChar = inputValue[i];
-        const expectedChar = this.state.currentCode[i];
-
-        if (typedChar === expectedChar) {
-          this.state.correctChars++;
-        } else {
-          this.state.incorrectChars++;
-          this.state.isInError = true;
-        }
-        this.state.totalChars++;
-      }
-    }
-
+    this.countTypedChars(e.target.value);
     this.updateDisplay(typedLength);
     this.updateLiveStats();
 
     if (typedLength >= this.state.currentCode.length) {
       this.endTest();
     }
+  }
+
+  /**
+   * Recalcula los contadores desde el valor actual del input.
+   *
+   * Evita que pegar, borrar o una composición IME desincronicen
+   * `correctChars`/`incorrectChars`/`totalChars` (T004-10).
+   */
+  countTypedChars(value) {
+    let correctChars = 0;
+    let incorrectChars = 0;
+    const limit = Math.min(value.length, this.state.currentCode.length);
+
+    for (let i = 0; i < limit; i++) {
+      if (value[i] === this.state.currentCode[i]) {
+        correctChars++;
+      } else {
+        incorrectChars++;
+        this.state.isInError = true;
+      }
+    }
+
+    this.state.correctChars = correctChars;
+    this.state.incorrectChars = incorrectChars;
+    this.state.totalChars = limit;
   }
 
   handleKeydown = (e) => {
@@ -308,19 +324,9 @@ class TypingTest {
     if (key === 'Backspace') {
       const inputValue = e.target.value;
       if (inputValue.length > 0) {
-        const lastChar = inputValue[inputValue.length - 1];
-        const expectedChar = this.state.currentCode[inputValue.length - 1];
-
-        if (lastChar === expectedChar) {
-          this.state.correctChars = Math.max(0, this.state.correctChars - 1);
-        } else {
-          this.state.incorrectChars = Math.max(0, this.state.incorrectChars - 1);
-        }
-
-        this.state.totalChars = Math.max(0, this.state.totalChars - 1);
         e.target.value = inputValue.slice(0, -1);
-        const typedLength = e.target.value.length;
-        this.updateDisplay(typedLength);
+        this.countTypedChars(e.target.value);
+        this.updateDisplay(e.target.value.length);
         this.updateLiveStats();
       }
       e.preventDefault();
@@ -354,6 +360,7 @@ class TypingTest {
     const newValue = currentValue + textToInsert;
 
     this.elements.wordsInput.value = newValue;
+    this.countTypedChars(newValue);
     this.updateDisplay(newValue.length);
     this.updateLiveStats();
 
@@ -376,6 +383,7 @@ class TypingTest {
       const currentValue = this.elements.wordsInput.value;
       const newValue = currentValue + composedText;
       this.elements.wordsInput.value = newValue;
+      this.countTypedChars(newValue);
       this.updateDisplay(newValue.length);
       this.updateLiveStats();
 
@@ -444,7 +452,7 @@ class TypingTest {
 
   endTest() {
     this.state.active = false;
-    clearInterval(this.state.timerInterval);
+    this.stopTimer();
     this.elements.wordsInput.blur();
 
     Object.keys(this.state.keyDownData).forEach((code) => {
