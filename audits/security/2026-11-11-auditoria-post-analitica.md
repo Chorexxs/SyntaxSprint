@@ -125,7 +125,7 @@ manage.py shell                                       # sondas de rate limit y c
 
 | Hallazgo | Acción | Evidencia | Estado |
 | --- | --- | --- | --- |
-| SEC-016 | `forwarded_allow_ips = "*"` para que `REMOTE_ADDR` sea la IP real y contador `usuario+IP` | `gunicorn.conf.py`, `backend/ratelimit.py:22-33`, `auth_views.py`; tests de rate limit | ✅ |
+| SEC-016 | `forwarded_allow_ips = "*"` para que `REMOTE_ADDR` sea la IP real y contador `usuario+IP` | `gunicorn.conf.py`, `backend/ratelimit.py:22-33`, `auth_views.py`; tests de rate limit | ✅ (residual: contador por worker) |
 | SEC-017 | Límite de 5 POST/300 s por IP en `/admin/login/` con reset tras login correcto | `backend/middleware.py`, `settings.py`; 2 tests | ✅ (2FA en backlog) |
 | SEC-018 | Purga oportunista diaria (sin cron) y límite de 120 peticiones/min en el endpoint | `backend/analytics.py:22-90`, `backend/snippet_views.py`; tests | ✅ |
 | SEC-019 | `purge_analytics` y `analytics_report` rechazan `days < 1` | `CommandError`; test | ✅ |

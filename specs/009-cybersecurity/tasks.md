@@ -170,6 +170,9 @@ Referencia: `specs/009-cybersecurity/spec.md`
     bloquea a todos los usuarios. Tests `test_login_rate_limit` y
     `test_login_rate_limit_is_per_username`.
   - DoD: IP real verificada en producción y bucket por usuario e IP. ✅
+  - Residual: la caché por defecto es `LocMemCache`, así que con más de un worker
+    gunicorn el contador se multiplica por proceso. Migrar a Redis o caché de BD queda
+    en el backlog.
 
 - [x] **T009-30** Proteger el admin contra fuerza bruta.
   - Requisito: `RF-009-07`
@@ -218,6 +221,7 @@ Referencia: `specs/009-cybersecurity/spec.md`
 - [ ] Cabecera CSP.
 - [ ] Notificación a usuarios ante brecha (procedimiento legal).
 - [ ] Auditoría de dependencias en CI.
+- [ ] Caché compartida (Redis o caché de BD) para el rate limiting con varios workers.
 
 ## Historial
 
