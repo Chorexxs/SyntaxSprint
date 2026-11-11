@@ -81,10 +81,13 @@ Referencia: `specs/004-typing-engine/spec.md`
 - [ ] **T004-14** Ejecutar el checklist manual del `plan.md` y registrar evidencia.
   - Requisitos: `CA-004-01`…`CA-004-09`
 
-- [ ] **T004-15** Decidir el destino de las métricas avanzadas (`spacing`, `duration`, `afkHistory`, `errorHistory`).
-  - Requisito: `RF-004-15`
-  - Opciones: eliminarlas o exponerlas en un panel de detalles.
-  - DoD: documentado en `plan.md` y sin código muerto.
+- [x] **T004-15** Decidir el destino de las métricas avanzadas (`spacing`, `duration`, `afkHistory`, `errorHistory`).
+  - Requisito: `RF-004-15` (retirado)
+  - Decisión: eliminarlas. No se mostraban en ninguna vista y añadían estado y handlers
+    globales sin uso.
+  - Evidencia: retirados los campos del estado, los resets, `handleGlobalKeydown`/`Keyup`,
+    `keysToTrack` y el bloque de duraciones de `endTest`; `node --check` OK y sin
+    referencias restantes. `RF-004-15` eliminado de la spec y la trazabilidad.
 
 ## Deuda técnica / Backlog
 
@@ -101,3 +104,4 @@ Referencia: `specs/004-typing-engine/spec.md`
 | 2026-11-10 | Auditoría del motor existente y plan de correcciones |
 | 2026-11-11 | T004-10 y T004-13 cerradas: contadores recalculados y temporizador único |
 | 2026-11-11 | T004-11 cerrada: WPM y precisión como funciones puras |
+| 2026-11-11 | T004-15 cerrada: métricas avanzadas eliminadas por no usarse |

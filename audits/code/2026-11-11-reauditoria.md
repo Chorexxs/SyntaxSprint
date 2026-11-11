@@ -29,8 +29,8 @@ usar y la ausencia de tests de frontend.
 
 | ID | Severidad | Categoría | Ubicación | Evidencia | Impacto | Recomendación | Esfuerzo | Estado |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| AUD-101 | BAJA | Módulo grande | `static/js/script.js` | `code_metrics.py --json`: 482 LOC (> 400) | Mantenimiento del motor | Dividir por responsabilidades junto con tests de frontend | M | Abierto |
-| AUD-102 | BAJA | Código muerto | `static/js/script.js` | `spacing`, `duration`, `afkHistory`, `errorHistory` se calculan y no se usan | Complejidad innecesaria | Decidir uso o eliminación (`T004-15`) | S | Abierto |
+| AUD-101 | BAJA | Módulo grande | `static/js/script.js` | `code_metrics.py --json`: 482 LOC en la auditoría; 404 tras `T004-15` (> 400) | Mantenimiento del motor | Dividir por responsabilidades junto con tests de frontend | M | Abierto |
+| AUD-102 | BAJA | Código muerto | `static/js/script.js` | `spacing`, `duration`, `afkHistory`, `errorHistory` se calculaban y no se usaban | Complejidad innecesaria | Eliminarlas (`T004-15`) | S | Resuelto |
 | AUD-103 | BAJA | Sin tests de frontend | `static/js/` | No hay runner JS; `manage.py test` solo cubre backend | Regresiones invisibles en el motor | Vitest/jsdom o Playwright (backlog 004) | M | Abierto |
 | AUD-104 | INFO | Migración generada | `backend/migrations/0001_initial.py` | 2 líneas > 100 | Ruido de lint | Aceptado: no se editan migraciones aplicadas | — | Aceptado |
 | AUD-105 | INFO | Fallback anticipado | `backend/snippets.py` | `CODE_SNIPPETS.get(language, CODE_SNIPPETS["python"])` evalúa el fallback siempre | Ninguno: la validación garantiza `python` | Sin acción | — | Aceptado |
@@ -127,3 +127,10 @@ Salidas clave: `24 archivos`, `1798 LOC`, `64 funciones`, `0` funciones fuera de
   desactivado en `pylint`).
 - La cobertura es de líneas, no de ramas.
 - La latencia se midió con el cliente de Django en local, sin red.
+
+## 11. Cierre posterior
+
+- **AUD-102 resuelto** con `T004-15`: se eliminaron las métricas avanzadas
+  (`spacing`, `duration`, `keyOverlap`, `afkHistory`, `errorHistory`, `isInError`).
+- `script.js` baja de **482 a 404 LOC**; AUD-101 sigue abierto por 4 líneas.
+- LOC totales: 1720; los 39 tests siguen en verde y `code_metrics --strict` pasa.

@@ -4,23 +4,6 @@
  * Inspired by MonkeyType
  */
 
-const keysToTrack = new Set([
-  'Numpad0', 'Numpad1', 'Numpad2', 'Numpad3', 'Numpad4', 'Numpad5',
-  'Numpad6', 'Numpad7', 'Numpad8', 'Numpad9',
-  'NumpadMultiply', 'NumpadAdd', 'NumpadSubtract', 'NumpadDivide',
-  'NumpadDecimal', 'NumpadEqual',
-  'Digit0', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6',
-  'Digit7', 'Digit8', 'Digit9',
-  'Backquote', 'Minus', 'Equal',
-  'KeyA', 'KeyB', 'KeyC', 'KeyD', 'KeyE', 'KeyF', 'KeyG', 'KeyH', 'KeyI',
-  'KeyJ', 'KeyK', 'KeyL', 'KeyM', 'KeyN', 'KeyO', 'KeyP', 'KeyQ', 'KeyR',
-  'KeyS', 'KeyT', 'KeyU', 'KeyV', 'KeyW', 'KeyX', 'KeyY', 'KeyZ',
-  'BracketLeft', 'BracketRight', 'Backslash',
-  'Semicolon', 'Quote', 'Comma', 'Period', 'Slash',
-  'Space', 'Enter', 'Tab', 'IntlBackslash',
-  'NoCode'
-]);
-
 /**
  * WPM = (caracteres correctos / 5) / minutos transcurridos (RF-004-04).
  * @param {number} correctChars
@@ -74,15 +57,7 @@ class TypingTest {
       isFocused: true,
       correctChars: 0,
       incorrectChars: 0,
-      totalChars: 0,
-      spacing: { first: 0, last: 0, array: [] },
-      duration: { array: [] },
-      keyDownData: {},
-      keyOverlap: { total: 0 },
-      currentAfk: true,
-      afkHistory: [],
-      errorHistory: [],
-      isInError: false
+      totalChars: 0
     };
 
     this.init = this.init.bind(this);
@@ -127,9 +102,6 @@ class TypingTest {
         this.stopTimer();
       }
     });
-
-    document.addEventListener('keydown', this.handleGlobalKeydown);
-    document.addEventListener('keyup', this.handleGlobalKeyup);
   }
 
   async startTest() {
@@ -155,14 +127,6 @@ class TypingTest {
       this.state.correctChars = 0;
       this.state.incorrectChars = 0;
       this.state.totalChars = 0;
-      this.state.spacing = { first: 0, last: 0, array: [] };
-      this.state.duration = { array: [] };
-      this.state.keyDownData = {};
-      this.state.keyOverlap = { total: 0 };
-      this.state.currentAfk = true;
-      this.state.afkHistory = [];
-      this.state.errorHistory = [];
-      this.state.isInError = false;
 
       this.renderCode(data.code);
 
@@ -213,14 +177,6 @@ class TypingTest {
 
       this.updateLiveStats();
 
-      this.state.afkHistory.push(this.state.currentAfk);
-      this.state.currentAfk = true;
-
-      const lastError = this.state.errorHistory[this.state.errorHistory.length - 1];
-      if (this.state.errorHistory.length > 0 && lastError?.count > 0) {
-        this.state.errorHistory.push({ count: 0, words: [] });
-      }
-
       if (this.state.timeLeft <= 0) {
         this.endTest();
       }
@@ -231,38 +187,6 @@ class TypingTest {
     if (this.state.timerInterval !== null) {
       clearInterval(this.state.timerInterval);
       this.state.timerInterval = null;
-    }
-  }
-
-  handleGlobalKeydown = (e) => {
-    if (!this.state.active) return;
-    const code = e.code;
-    if (keysToTrack.has(code)) {
-      const now = Date.now();
-      if (this.state.spacing.first === 0) {
-        this.state.spacing.first = now;
-      } else if (this.state.spacing.last !== 0) {
-        this.state.spacing.array.push(now - this.state.spacing.last);
-      }
-      this.state.spacing.last = now;
-      this.state.currentAfk = false;
-
-      if (this.state.keyDownData[code] !== undefined) {
-        this.state.keyOverlap.total += now - this.state.keyDownData[code];
-      }
-      this.state.keyDownData[code] = now;
-    }
-  }
-
-  handleGlobalKeyup = (e) => {
-    if (!this.state.active) return;
-    const code = e.code;
-    if (keysToTrack.has(code)) {
-      const now = Date.now();
-      if (this.state.keyDownData[code] !== undefined) {
-        this.state.duration.array.push(now - this.state.keyDownData[code]);
-        delete this.state.keyDownData[code];
-      }
     }
   }
 
@@ -295,7 +219,6 @@ class TypingTest {
         correctChars++;
       } else {
         incorrectChars++;
-        this.state.isInError = true;
       }
     }
 
@@ -469,15 +392,6 @@ class TypingTest {
     this.state.active = false;
     this.stopTimer();
     this.elements.wordsInput.blur();
-
-    Object.keys(this.state.keyDownData).forEach((code) => {
-      if (this.state.duration.array.length > 0) {
-        const durations = this.state.duration.array;
-        const avgDuration = durations.reduce((a, b) => a + b, 0) / durations.length;
-        this.state.duration.array.push(avgDuration);
-      }
-      delete this.state.keyDownData[code];
-    });
 
     const elapsedMinutes = (Date.now() - this.state.startTime) / 1000 / 60;
     const wpm = computeWpm(this.state.correctChars, elapsedMinutes);

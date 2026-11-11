@@ -83,7 +83,6 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-004-12 | T004-06, T004-09 | CA-004-08 | ✅ |
 | RF-004-13 | T004-07 | IME | ✅ |
 | RF-004-14 | T004-07, T004-13 | CA-004-09 | ✅ |
-| RF-004-15 | T004-15 | decisión documentada | 🟡 |
 | RF-004-16 | T006-02 | CA-006-02 | ✅ |
 
 ## 005 — Resultados y perfil
@@ -210,14 +209,11 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
    seguro y el requisito queda 🟡 hasta actualizar la spec.
 2. **RF-002-07**: `/logout` exige `POST` y `login_required`; un `GET` devuelve 405.
    Es una decisión de seguridad de `T002-09`/`T009-14` no reflejada aún en la spec.
-3. **RF-006-03**: resuelto por `T006-06`/`T006-07`. `base.html` fija `data-theme` con
-   un script inline antes del primer pintado, por lo que ya no hay FOUC.
+3. **RF-006-03**: resuelto por `T006-06`/`T006-07`. `theme-init.js` fija `data-theme` antes
+   del primer pintado, por lo que ya no hay FOUC.
 4. **RF-003-01 / RF-003-06**: resuelto por `T003-09`. El catálogo de 8 lenguajes × 15
    fragmentos se valida completo en `test_catalog_is_complete`.
-5. **RF-004-15**: las métricas avanzadas (`spacing`, `duration`, `afkHistory`,
-   `errorHistory`) se calculan pero no se usan; su destino sigue sin decidir
-   (`T004-15`).
-6. **T003-05**: cerrado. El catálogo vive en `snippets.py` y `views.py` quedó en 7
+5. **T003-05**: cerrado. El catálogo vive en `snippets.py` y `views.py` quedó en 7
    líneas tras `T008-11` (DoD de "< 60 líneas" cumplido).
 
 ## Resumen
@@ -228,14 +224,14 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | 001 | 9 | 9 | 0 | 0 |
 | 002 | 11 | 11 | 0 | 0 |
 | 003 | 8 | 8 | 0 | 0 |
-| 004 | 16 | 14 | 2 | 0 |
+| 004 | 15 | 15 | 0 | 0 |
 | 005 | 12 | 12 | 0 | 0 |
 | 006 | 10 | 10 | 0 | 0 |
 | 007 | 11 | 11 | 0 | 0 |
 | 008 | 12 | 12 | 0 | 0 |
 | 009 | 14 | 14 | 0 | 0 |
 | 010 | 12 | 12 | 0 | 0 |
-| **Total** | **125** | **123** | **1** | **0** |
+| **Total** | **124** | **123** | **0** | **0** |
 
 > La matriz se actualiza al cerrar cada tarea. Un requisito no puede pasar a ✅ sin su
 > verificación ejecutada.

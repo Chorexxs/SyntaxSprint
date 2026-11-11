@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 | --- | --- |
-| Estado | Implementada (con deuda) |
+| Estado | Implementada |
 | Versión | 1.0 |
 | Depende de | 003-snippet-service |
 | Archivos principales | `static/js/script.js`, `templates/index.html`, `static/css/styles.css` |
@@ -54,8 +54,10 @@ el CSRF esté inicializado y no informa al usuario si el guardado falla.
 | RF-004-12 | Cuando el usuario está autenticado, el sistema debe enviar WPM y precisión a `/save_typing_test_result`. | Alta |
 | RF-004-13 | El sistema debe soportar IME sin contar composiciones intermedias. | Media |
 | RF-004-14 | El sistema debe pausar el temporizador si la ventana pierde el foco. | Media |
-| RF-004-15 | El sistema debe registrar métricas avanzadas (spacing, duración, AFK, errores) sin afectar el resultado. | Baja |
 | RF-004-16 | El sistema debe recordar el tema claro/oscuro en `localStorage`. | Media |
+
+> `RF-004-15` (métricas avanzadas) se retiró el 2026-11-11: se calculaban y no se
+> mostraban en ninguna vista (`T004-15`).
 
 ## 5. Reglas de negocio y validaciones
 
@@ -79,11 +81,7 @@ TypingTest.state
 ├── active, testTime, timeLeft
 ├── currentCode, startTime, timerInterval
 ├── language, isComposing, isFocused
-├── correctChars, incorrectChars, totalChars
-├── spacing { first, last, array }
-├── duration { array }
-├── keyDownData {}, keyOverlap { total }
-├── currentAfk, afkHistory [], errorHistory [], isInError
+└── correctChars, incorrectChars, totalChars
 ```
 
 ### Endpoints consumidos
@@ -138,7 +136,7 @@ TypingTest.state
 | --- | --- | --- |
 | `index.html` no renderiza `{% csrf_token %}` | El POST de inicio puede dar 403 en sesión nueva | T004-08 |
 | `saveResult` ignora la respuesta | El usuario cree que guardó y no fue así | T004-09 |
-| Métricas avanzadas se calculan y no se usan | Complejidad muerta | T004-11 o eliminarlas |
+| Métricas avanzadas se calculan y no se usan | Complejidad muerta | Resuelto: eliminadas en `T004-15` (2026-11-11) |
 | `handleInput` usa `prevLength = totalChars` | Backspace y pegado pueden desincronizar contadores | T004-10 |
 | Timer depende de `setInterval` (deriva) | WPM impreciso en tests largos | Calcular con `Date.now()` (ya usado en WPM) |
 | `textarea` con atributo `value` | HTML inválido | T004-12 |
