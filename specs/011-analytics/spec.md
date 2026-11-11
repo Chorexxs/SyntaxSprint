@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 | --- | --- |
-| Estado | Aprobada |
+| Estado | Implementada |
 | Versión | 1.0 |
 | Depende de | 000-overview, 003-snippet-service, 005-results-and-profile, 007-quality-and-delivery |
 | Archivos principales | `backend/models.py`, `backend/analytics.py`, `backend/snippet_views.py`, `backend/management/commands/`, `backend/admin.py` |

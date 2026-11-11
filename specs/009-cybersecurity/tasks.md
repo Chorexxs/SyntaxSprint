@@ -205,12 +205,13 @@ Referencia: `specs/009-cybersecurity/spec.md`
     sigue en 0 issues y producción ya servía todo por HTTPS.
   - DoD: HSTS de un año. ✅
 
-- [ ] **T009-34** Fijar las GitHub Actions por SHA.
+- [x] **T009-34** Fijar las GitHub Actions por SHA.
   - Requisito: `RF-009-10`
   - Archivos: `.github/workflows/ci.yml`
-  - Evidencia del hallazgo: acciones por etiqueta y `sha_pinning_required=false`
-    (SEC-021, BAJA).
-  - DoD: cada `uses:` apunta a un SHA completo y el workflow sigue en verde.
+  - Evidencia: `checkout@v4.4.0`, `setup-python@v5.6.0` y `setup-node@v4.4.0`
+    referenciadas por SHA completo con la versión en comentario. CI en verde tras el
+    cambio.
+  - DoD: cada `uses:` apunta a un SHA completo. ✅
 
 ## Deuda técnica / Backlog
 
@@ -234,3 +235,4 @@ Referencia: `specs/009-cybersecurity/spec.md`
 | 2026-11-11 | Producción sin cuentas ni sesiones; backup previo al despliegue y acciones de GitHub confirmadas |
 | 2026-11-11 | CSP estricta y Tailwind compilado localmente (sin CDN ni `unsafe-inline`) |
 | 2026-11-11 | Reauditoría post-analítica: 0 CRÍTICAS/ALTAS; 3 MEDIAS y 3 BAJAS nuevas |
+| 2026-11-11 | Remediación completa: SEC-016…SEC-021 cerradas (rate limits, purga, HSTS, pinning) |

@@ -130,7 +130,7 @@ manage.py shell                                       # sondas de rate limit y c
 | SEC-018 | Purga oportunista diaria (sin cron) y límite de 120 peticiones/min en el endpoint | `backend/analytics.py:22-90`, `backend/snippet_views.py`; tests | ✅ |
 | SEC-019 | `purge_analytics` y `analytics_report` rechazan `days < 1` | `CommandError`; test | ✅ |
 | SEC-020 | HSTS a un año | `settings.py:186`; `check --deploy` 0 issues | ✅ |
-| SEC-021 | Pin de Actions por SHA | — | Abierto (`T009-34`) |
+| SEC-021 | Acciones fijadas por SHA completo (`v4.4.0`, `v5.6.0`, `v4.4.0`) con versión en comentario | `.github/workflows/ci.yml:31-42` | ✅ |
 
 > Verificación tras la remediación: 58 tests OK, cobertura 99 %, `pylint` 10.00/10,
 > `isort` limpio y `check --deploy` 0 issues. No se reejecutó la auditoría completa;
