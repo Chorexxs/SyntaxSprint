@@ -43,10 +43,15 @@ Referencia: `specs/005-results-and-profile/spec.md`
   - DoD: una sola consulta SQL en el perfil.
   - Evidencia: `results.aggregate(avg_wpm=Avg("wpm"), avg_accuracy=Avg("accuracy"))`.
 
-- [ ] **T005-08** Paginar el historial (20 por página) y eliminar `on_profile_page` si no se usa.
+- [x] **T005-08** Paginar el historial (20 por página) y eliminar `on_profile_page` si no se usa.
   - Requisito: `RF-005-10`
-  - Archivos: `backend/views.py`, `templates/profile.html`
+  - Archivos: `backend/result_views.py`, `templates/profile.html`, `backend/tests.py`
   - DoD: con 45 resultados hay 3 páginas navegables.
+  - Evidencia: `Paginator(results, 20).get_page(...)`; `results` y `page_obj` comparten la
+    página y `profile.html` muestra "anterior / página N de M / siguiente". Tests
+    `test_profile_paginates_history` (45 filas → 20/20/5) y
+    `test_profile_out_of_range_page_returns_last_page`. `on_profile_page` no existía en
+    el código.
 
 - [x] **T005-09** Añadir `login_url="login"` al guardado y al perfil.
   - Requisito: `RF-005-08`
@@ -86,3 +91,4 @@ Referencia: `specs/005-results-and-profile/spec.md`
 | Fecha | Cambio |
 | --- | --- |
 | 2026-11-10 | Auditoría del modelo, endpoint y perfil |
+| 2026-11-11 | T005-08 cerrada: historial paginado a 20 por página |

@@ -4,7 +4,7 @@ Actualizada: 2026-11-11
 Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 
 > Verificación ejecutada el 2026-11-11: `manage.py check` → 0 issues,
-> `manage.py test` → 26 tests OK, `isort --check-only syntax_sprint/` → sin avisos.
+> `manage.py test` → 28 tests OK, `isort --check-only syntax_sprint/` → sin avisos.
 > Ver las notas al final para las divergencias código ↔ spec.
 
 ## 000 — Visión de producto
@@ -99,7 +99,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-005-07 | T005-04 | CA-005-06 | ✅ |
 | RF-005-08 | T005-09 | CA-005-07 | ✅ |
 | RF-005-09 | T005-06 | CA-005-03 | ✅ |
-| RF-005-10 | T005-08 | paginación | ⬜ |
+| RF-005-10 | T005-08 | tests de paginación | ✅ |
 | RF-005-11 | T005-03 | fecha legible | ✅ |
 | RF-005-12 | T005-01, T005-12 | CA-005-08 | ✅ |
 
@@ -229,13 +229,13 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | 002 | 11 | 9 | 2 | 0 |
 | 003 | 8 | 8 | 0 | 0 |
 | 004 | 16 | 11 | 5 | 0 |
-| 005 | 12 | 11 | 0 | 1 |
+| 005 | 12 | 12 | 0 | 0 |
 | 006 | 10 | 8 | 1 | 1 |
 | 007 | 11 | 9 | 2 | 0 |
 | 008 | 12 | 10 | 2 | 0 |
 | 009 | 14 | 11 | 3 | 0 |
 | 010 | 12 | 12 | 0 | 0 |
-| **Total** | **125** | **106** | **17** | **2** |
+| **Total** | **125** | **107** | **17** | **1** |
 
 > La matriz se actualiza al cerrar cada tarea. Un requisito no puede pasar a ✅ sin su
 > verificación ejecutada.
