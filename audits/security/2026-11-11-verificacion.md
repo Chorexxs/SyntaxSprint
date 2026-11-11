@@ -40,3 +40,14 @@
 | Política CSP (`T009-28`) | Hecho (2026-11-11) |
 
 > Sin secretos ni datos personales en este informe.
+
+## 3. Despliegue verificado (2026-11-11)
+
+| Control | Resultado |
+| --- | --- |
+| `/` | 200; Tailwind 3.4.17 carga (`typeof window.tailwind === "object"`) y aplica `rgb(50, 52, 55)` |
+| CSP | Presente; consola sin violaciones (solo el aviso de CDN de Tailwind) |
+| `/login` | 200 con `for="login-username"` |
+| `/profile` sin sesión | 302 → `/login?next=/profile` |
+| `/admin/` sin sesión | 302 → `/admin/login/?next=/admin/` |
+| Motor | Pegar 1 correcto + 4 erróneos → 20 %; tras backspace → 25 % |
