@@ -48,19 +48,22 @@ Referencia: `specs/006-ui-and-theming/spec.md`
 
 ## Fase 3 — Accesibilidad
 
-- [ ] **T006-08** Sustituir `*:focus { outline: none }` por `:focus-visible` con contorno visible.
+- [x] **T006-08** Sustituir `*:focus { outline: none }` por `:focus-visible` con contorno visible.
   - Requisitos: `RF-006-07`, `RNF-006-03`
-  - Archivos: `static/css/styles.css`
+  - Archivos: `static/css/styles.css`, `templates/index.html`, `templates/login.html`,
+    `templates/signup.html`
   - DoD: Tab muestra foco en logo, toggle, inputs y botones.
-  - Estado: pendiente. `styles.css:45-48` mantiene `*:focus { outline: none; }` y las
-    plantillas usan `focus:outline-none` de Tailwind.
+  - Evidencia: `styles.css:45-54` define `:focus-visible` con `outline: 2px solid
+    var(--caret)` y retira el contorno solo en `:focus:not(:focus-visible)`. Se eliminó
+    `focus:outline-none` de los 7 controles que lo usaban. Verificado en Chrome: Tab
+    muestra un contorno sólido de 2 px en logo, toggle, enlaces, `#language-select`,
+    botones y los 6 inputs de login/signup.
 
 - [x] **T006-09** Añadir `aria-label` al toggle y `aria-pressed` dinámico.
   - Requisito: `RF-006-08`
   - Archivos: `base.html`, `theme.js`
   - Evidencia: `aria-label` inicial en `base.html` y `theme.js` actualiza
     `aria-label` y `aria-pressed` según el tema activo.
-  - Estado: pendiente. `#theme-toggle` (`index.html:54`) solo tiene `title`.
 
 - [ ] **T006-10** Añadir labels accesibles a los inputs de login y signup.
   - Requisito: `RF-006-07`
@@ -102,3 +105,4 @@ Referencia: `specs/006-ui-and-theming/spec.md`
 | Fecha | Cambio |
 | --- | --- |
 | 2026-11-10 | Auditoría de plantillas y tokens |
+| 2026-11-11 | T006-08 cerrada: foco visible con `:focus-visible` |

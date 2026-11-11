@@ -1,9 +1,9 @@
 # Matriz de trazabilidad
 
-Actualizada: 2026-11-10
+Actualizada: 2026-11-11
 Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 
-> Verificación ejecutada el 2026-11-10: `manage.py check` → 0 issues,
+> Verificación ejecutada el 2026-11-11: `manage.py check` → 0 issues,
 > `manage.py test` → 26 tests OK, `isort --check-only syntax_sprint/` → sin avisos.
 > Ver las notas al final para las divergencias código ↔ spec.
 
@@ -113,7 +113,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-006-04 | T006-05 | CA-006-06 | ✅ |
 | RF-006-05 | T006-04, T006-13 | CA-006-03 | 🟡 |
 | RF-006-06 | T006-03 | manual: estados visuales | ✅ |
-| RF-006-07 | T006-08, T006-10, T006-11 | CA-006-04 | ⬜ |
+| RF-006-07 | T006-08, T006-10, T006-11 | CA-006-04 | 🟡 |
 | RF-006-08 | T006-09 | CA-006-05 | ✅ |
 | RF-006-09 | T006-15 | preferencia SO | ⬜ |
 | RF-006-10 | T006-05 | favicon/título | ✅ |
@@ -210,8 +210,8 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
    seguro y el requisito queda 🟡 hasta actualizar la spec.
 2. **RF-002-07**: `/logout` exige `POST` y `login_required`; un `GET` devuelve 405.
    Es una decisión de seguridad de `T002-09`/`T009-14` no reflejada aún en la spec.
-3. **RF-006-03**: no hay script de tema antes del primer pintado en `index.html`, por
-   lo que el FOUC sigue siendo posible. `T006-06`/`T006-07` lo resolverán.
+3. **RF-006-03**: resuelto por `T006-06`/`T006-07`. `base.html` fija `data-theme` con
+   un script inline antes del primer pintado, por lo que ya no hay FOUC.
 4. **RF-003-01 / RF-003-06**: el catálogo de 8 lenguajes × 15 fragmentos existe, pero
    no hay test que lo valide completo (`T003-09` pendiente).
 5. **RF-004-15**: las métricas avanzadas (`spacing`, `duration`, `afkHistory`,
@@ -230,12 +230,12 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | 003 | 8 | 8 | 0 | 0 |
 | 004 | 16 | 11 | 5 | 0 |
 | 005 | 12 | 11 | 0 | 1 |
-| 006 | 10 | 7 | 1 | 2 |
+| 006 | 10 | 7 | 2 | 1 |
 | 007 | 11 | 9 | 2 | 0 |
 | 008 | 12 | 10 | 2 | 0 |
 | 009 | 14 | 11 | 3 | 0 |
 | 010 | 12 | 12 | 0 | 0 |
-| **Total** | **125** | **105** | **17** | **3** |
+| **Total** | **125** | **105** | **18** | **2** |
 
 > La matriz se actualiza al cerrar cada tarea. Un requisito no puede pasar a ✅ sin su
 > verificación ejecutada.
