@@ -131,12 +131,6 @@ class AuthTests(TestCase):
         self.assertRedirects(response, reverse("index"))
         self.assertNotIn("_auth_user_id", self.client.session)
 
-    def test_profile_requires_login(self):
-        response = self.client.get(reverse("profile"))
-        self.assertRedirects(
-            response, f"{reverse('login')}?next={reverse('profile')}"
-        )
-
     def test_save_requires_login(self):
         response = self.client.post(
             reverse("save_typing_test_result"),
@@ -239,19 +233,6 @@ class ResultTests(TestCase):
         response = self.client.get(reverse("save_typing_test_result"))
         self.assertEqual(response.status_code, 405)
 
-    def test_user_cannot_see_other_results(self):
-        other = User.objects.create_user(
-            username="other", email="other@example.com", password=PASSWORD
-        )
-        TypingTestResult.objects.create(user=other, wpm=99, accuracy=99)
-        TypingTestResult.objects.create(user=self.user, wpm=40, accuracy=90)
-
-        response = self.client.get(reverse("profile"))
-        self.assertEqual(response.status_code, 200)
-        results = list(response.context["results"])
-        self.assertEqual(len(results), 1)
-        self.assertEqual(results[0].user, self.user)
-
     def test_profile_paginates_history(self):
         for index in range(45):
             TypingTestResult.objects.create(
@@ -276,6 +257,61 @@ class ResultTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["page_obj"].number, 2)
         self.assertEqual(len(response.context["results"]), 5)
+
+
+class ProfileTests(TestCase):
+    """Perfil: acceso, aislamiento, promedios y estado vacío."""
+
+    def setUp(self):
+        cache.clear()
+
+    def test_requires_login(self):
+        response = self.client.get(reverse("profile"))
+        self.assertRedirects(
+            response, f"{reverse('login')}?next={reverse('profile')}"
+        )
+
+    def test_isolation_between_users(self):
+        user = User.objects.create_user(
+            username="tester", email="tester@example.com", password=PASSWORD
+        )
+        other = User.objects.create_user(
+            username="other", email="other@example.com", password=PASSWORD
+        )
+        TypingTestResult.objects.create(user=other, wpm=99, accuracy=99)
+        TypingTestResult.objects.create(user=user, wpm=40, accuracy=90)
+
+        self.client.force_login(user)
+        response = self.client.get(reverse("profile"))
+        results = list(response.context["results"])
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0].user, user)
+
+    def test_averages(self):
+        user = User.objects.create_user(
+            username="tester", email="tester@example.com", password=PASSWORD
+        )
+        TypingTestResult.objects.create(user=user, wpm=60, accuracy=90)
+        TypingTestResult.objects.create(user=user, wpm=80, accuracy=100)
+
+        self.client.force_login(user)
+        response = self.client.get(reverse("profile"))
+        self.assertEqual(response.context["avg_wpm"], 70)
+        self.assertEqual(response.context["avg_accuracy"], 95)
+        self.assertContains(response, "70")
+        self.assertContains(response, "95")
+
+    def test_empty_state(self):
+        user = User.objects.create_user(
+            username="tester", email="tester@example.com", password=PASSWORD
+        )
+
+        self.client.force_login(user)
+        response = self.client.get(reverse("profile"))
+        self.assertEqual(response.context["avg_wpm"], 0)
+        self.assertEqual(response.context["avg_accuracy"], 0)
+        self.assertContains(response, "no results yet")
+        self.assertContains(response, reverse("index"))
 
 
 class CsrfTests(TestCase):
