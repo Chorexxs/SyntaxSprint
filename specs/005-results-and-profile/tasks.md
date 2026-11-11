@@ -71,11 +71,11 @@ Referencia: `specs/005-results-and-profile/spec.md`
   - Archivos: `backend/tests.py`
   - Evidencia: `ResultTests` (6 casos) + `AuthTests.test_save_requires_login`.
 
-- [ ] **T005-12** Test de promedios y de borrado en cascada.
+- [x] **T005-12** Test de promedios y de borrado en cascada.
   - Requisitos: `CA-005-05`, `RF-005-12`
   - Archivos: `backend/tests.py`
-  - Estado: pendiente. No hay test que compruebe `avg_wpm`/`avg_accuracy` ni el
-    borrado en cascada al eliminar un usuario.
+  - Evidencia: `ProfileTests.test_averages` (60/90 + 80/100 → 70/95) y
+    `ProfileTests.test_deleting_user_deletes_results` (0 filas tras borrar el usuario).
 
 ## Deuda técnica / Backlog
 

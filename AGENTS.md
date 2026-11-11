@@ -20,7 +20,7 @@ historial del usuario y calcula promedios.
 | JavaScript | Vanilla ES6+ (clase `TypingTest`); jQuery 3.x permitido |
 | Servidor | Gunicorn (`syntax_sprint.wsgi`) |
 | Configuración | `python-decouple` + `.env` |
-| Pruebas | `django.test.TestCase` (28 tests, suite en verde) |
+| Pruebas | `django.test.TestCase` (31 tests, suite en verde) |
 | Lint | `pylint`, `isort` |
 | App principal | `backend` |
 
@@ -290,21 +290,20 @@ Al terminar:
 
 ## 8. Deuda técnica conocida (priorizada)
 
-Estado verificado el 2026-11-11: `manage.py check` 0 issues, `manage.py test` 28 tests
+Estado verificado el 2026-11-11: `manage.py check` 0 issues, `manage.py test` 31 tests
 OK, `isort --check-only` sin avisos. La antigua deuda "suite de pruebas vacía" ya está
 cerrada.
 
 | Prioridad | Deuda | Feature | Tarea |
 | --- | --- | --- | --- |
-| 1 | Faltan tests de promedios, cascada, estado vacío y `ProfileTests` | 005/007 | T005-12, T007-04 |
-| 2 | 53 líneas > 100 en `snippets.py` y 7 en `script.js` | 008 | T008-09 |
-| 3 | Pérdida de contadores al pegar y reinicio sin limpiar intervalo | 004 | T004-10, T004-13 |
-| 4 | Mensajes de registro divergentes de la spec (genéricos a propósito) | 002 | RF-002-02, RF-002-03 |
-| 5 | `TEMPLATES[0]["DIRS"]` conserva la ruta heredada del padre | 001 | T001-04 |
-| 6 | **`db.sqlite3` versionada con 6 usuarios y 31 resultados (PII)** | 009 | T009-05…T009-08 |
-| 7 | **`SECRET_KEY` y 2 contraseñas hardcodeadas en el historial** | 009 | T009-06, T009-07 |
+| 1 | 53 líneas > 100 en `snippets.py` y 7 en `script.js` | 008 | T008-09 |
+| 2 | Pérdida de contadores al pegar y reinicio sin limpiar intervalo | 004 | T004-10, T004-13 |
+| 3 | Mensajes de registro divergentes de la spec (genéricos a propósito) | 002 | RF-002-02, RF-002-03 |
+| 4 | `TEMPLATES[0]["DIRS"]` conserva la ruta heredada del padre | 001 | T001-04 |
+| 5 | **`db.sqlite3` versionada con 6 usuarios y 31 resultados (PII)** | 009 | T009-05…T009-08 |
+| 6 | **`SECRET_KEY` y 2 contraseñas hardcodeadas en el historial** | 009 | T009-06, T009-07 |
 
-> Los puntos 6 y 7 son **CRÍTICOS**. Están documentados en
+> Los puntos 5 y 6 son **CRÍTICOS**. Están documentados en
 > `audits/security/2026-11-10-linea-base.md` y requieren autorización para la purga del
 > historial.
 
