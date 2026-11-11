@@ -21,6 +21,29 @@ const keysToTrack = new Set([
   'NoCode'
 ]);
 
+/**
+ * WPM = (caracteres correctos / 5) / minutos transcurridos (RF-004-04).
+ * @param {number} correctChars
+ * @param {number} elapsedMinutes
+ * @returns {number}
+ */
+function computeWpm(correctChars, elapsedMinutes) {
+  if (elapsedMinutes <= 0) return 0;
+  return Math.round((correctChars / 5) / elapsedMinutes);
+}
+
+/**
+ * Precisión = correctos / (correctos + incorrectos) × 100 (RF-004-05).
+ * @param {number} correctChars
+ * @param {number} incorrectChars
+ * @returns {number}
+ */
+function computeAccuracy(correctChars, incorrectChars) {
+  const total = correctChars + incorrectChars;
+  if (total === 0) return 100;
+  return Math.round((correctChars / total) * 100);
+}
+
 class TypingTest {
   constructor() {
     this.elements = {
@@ -432,22 +455,14 @@ class TypingTest {
   updateLiveStats() {
     if (!this.state.startTime) return;
 
-    const timeElapsed = (Date.now() - this.state.startTime) / 1000 / 60;
+    const elapsedMinutes = (Date.now() - this.state.startTime) / 1000 / 60;
 
-    if (timeElapsed > 0 && this.state.correctChars > 0) {
-      const wpm = Math.round((this.state.correctChars / 5) / timeElapsed);
-      this.elements.liveWpm.textContent = wpm;
-    } else {
-      this.elements.liveWpm.textContent = 0;
-    }
-
-    const totalTyped = this.state.correctChars + this.state.incorrectChars;
-    if (totalTyped > 0) {
-      const acc = Math.round((this.state.correctChars / totalTyped) * 100);
-      this.elements.liveAcc.textContent = acc + '%';
-    } else {
-      this.elements.liveAcc.textContent = '100%';
-    }
+    this.elements.liveWpm.textContent = computeWpm(
+      this.state.correctChars,
+      elapsedMinutes
+    );
+    this.elements.liveAcc.textContent =
+      computeAccuracy(this.state.correctChars, this.state.incorrectChars) + '%';
   }
 
   endTest() {
@@ -464,20 +479,9 @@ class TypingTest {
       delete this.state.keyDownData[code];
     });
 
-    const timeElapsed = (Date.now() - this.state.startTime) / 1000 / 60;
-    const testSeconds = timeElapsed * 60;
-
-    let wpm = 0;
-    let acc = 100;
-
-    if (testSeconds > 0) {
-      wpm = Math.round((this.state.correctChars / 5) / timeElapsed);
-    }
-
-    const totalTyped = this.state.correctChars + this.state.incorrectChars;
-    if (totalTyped > 0) {
-      acc = Math.round((this.state.correctChars / totalTyped) * 100);
-    }
+    const elapsedMinutes = (Date.now() - this.state.startTime) / 1000 / 60;
+    const wpm = computeWpm(this.state.correctChars, elapsedMinutes);
+    const acc = computeAccuracy(this.state.correctChars, this.state.incorrectChars);
 
     this.elements.testArea.classList.add('hidden');
     this.elements.resultsSection.classList.remove('hidden');
