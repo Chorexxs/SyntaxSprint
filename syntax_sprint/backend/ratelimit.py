@@ -21,9 +21,9 @@ ADMIN_2FA_LIMIT = 5
 ADMIN_2FA_WINDOW_SECONDS = 300
 
 
-def _cache() -> BaseCache:
-    """Devuelve la caché configurada para los contadores."""
-    return caches[settings.RATE_LIMIT_CACHE_ALIAS]
+def _cache(alias: str | None = None) -> BaseCache:
+    """Devuelve la caché del alias indicado o la de autenticación."""
+    return caches[alias or settings.RATE_LIMIT_CACHE_ALIAS]
 
 
 def client_ip(request: HttpRequest) -> str:
@@ -45,14 +45,16 @@ def is_rate_limited(
     scope: str,
     limit: int,
     window_seconds: int,
+    alias: str | None = None,
 ) -> bool:
     """Cuenta la petición y devuelve ``True`` si supera el límite.
 
-    Si la caché no está disponible se permite la petición y se registra el
-    fallo: un rate limit roto no debe bloquear el sitio.
+    ``alias`` permite usar una caché distinta a la de autenticación. Si la caché
+    no está disponible se permite la petición y se registra el fallo: un rate
+    limit roto no debe bloquear el sitio.
     """
     key = rate_limit_key(request, scope)
-    cache = _cache()
+    cache = _cache(alias)
     try:
         if cache.add(key, 1, timeout=window_seconds):
             return False

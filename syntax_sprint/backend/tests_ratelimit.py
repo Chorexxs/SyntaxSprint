@@ -5,7 +5,7 @@ from unittest import mock
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 PASSWORD = "".join(("Str0ng", "-Pass!2026"))
@@ -20,6 +20,9 @@ class CacheConfigTests(TestCase):
 
     def test_configured_alias_exists(self):
         self.assertIn(settings.RATE_LIMIT_CACHE_ALIAS, settings.CACHES)
+
+    def test_snippet_alias_exists(self):
+        self.assertIn(settings.SNIPPET_RATE_LIMIT_CACHE_ALIAS, settings.CACHES)
 
 
 class RateLimitTests(TestCase):
@@ -38,6 +41,16 @@ class RateLimitTests(TestCase):
         self.assertEqual(second.status_code, 200)
         self.assertEqual(third.status_code, 429)
         self.assertEqual(third.json()["error"], "Demasiadas peticiones")
+
+    def test_snippet_limit_uses_snippet_cache_alias(self):
+        with override_settings(
+            SNIPPET_RATE_LIMIT_CACHE_ALIAS="shared"
+        ), mock.patch(
+            "backend.snippet_views.is_rate_limited", return_value=False
+        ) as limited:
+            self.client.get(reverse("get_python_function"))
+
+        self.assertEqual(limited.call_args.kwargs["alias"], "shared")
 
     def test_admin_login_returns_429_after_limit(self):
         for _ in range(5):

@@ -29,6 +29,9 @@ services:
       - key: RATE_LIMIT_CACHE_ALIAS
         # Caché de BD compartida entre workers; la tabla la crea createcachetable.
         value: shared
+      - key: SNIPPET_RATE_LIMIT_CACHE_ALIAS
+        # LocMem por worker: evita una escritura en BD por petición de fragmentos.
+        value: default
       - key: ADMIN_TOTP_REQUIRED
         # Actívalo solo después de enrolar el TOTP del admin.
         value: "False"

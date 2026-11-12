@@ -177,11 +177,15 @@ Referencia: `specs/008-code-audit/spec.md`
     `test_enroll_write_restricts_permissions` (POSIX).
   - DoD: opción `--write <archivo>` o enrolamiento de un solo uso. ✅
 
-- [ ] **T008-25** Separar la caché del rate limit de auth y del endpoint de fragmentos.
+- [x] **T008-25** Separar la caché del rate limit de auth y del endpoint de fragmentos.
   - Requisitos: `RF-008-11`, `RF-008-12`
-  - Archivos: `backend/ratelimit.py`, `syntax_sprint/settings.py`
-  - Evidencia: el alias `shared` se usa en el endpoint caliente (AUD-020, BAJA).
-  - DoD: auth en caché compartida y fragmentos en LocMem o Redis.
+  - Archivos: `backend/ratelimit.py`, `backend/snippet_views.py`,
+    `syntax_sprint/settings.py`, `.env.example`, `render.yaml`, `DEPLOY.md`
+  - Evidencia: `SNIPPET_RATE_LIMIT_CACHE_ALIAS` (LocMem por defecto) se pasa como
+    `alias` a `is_rate_limited`; la autenticación mantiene `RATE_LIMIT_CACHE_ALIAS`
+    (AUD-020, BAJA). Pruebas: `test_snippet_alias_exists` y
+    `test_snippet_limit_uses_snippet_cache_alias`.
+  - DoD: auth en caché compartida y fragmentos en LocMem o Redis. ✅
 
 - [ ] **T008-26** Unificar el incremento de contadores y validar el alias de caché.
   - Requisitos: `RF-008-11`, `RNF-008-02`
@@ -246,3 +250,4 @@ Referencia: `specs/008-code-audit/spec.md`
 | 2026-11-11 | Reauditoría post-analítica: 8.55 (B), 0 ALTA y 4 hallazgos menores |
 | 2026-11-11 | Auditoría post-2FA: 8.25 (B), 0 ALTA, 2 MEDIA y 8 BAJAS |
 | 2026-11-12 | Cerrados T008-22, T008-23, T008-24, T008-27, T008-28 y T008-29 |
+| 2026-11-12 | T008-25: caché de fragmentos separada de la de autenticación |

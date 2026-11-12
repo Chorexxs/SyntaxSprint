@@ -33,6 +33,7 @@ Render Dashboard → servicio `syntaxsprint` → **Environment**.
 | `TRUST_PROXY_HEADERS` | `True` | Sí |
 | `DATABASE_URL` | Cadena Postgres de InsForge (`sslmode=require`) | Sí |
 | `RATE_LIMIT_CACHE_ALIAS` | `shared` (caché de BD entre workers) | Recomendada |
+| `SNIPPET_RATE_LIMIT_CACHE_ALIAS` | `default` (LocMem por worker) | Opcional |
 | `ADMIN_TOTP_REQUIRED` | `False` hasta enrolar el admin | Opcional |
 | `PYTHON_VERSION` | `3.12.1` | Opcional |
 

@@ -117,9 +117,14 @@ if DATABASE_URL:
             "connect_timeout", 5
         )
 
-# Rate limiting: LocMem en local/tests y caché de base de datos (compartida entre
-# workers) en producción. La tabla la crea `manage.py createcachetable`.
+# Rate limiting: la autenticación usa una caché compartida entre workers (BD) para
+# que el límite sea global. El endpoint de fragmentos es el más caliente y usa LocMem
+# por defecto, de modo que no añade otra escritura en BD por petición; su límite pasa
+# a ser por worker. La tabla de la caché compartida la crea `createcachetable`.
 RATE_LIMIT_CACHE_ALIAS = config("RATE_LIMIT_CACHE_ALIAS", default="default")
+SNIPPET_RATE_LIMIT_CACHE_ALIAS = config(
+    "SNIPPET_RATE_LIMIT_CACHE_ALIAS", default="default"
+)
 
 CACHES = {
     "default": {
