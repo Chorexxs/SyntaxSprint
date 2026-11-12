@@ -185,13 +185,14 @@ describe('TypingTest.restartTest', () => {
 });
 
 describe('TypingTest — código multilínea', () => {
-  it('no bloquea Enter y cuenta el salto de línea', () => {
+  it('inserta el salto y la indentación de la línea siguiente', () => {
     const test = setupDom();
     test.state.active = true;
-    test.state.currentCode = 'a\nb';
+    test.state.currentCode = 'a\n    b';
     test.state.startTime = Date.now();
     test.renderCode(test.state.currentCode);
     const input = test.elements.wordsInput;
+    input.value = 'a';
 
     const event = {
       key: 'Enter',
@@ -203,14 +204,36 @@ describe('TypingTest — código multilínea', () => {
     };
     test.handleKeydown(event);
 
-    input.value = 'a\n';
-    test.handleInput({ target: input });
-
-    expect(event.preventDefault).not.toHaveBeenCalled();
-    expect(test.state.correctChars).toBe(2);
+    expect(event.preventDefault).toHaveBeenCalledTimes(1);
+    expect(input.value).toBe('a\n    ');
+    expect(test.state.correctChars).toBe(6);
     expect(test.state.incorrectChars).toBe(0);
     const letters = test.elements.promptDisplay.querySelectorAll('letter');
     expect(letters[1].classList.contains('correct')).toBe(true);
+    expect(letters[5].classList.contains('correct')).toBe(true);
+    expect(letters[6].classList.contains('active')).toBe(true);
+  });
+
+  it('inserta solo el salto si no se espera uno', () => {
+    const test = setupDom();
+    test.state.active = true;
+    test.state.currentCode = 'ab';
+    test.state.startTime = Date.now();
+    const input = test.elements.wordsInput;
+    input.value = 'a';
+
+    test.handleKeydown({
+      key: 'Enter',
+      preventDefault: vi.fn(),
+      target: input,
+      ctrlKey: false,
+      metaKey: false,
+      altKey: false,
+    });
+
+    expect(input.value).toBe('a\n');
+    expect(test.state.correctChars).toBe(1);
+    expect(test.state.incorrectChars).toBe(1);
   });
 
   it('inserta la indentación esperada con Tab (2, 4 y 8 espacios)', () => {

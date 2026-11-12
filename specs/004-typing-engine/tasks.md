@@ -159,6 +159,17 @@ Referencia: `specs/004-typing-engine/spec.md`
     "try again" se ve 30, no el 0 anterior. Test de `startTest` con `fetch` simulado.
   - DoD: el timer nunca muestra el valor del test anterior. ✅
 
+- [x] **T004-22** Auto-indentar al pulsar Enter.
+  - Requisitos: `RF-004-09`, `CA-004-10`
+  - Archivos: `static/js/script.js`, `tests/js/script.test.js`
+  - Evidencia: `insertNewline()` añade `\n` más el tramo de espacios (2/4/8) de la línea
+    siguiente; fuera de un salto esperado inserta solo `\n`. En Chrome, `def add(a, b):`
+    + Enter dejó `"def add(a, b):\n    "` con 19/19 correctos y el cursor en `return`;
+    el fragmento terminó con 100 %. Tests de auto-indentación y de salto fuera de
+    contexto.
+  - DoD: tras Enter el cursor queda en el primer carácter del código y no hay que pulsar
+    espacio ni Tab para la indentación. ✅
+
 ## Deuda técnica / Backlog
 
 - [x] Tests automatizados de frontend (Vitest + jsdom); DOM y eventos cubiertos en `T008-31`.
@@ -178,3 +189,4 @@ Referencia: `specs/004-typing-engine/spec.md`
 | 2026-11-11 | T004-16: pruebas de frontend con Vitest + jsdom |
 | 2026-11-12 | Revisión en navegador: Enter/Tab, pausa, IME y timer (T004-17…T004-21) |
 | 2026-11-12 | T004-17…T004-21 cerradas: código multilínea, pausa e IME corregidos |
+| 2026-11-12 | T004-22: Enter auto-indenta con los espacios de la línea siguiente |

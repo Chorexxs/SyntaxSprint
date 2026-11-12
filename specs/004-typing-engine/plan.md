@@ -56,7 +56,7 @@ click start
 
 keydown/input
   └─ actualizar contadores ─► updateDisplay() ─► updateLiveStats()
-  ├─ Enter: el textarea inserta `\n` y lo procesa `input`
+  ├─ Enter: `insertNewline()` añade `\n` + la indentación de la siguiente línea
   └─ Tab: `insertIndentation()` añade los espacios que espera el fragmento
 
 timer tick (1 s)
@@ -97,7 +97,7 @@ Checklist manual mínima:
 - [x] Dejar correr 30 s → resultados y POST 200.
 - [x] Usuario anónimo → mensaje "inicia sesión para guardar".
 - [x] Repetir test → fragmento nuevo y contadores a 0.
-- [x] Enter escribe `\n` y se marca correcto.
+- [x] Enter escribe `\n` y la indentación de la línea siguiente.
 - [x] Tab inserta los espacios de indentación (2, 4 u 8).
 - [x] Pausa de pérdida de foco: timer congelado y WPM sin contar la pausa.
 - [x] Composición IME deja un solo carácter.

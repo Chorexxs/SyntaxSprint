@@ -79,7 +79,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-004-06 | T004-04 | stats en vivo | ✅ |
 | RF-004-07 | T004-05, T004-10 | CA-004-05 | ✅ |
 | RF-004-08 | T004-05, T004-10 | backspace | ✅ |
-| RF-004-09 | T004-05, T004-17, T004-18 | CA-004-10, CA-004-11 | ✅ |
+| RF-004-09 | T004-05, T004-17, T004-18, T004-22 | CA-004-10, CA-004-11 | ✅ |
 | RF-004-10 | T004-03 | CA-004-06 | ✅ |
 | RF-004-11 | T004-06 | CA-004-07 | ✅ |
 | RF-004-12 | T004-06, T004-09 | CA-004-08 | ✅ |
@@ -220,7 +220,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | --- | --- | --- |
 | Sistema | `manage.py check` | 0 issues |
 | Pruebas | `manage.py test` | 88 tests (87 OK + 1 omitido en Windows por permisos POSIX) |
-| Pruebas JS | `npm run test:js` | 20 tests OK (Vitest + jsdom: fórmulas, contadores, DOM, eventos, Enter/Tab, pausa e IME) |
+| Pruebas JS | `npm run test:js` | 21 tests OK (Vitest + jsdom: fórmulas, contadores, DOM, eventos, Enter/Tab, pausa e IME) |
 | Imports | `isort --check-only syntax_sprint/` | Sin avisos |
 | Lint | `pylint backend --rcfile=../.pylintrc` | 10.00/10 |
 | CI | `.github/workflows/ci.yml` (run 20) | 14 pasos en verde |

@@ -20,7 +20,7 @@ historial del usuario y calcula promedios.
 | JavaScript | Vanilla ES6+ (clase `TypingTest`); jQuery 3.x permitido |
 | Servidor | Gunicorn (`syntax_sprint.wsgi`) |
 | Configuración | `python-decouple` + `.env` |
-| Pruebas | `django.test.TestCase` (88 tests) y Vitest (20 tests JS) |
+| Pruebas | `django.test.TestCase` (88 tests) y Vitest (21 tests JS) |
 | Lint | `pylint`, `isort` |
 | App principal | `backend` |
 

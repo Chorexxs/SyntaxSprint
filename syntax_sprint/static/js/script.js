@@ -269,6 +269,14 @@ class TypingTest {
       return;
     }
 
+    if (key === 'Enter') {
+      e.preventDefault();
+      if (!ctrlOrMeta) {
+        this.insertNewline();
+      }
+      return;
+    }
+
     if (ctrlOrMeta || (key.startsWith('F') && !isNaN(key.slice(1)))) {
       return;
     }
@@ -313,6 +321,33 @@ class TypingTest {
       if (this.elements.wordsInput !== document.activeElement) {
         this.elements.wordsInput.focus();
       }
+    }
+  }
+
+  insertNewline() {
+    if (!this.state.active) return;
+
+    const input = this.elements.wordsInput;
+    const code = this.state.currentCode;
+    const position = input.value.length;
+    const room = code.length - position;
+    if (room <= 0) return;
+
+    let text = '\n';
+    if (code[position] === '\n') {
+      const indent = code.slice(position + 1).match(/^[ \t]+/);
+      if (indent) {
+        text += indent[0].slice(0, room - 1);
+      }
+    }
+
+    input.value += text;
+    this.countTypedChars(input.value);
+    this.updateDisplay(input.value.length);
+    this.updateLiveStats();
+
+    if (input.value.length >= code.length) {
+      this.endTest();
     }
   }
 
