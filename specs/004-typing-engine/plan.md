@@ -4,7 +4,7 @@
 | --- | --- |
 | Spec | `specs/004-typing-engine/spec.md` |
 | Estado | Aprobado |
-| Última revisión | 2026-11-10 |
+| Última revisión | 2026-11-12 |
 
 ## 1. Enfoque
 
@@ -44,6 +44,9 @@ computeAccuracy(correct, incorrect) {
 }
 ```
 
+Para la pausa se añaden `pausedMs` y `pauseStartedAt`; `elapsedMs()` descuenta el tiempo
+pausado y lo usan `updateLiveStats()` y `endTest()`.
+
 ## 4. Secuencia del test
 
 ```text
@@ -53,9 +56,14 @@ click start
 
 keydown/input
   └─ actualizar contadores ─► updateDisplay() ─► updateLiveStats()
+  ├─ Enter: el textarea inserta `\n` y lo procesa `input`
+  └─ Tab: `insertIndentation()` añade los espacios que espera el fragmento
 
 timer tick (1 s)
   └─ timeLeft-- ─► si 0 → endTest()
+
+blur/focus de ventana
+  └─ stopTimer + acumular `pausedMs` ─► reanudar sin contar la pausa
 
 endTest()
   └─ clearInterval ─► computeWpm/Accuracy ─► mostrar ─► saveResult()
@@ -79,6 +87,7 @@ endTest()
 | Manual | Temas claro/oscuro y responsive 375 px / 1440 px | DevTools |
 | Integración | POST de guardado con CSRF | `django.test.Client` |
 | Unitario JS | Fórmulas WPM/precisión y conteo del motor | Vitest + jsdom (`T004-16`) |
+| Unitario JS | Enter, indentación con Tab, pausa, IME y timer inicial | Vitest + jsdom (`T004-17`…`T004-21`) |
 
 Checklist manual mínima:
 
@@ -88,6 +97,11 @@ Checklist manual mínima:
 - [x] Dejar correr 30 s → resultados y POST 200.
 - [x] Usuario anónimo → mensaje "inicia sesión para guardar".
 - [x] Repetir test → fragmento nuevo y contadores a 0.
+- [x] Enter escribe `\n` y se marca correcto.
+- [x] Tab inserta los espacios de indentación (2, 4 u 8).
+- [x] Pausa de pérdida de foco: timer congelado y WPM sin contar la pausa.
+- [x] Composición IME deja un solo carácter.
+- [x] "try again" muestra el timer en 30.
 
 > Última ejecución: 2026-11-11, Chrome DevTools contra `runserver` local. Resultado
 > completo en `T004-14` (`tasks.md`): 6/6 ítems en verde y `CA-004-01`…`CA-004-09`
@@ -111,6 +125,9 @@ Checklist manual mínima:
 4. Manejo de respuesta de guardado (200/302/403/500).
 5. Corregir contadores en backspace/pegado.
 6. Checklist manual y documentar resultados.
+7. Permitir Enter y Tab para el código multilínea (`T004-17`, `T004-18`).
+8. Descontar la pausa del WPM (`T004-19`).
+9. Corregir la duplicación de IME y el timer al reiniciar (`T004-20`, `T004-21`).
 
 ## 9. Notas de despliegue
 

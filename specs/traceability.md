@@ -72,19 +72,19 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | Requisito | Tarea | Verificación | Estado |
 | --- | --- | --- | --- |
 | RF-004-01 | T004-01 | CA-004-01 | ✅ |
-| RF-004-02 | T004-03 | CA-004-06 | ✅ |
+| RF-004-02 | T004-03, T004-21 | CA-004-06 | ✅ |
 | RF-004-03 | T004-02 | CA-004-04 | ✅ |
 | RF-004-04 | T004-04, T004-11 | CA-004-02 | ✅ |
 | RF-004-05 | T004-04, T004-11 | CA-004-03 | ✅ |
 | RF-004-06 | T004-04 | stats en vivo | ✅ |
 | RF-004-07 | T004-05, T004-10 | CA-004-05 | ✅ |
 | RF-004-08 | T004-05, T004-10 | backspace | ✅ |
-| RF-004-09 | T004-05 | atajos bloqueados | ✅ |
+| RF-004-09 | T004-05, T004-17, T004-18 | CA-004-10, CA-004-11 | ✅ |
 | RF-004-10 | T004-03 | CA-004-06 | ✅ |
 | RF-004-11 | T004-06 | CA-004-07 | ✅ |
 | RF-004-12 | T004-06, T004-09 | CA-004-08 | ✅ |
-| RF-004-13 | T004-07 | IME | ✅ |
-| RF-004-14 | T004-07, T004-13 | CA-004-09 | ✅ |
+| RF-004-13 | T004-07, T004-20 | IME sin duplicar | ✅ |
+| RF-004-14 | T004-07, T004-13, T004-19 | CA-004-09, CA-004-12 | ✅ |
 | RF-004-16 | T006-02 | CA-006-02 | ✅ |
 
 ## 005 — Resultados y perfil
@@ -220,7 +220,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | --- | --- | --- |
 | Sistema | `manage.py check` | 0 issues |
 | Pruebas | `manage.py test` | 88 tests (87 OK + 1 omitido en Windows por permisos POSIX) |
-| Pruebas JS | `npm run test:js` | 14 tests OK (Vitest + jsdom: fórmulas, contadores, DOM y eventos) |
+| Pruebas JS | `npm run test:js` | 20 tests OK (Vitest + jsdom: fórmulas, contadores, DOM, eventos, Enter/Tab, pausa e IME) |
 | Imports | `isort --check-only syntax_sprint/` | Sin avisos |
 | Lint | `pylint backend --rcfile=../.pylintrc` | 10.00/10 |
 | CI | `.github/workflows/ci.yml` (run 20) | 14 pasos en verde |

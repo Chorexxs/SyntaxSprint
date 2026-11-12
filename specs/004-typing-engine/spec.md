@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | Estado | Implementada |
-| Versión | 1.0 |
+| Versión | 1.1 |
 | Depende de | 003-snippet-service |
 | Archivos principales | `static/js/script.js`, `templates/index.html`, `static/css/styles.css` |
 
@@ -21,6 +21,7 @@ el CSRF esté inicializado y no informa al usuario si el guardado falla.
 3. Evitar trampas básicas (pegar texto, atajos, autocompletado).
 4. Permitir repetir el test con un fragmento nuevo.
 5. Guardar el resultado al finalizar si el usuario está autenticado.
+6. Permitir escribir saltos de línea e indentación con Enter y Tab.
 
 ### No objetivos
 
@@ -48,7 +49,7 @@ el CSRF esté inicializado y no informa al usuario si el guardado falla.
 | RF-004-06 | El sistema debe actualizar WPM y precisión en vivo cada segundo y en cada pulsación. | Media |
 | RF-004-07 | Cuando el usuario pega texto, el sistema debe insertarlo limitado a la longitud restante y recalcular. | Alta |
 | RF-004-08 | Cuando el usuario pulsa Backspace, el sistema debe retroceder un carácter y ajustar contadores. | Alta |
-| RF-004-09 | El sistema debe bloquear Enter, Escape, Tab (salvo foco) y flechas durante el test. | Media |
+| RF-004-09 | El sistema debe bloquear Escape, flechas y atajos durante el test; Enter inserta un salto de línea y Tab inserta la indentación esperada del fragmento. | Alta |
 | RF-004-10 | El sistema debe finalizar el test al llegar a 0 s o al completar el fragmento. | Alta |
 | RF-004-11 | Cuando el test termina, el sistema debe mostrar resultados y permitir "try again". | Alta |
 | RF-004-12 | Cuando el usuario está autenticado, el sistema debe enviar WPM y precisión a `/save_typing_test_result`. | Alta |
@@ -68,6 +69,9 @@ el CSRF esté inicializado y no informa al usuario si el guardado falla.
 | Comparación | Exacta, case-sensitive y con espacios/saltos de línea. |
 | Backspace | Solo elimina el último carácter; no permite editar en medio. |
 | Atajos | Ctrl/Cmd, F1–F12, Alt, Shift, Meta y bloqueos se ignoran. |
+| Enter | Inserta `\n` como un carácter más y se compara con el fragmento. |
+| Tab | Inserta el tramo de espacios que espera el fragmento en la posición actual (2, 4 u 8) y no mueve el foco. |
+| Pausa | El tiempo sin foco no cuenta para el WPM: se acumula y se descuenta del tiempo transcurrido. |
 | Fin por tiempo | `timeLeft <= 0`. |
 | Fin por longitud | `typedLength >= currentCode.length`. |
 | Visitante | Intenta guardar; el backend responde redirección y el error se registra en consola. |
@@ -111,6 +115,7 @@ TypingTest.state
 | RNF-004-04 | Accesible por teclado y con instrucciones visibles. |
 | RNF-004-05 | Tolerante a fallos de red: el test debe completarse aunque el guardado falle. |
 | RNF-004-06 | Las fórmulas y el conteo del motor deben tener pruebas automatizadas en JS. |
+| RNF-004-07 | El WPM debe ser independiente del tiempo que el test pasa en pausa. |
 
 ## 8. Criterios de aceptación
 
@@ -123,6 +128,9 @@ TypingTest.state
 - **CA-004-07** Dado el test terminado, cuando pulsa "try again", entonces recibe un fragmento nuevo.
 - **CA-004-08** Dado un usuario autenticado, tras terminar el test el resultado aparece en `/profile`.
 - **CA-004-09** Dado el test activo, cuando cambia de pestaña, el temporizador se pausa.
+- **CA-004-10** Dado un fragmento con `\n`, cuando el usuario pulsa Enter, el salto se inserta y se marca correcto.
+- **CA-004-11** Dada una línea indentada, cuando el usuario pulsa Tab, se insertan exactamente los espacios esperados (2, 4 u 8).
+- **CA-004-12** Dado un test pausado por pérdida de foco, al volver el WPM no incluye el tiempo en pausa.
 
 ## 9. Fuera de alcance
 

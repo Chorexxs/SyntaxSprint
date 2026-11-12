@@ -117,6 +117,48 @@ Referencia: `specs/004-typing-engine/spec.md`
   - Evidencia: 8 tests con Vitest + jsdom (`computeWpm`, `computeAccuracy` y
     `TypingTest.countTypedChars`); `npm run test:js` en verde y en CI.
 
+## Fase 4 — Código multilínea y pausa (2026-11-12)
+
+- [x] **T004-17** Permitir escribir saltos de línea con Enter.
+  - Requisitos: `RF-004-09`, `CA-004-10`
+  - Archivos: `static/js/script.js`, `tests/js/script.test.js`
+  - Evidencia: Enter ya no se bloquea en `handleKeydown`; el textarea inserta `\n` y
+    `handleInput` lo cuenta. En Chrome: `class MyContext:` + Enter → 17 correctos, 0
+    incorrectos y el `\n` en verde. Test: `no bloquea Enter y cuenta el salto de línea`.
+  - DoD: un fragmento multilínea se puede completar con Enter. ✅
+
+- [x] **T004-18** Insertar la indentación esperada con Tab.
+  - Requisito: `RF-004-09`
+  - Archivos: `static/js/script.js`, `tests/js/script.test.js`
+  - Evidencia: `insertIndentation()` añade el tramo de espacios (2/4/8) que espera el
+    fragmento; se elimina el listener muerto de `promptDisplay`. En Chrome insertó los 4
+    espacios de la línea siguiente (21 correctos, 0 incorrectos). Tests de Tab con 2, 4
+    y 8 espacios y a mitad de línea sin indentación.
+  - DoD: `CA-004-11` y test de Tab en línea indentada y a mitad de línea. ✅
+
+- [x] **T004-19** Excluir el tiempo en pausa del WPM.
+  - Requisitos: `RF-004-14`, `RNF-004-07`, `CA-004-12`
+  - Archivos: `static/js/script.js`, `tests/js/script.test.js`
+  - Evidencia: `pausedMs`/`pauseStartedAt` y `elapsedMinutes()`; `updateLiveStats` y
+    `endTest` usan el tiempo efectivo. En Chrome, pausa de 2,6 s: timer 29→28 y WPM
+    395→183 (solo tiempo activo), frente a 83 con el cálculo anterior. Test con
+    temporizadores falsos.
+  - DoD: tras pausar 2 s, el WPM no baja. ✅
+
+- [x] **T004-20** Evitar la duplicación de caracteres IME.
+  - Requisito: `RF-004-13`
+  - Archivos: `static/js/script.js`, `tests/js/script.test.js`
+  - Evidencia: `handleCompositionEnd` recalcula desde `input.value` sin concatenar
+    `e.data`; en Chrome una composición de `á` deja `"á"`. Test de composición.
+  - DoD: una composición deja un solo carácter y los contadores cuadran. ✅
+
+- [x] **T004-21** Reiniciar el timer visual al comenzar.
+  - Requisitos: `RF-004-02`, `RNF-004-02`
+  - Archivos: `static/js/script.js`, `tests/js/script.test.js`
+  - Evidencia: `startTest` escribe `timeLeft` en `#timer`; en Chrome, al iniciar y tras
+    "try again" se ve 30, no el 0 anterior. Test de `startTest` con `fetch` simulado.
+  - DoD: el timer nunca muestra el valor del test anterior. ✅
+
 ## Deuda técnica / Backlog
 
 - [x] Tests automatizados de frontend (Vitest + jsdom); DOM y eventos cubiertos en `T008-31`.
@@ -134,3 +176,5 @@ Referencia: `specs/004-typing-engine/spec.md`
 | 2026-11-11 | T004-11 cerrada: WPM y precisión como funciones puras |
 | 2026-11-11 | T004-15 cerrada: métricas avanzadas eliminadas por no usarse |
 | 2026-11-11 | T004-16: pruebas de frontend con Vitest + jsdom |
+| 2026-11-12 | Revisión en navegador: Enter/Tab, pausa, IME y timer (T004-17…T004-21) |
+| 2026-11-12 | T004-17…T004-21 cerradas: código multilínea, pausa e IME corregidos |
