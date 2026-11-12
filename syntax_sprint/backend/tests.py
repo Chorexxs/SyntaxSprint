@@ -19,8 +19,9 @@ from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 from django.utils import timezone
 
-from .analytics import (PURGE_CACHE_KEY, share_of_users_with_results,
-                        snippet_error_rate, tests_per_active_user_per_week)
+from .analytics import (PURGE_CACHE_KEY, build_report,
+                        share_of_users_with_results, snippet_error_rate,
+                        tests_per_active_user_per_week)
 from .models import AdminTOTP, SnippetRequest, TypingTestResult
 from .ratelimit import ADMIN_2FA_LIMIT
 from .snippets import CODE_SNIPPETS, validate_catalog
@@ -664,6 +665,14 @@ class AnalyticsTests(TestCase):
         self.client.get(reverse("get_python_function"))
 
         self.assertTrue(SnippetRequest.objects.filter(pk=leftover.pk).exists())
+
+    def test_report_resolves_window_once(self):
+        with mock.patch(
+            "backend.analytics._window_start", return_value=timezone.now()
+        ) as window_start:
+            build_report(7)
+
+        window_start.assert_called_once_with(7)
 
 
 class TwoFactorTests(TestCase):

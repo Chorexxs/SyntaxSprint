@@ -140,11 +140,13 @@ Referencia: `specs/008-code-audit/spec.md`
   - Evidencia: `client_ip()` centralizado en `ratelimit.py` y clave
     `_login_attempts_key()` sin ambigüedad (AUD-015, BAJA; coordina con `T009-29`).
 
-- [ ] **T008-21** Pasar un único `since` a las métricas del informe.
+- [x] **T008-21** Pasar un único `since` a las métricas del informe.
   - Requisito: `RF-008-03`
-  - Archivos: `backend/analytics.py`
-  - Evidencia: `build_report` recalcula la ventana por métrica (AUD-016, INFO).
-  - DoD: una sola resolución de ventana por informe.
+  - Archivos: `backend/analytics.py`, `backend/tests.py`
+  - Evidencia: `build_report` resuelve `_window_start(days)` una vez y pasa `since` a
+    `snippet_error_rate` y `tests_per_active_user_per_week`;
+    `test_report_resolves_window_once` exige una sola llamada (AUD-016, INFO).
+  - DoD: una sola resolución de ventana por informe. ✅
 
 ## Fase 6 — Hallazgos de la auditoría post-2FA (2026-11-11)
 
@@ -261,3 +263,4 @@ Referencia: `specs/008-code-audit/spec.md`
 | 2026-11-12 | T008-26: helper único de contadores y fallback ante alias inválido |
 | 2026-11-12 | T008-31: tests JS de DOM, pegado y reinicio (14 en total) |
 | 2026-11-12 | T008-30: Vitest 4.1.12, `npm audit` sin avisos |
+| 2026-11-12 | T008-21: ventana única en `build_report`; Fase 5 y 6 completas |

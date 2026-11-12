@@ -41,9 +41,13 @@ def _window_start(days: int) -> datetime:
     return timezone.now() - timedelta(days=days)
 
 
-def snippet_error_rate(days: int = DEFAULT_WINDOW_DAYS) -> float | None:
+def snippet_error_rate(
+    days: int = DEFAULT_WINDOW_DAYS,
+    since: datetime | None = None,
+) -> float | None:
     """Porcentaje de peticiones con status >= 400; ``None`` si no hay datos."""
-    totals = SnippetRequest.objects.filter(created_at__gte=_window_start(days)).aggregate(
+    window_start = since if since is not None else _window_start(days)
+    totals = SnippetRequest.objects.filter(created_at__gte=window_start).aggregate(
         total=Count("id"),
         errors=Count("id", filter=Q(status_code__gte=400)),
     )
@@ -52,9 +56,13 @@ def snippet_error_rate(days: int = DEFAULT_WINDOW_DAYS) -> float | None:
     return round(totals["errors"] / totals["total"] * 100, 2)
 
 
-def tests_per_active_user_per_week(days: int = DEFAULT_WINDOW_DAYS) -> float | None:
+def tests_per_active_user_per_week(
+    days: int = DEFAULT_WINDOW_DAYS,
+    since: datetime | None = None,
+) -> float | None:
     """Media de tests por usuario activo y semana; ``None`` sin datos."""
-    results = TypingTestResult.objects.filter(date__gte=_window_start(days))
+    window_start = since if since is not None else _window_start(days)
+    results = TypingTestResult.objects.filter(date__gte=window_start)
     active_users = results.values("user").distinct().count()
     weeks = days / 7
     if not active_users or weeks <= 0:
@@ -73,13 +81,14 @@ def share_of_users_with_results() -> float | None:
 
 
 def build_report(days: int = DEFAULT_WINDOW_DAYS) -> dict[str, float | int | None]:
-    """Reúne las métricas de la ventana indicada."""
-    events = SnippetRequest.objects.filter(created_at__gte=_window_start(days)).count()
+    """Reúne las métricas de la ventana indicada con un único inicio."""
+    since = _window_start(days)
+    events = SnippetRequest.objects.filter(created_at__gte=since).count()
     return {
         "days": days,
         "events": events,
-        "error_rate": snippet_error_rate(days),
-        "tests_per_user_week": tests_per_active_user_per_week(days),
+        "error_rate": snippet_error_rate(days, since),
+        "tests_per_user_week": tests_per_active_user_per_week(days, since),
         "share_with_results": share_of_users_with_results(),
     }
 
