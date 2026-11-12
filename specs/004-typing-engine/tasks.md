@@ -170,6 +170,28 @@ Referencia: `specs/004-typing-engine/spec.md`
   - DoD: tras Enter el cursor queda en el primer carácter del código y no hay que pulsar
     espacio ni Tab para la indentación. ✅
 
+## Fase 6 — Hallazgos de la auditoría de arquitectura (2026-11-12)
+
+- [ ] **T004-24** Reducir los métodos largos y separar responsabilidades del motor JS.
+  - Requisitos: `RF-008-11`, `RNF-004-06`
+  - Archivos: `static/js/script.js`
+  - Evidencia: `handleKeydown` 71 líneas y `startTest` 52; archivo de 559 líneas
+    (AUD-030, MEDIA). Medición manual con Node sobre los métodos de la clase.
+  - DoD: métodos ≤ 40 líneas y timer/render/guardado con límites claros.
+
+- [ ] **T004-25** Extraer la sincronización repetida del input.
+  - Requisitos: `RF-008-11`, `RNF-008-06`
+  - Archivos: `static/js/script.js`
+  - Evidencia: `countTypedChars` + `updateDisplay` + `updateLiveStats` + fin se repite
+    en cinco manejadores (AUD-031, MEDIA).
+  - DoD: helper único `syncTypedValue(value)` y tests en verde.
+
+- [ ] **T004-26** Avisar al usuario cuando falla el arranque del test.
+  - Requisito: `RNF-004-05`
+  - Archivos: `static/js/script.js`, `templates/index.html`
+  - Evidencia: `startTest` solo registra el error en consola (AUD-033, BAJA).
+  - DoD: mensaje visible y opción de reintentar.
+
 ## Deuda técnica / Backlog
 
 - [x] Tests automatizados de frontend (Vitest + jsdom); DOM y eventos cubiertos en `T008-31`.
@@ -190,3 +212,4 @@ Referencia: `specs/004-typing-engine/spec.md`
 | 2026-11-12 | Revisión en navegador: Enter/Tab, pausa, IME y timer (T004-17…T004-21) |
 | 2026-11-12 | T004-17…T004-21 cerradas: código multilínea, pausa e IME corregidos |
 | 2026-11-12 | T004-22: Enter auto-indenta con los espacios de la línea siguiente |
+| 2026-11-12 | Auditoría de arquitectura: AUD-030/031/033 (T004-24…T004-26) |

@@ -281,6 +281,10 @@ Crear `audits/code/AAAA-MM-DD-<alcance>.md` usando
 > `audits/code/2026-11-12-reauditoria.md` → **8.9/10 (B)**, 0 ALTA; 1 MEDIA de tooling,
 > 1 BAJA y 1 INFO.
 >
+> Auditoría de arquitectura del 2026-11-12 (`9fb738c`):
+> `audits/code/2026-11-12-auditoria-arquitectura.md` → **8.6/10 (B)**, 0 ALTA; 2 MEDIA
+> y 2 BAJA, centradas en el motor JS y el tamaño de `tests.py`.
+>
 > Reauditoría post-analítica del 2026-11-11:
 > `audits/code/2026-11-11-auditoria-post-analitica.md` → **8.55/10 (B)**, 0 ALTA y
 > 4 hallazgos menores (AUD-013…AUD-016).

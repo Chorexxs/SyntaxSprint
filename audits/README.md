@@ -41,6 +41,7 @@ audits/
 | 2026-11-11 | Seguridad | `security/2026-11-11-auditoria-post-analitica.md` | MEDIO; 0 CRÍTICAS/ALTAS, 3 MEDIAS |
 | 2026-11-11 | Código | `code/2026-11-11-auditoria-post-2fa.md` | 8.25/10 (B); 0 ALTA, 2 MEDIA |
 | 2026-11-12 | Código | `code/2026-11-12-reauditoria.md` | 8.9/10 (B); 0 ALTA, 1 MEDIA (tooling) |
+| 2026-11-12 | Código | `code/2026-11-12-auditoria-arquitectura.md` | 8.6/10 (B); 0 ALTA, 2 MEDIA y 2 BAJA |
 
 > Informe interno; no exponer fuera del repositorio. El historial está purgado, el
 > repositorio es privado, Pages devuelve 404 y la `SECRET_KEY` de producción está

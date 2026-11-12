@@ -160,6 +160,16 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
   - Nota: requiere CLI >= 0.2.8 (`npx -y @insforge/cli@latest db connection-string`).
   - DoD: la base sobrevive a un redeploy y `migrate`/`loaddata` funcionan.
 
+## Fase 5 — Auditoría de arquitectura (2026-11-12)
+
+- [ ] **T007-23** Dividir `tests.py` por dominio.
+  - Requisitos: `RF-008-11`, `RNF-008-02`
+  - Archivos: `backend/tests.py`, `backend/tests_auth.py`, `backend/tests_snippets.py`,
+    `backend/tests_results.py`, `backend/tests_analytics.py`, `backend/tests_security.py`
+  - Evidencia: `tests.py` tiene 971 líneas y 8 clases; el umbral de módulo es 400
+    (AUD-032, BAJA). `tests_ratelimit.py` y `tests_totp.py` ya están separados.
+  - DoD: cada módulo ≤ 400 líneas, misma cobertura y `manage.py test` en verde.
+
 ## Deuda técnica / Backlog
 
 - [ ] Pre-commit hooks (`isort`, `pylint`, `django check`).
@@ -180,3 +190,4 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
 | 2026-11-10 | Plan inicial; suite de tests vacía detectada |
 | 2026-11-10 | Verificación contra código: 26 tests en verde, `check` 0 issues, `isort` limpio; `T007-01`…`T007-03`, `T007-06`…`T007-10` y `T007-14`…`T007-16` cerradas |
 | 2026-11-10 | CI en GitHub Actions con isort, check, migraciones y tests (`T007-11`) |
+| 2026-11-12 | Auditoría de arquitectura: `tests.py` de 971 líneas (AUD-032, `T007-23`) |

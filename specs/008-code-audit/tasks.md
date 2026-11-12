@@ -283,3 +283,4 @@ Referencia: `specs/008-code-audit/spec.md`
 | 2026-11-12 | T008-21: ventana única en `build_report`; Fase 5 y 6 completas |
 | 2026-11-12 | Reauditoría: 8.9 (B), 0 ALTA; AUD-027/028 (T008-32/33) y AUD-029 (T009-36) |
 | 2026-11-12 | AUD-027 y AUD-028 cerrados: quality gate en verde |
+| 2026-11-12 | Auditoría de arquitectura: 8.6 (B), 2 MEDIA y 2 BAJA (AUD-030…033) |
