@@ -1,9 +1,12 @@
 """Pruebas de seguridad y comportamiento de SyntaxSprint."""
 
 import json
+import os
+import tempfile
 from datetime import timedelta
 from io import StringIO
-from unittest import mock
+from pathlib import Path
+from unittest import mock, skipUnless
 
 from django.conf import settings
 from django.contrib import admin
@@ -22,8 +25,7 @@ from .analytics import (PURGE_CACHE_KEY, share_of_users_with_results,
 from .models import AdminTOTP, SnippetRequest, TypingTestResult
 from .ratelimit import ADMIN_2FA_LIMIT
 from .snippets import CODE_SNIPPETS, validate_catalog
-from .totp import (code_for_counter, current_counter, generate_secret,
-                   provisioning_uri, verify_code)
+from .totp import code_for_counter, current_counter, generate_secret
 from .two_factor import SESSION_KEY, VERSION_KEY
 
 PASSWORD = "".join(("Str0ng", "-Pass!2026"))
@@ -740,33 +742,6 @@ class TwoFactorTests(TestCase):
     def _valid_code(self) -> str:
         return code_for_counter(self.secret, current_counter())
 
-    def test_totp_round_trip_and_replay(self):
-        at = 1_700_000_000
-        code = code_for_counter(self.secret, current_counter(at))
-
-        valid, counter = verify_code(self.secret, code, 0, at=at)
-        replay, _ = verify_code(self.secret, code, counter, at=at)
-
-        self.assertTrue(valid)
-        self.assertFalse(replay)
-
-    def test_totp_rejects_malformed_codes(self):
-        at = 1_700_000_000
-        for code in ("", "12345", "1234567", "abcdef", "12 345"):
-            self.assertFalse(verify_code(self.secret, code, 0, at=at)[0])
-
-    def test_totp_rejects_wrong_code(self):
-        at = 1_700_000_000
-        with mock.patch("backend.totp.code_for_counter", return_value="000000"):
-            self.assertFalse(verify_code(self.secret, "111111", 0, at=at)[0])
-
-    def test_provisioning_uri(self):
-        uri = provisioning_uri(self.secret, "staff")
-
-        self.assertTrue(uri.startswith("otpauth://totp/SyntaxSprint:staff"))
-        self.assertIn(f"secret={self.secret}", uri)
-        self.assertIn("digits=6", uri)
-
     def test_middleware_redirects_staff_without_verification(self):
         self.client.force_login(self.staff)
 
@@ -937,11 +912,22 @@ class TwoFactorTests(TestCase):
             is_staff=True,
         )
         output = StringIO()
-
-        call_command("enroll_admin_totp", "--username", "staff3", stdout=output)
+        with tempfile.TemporaryDirectory() as directory:
+            destination = os.path.join(directory, "totp.txt")
+            call_command(
+                "enroll_admin_totp",
+                "--username",
+                "staff3",
+                "--write",
+                destination,
+                stdout=output,
+            )
+            saved = Path(destination).read_text(encoding="utf-8")
 
         self.assertTrue(AdminTOTP.objects.filter(user=other, confirmed=True).exists())
-        self.assertIn("otpauth://totp/", output.getvalue())
+        self.assertIn("otpauth://totp/", saved)
+        self.assertNotIn("otpauth://", output.getvalue())
+        self.assertNotIn("Secreto TOTP", output.getvalue())
 
         call_command(
             "enroll_admin_totp",
@@ -952,6 +938,44 @@ class TwoFactorTests(TestCase):
         )
 
         self.assertFalse(AdminTOTP.objects.filter(user=other).exists())
+
+    def test_enroll_command_does_not_print_secret(self):
+        other = User.objects.create_user(
+            username="staff4",
+            email="staff4@example.com",
+            password=PASSWORD,
+            is_staff=True,
+        )
+        output = StringIO()
+
+        call_command("enroll_admin_totp", "--username", "staff4", stdout=output)
+
+        device = AdminTOTP.objects.get(user=other)
+        self.assertNotIn(device.secret, output.getvalue())
+        self.assertNotIn("otpauth://", output.getvalue())
+        self.assertIn("--write", output.getvalue())
+
+    @skipUnless(os.name == "posix", "Los permisos POSIX no aplican en Windows")
+    def test_enroll_write_restricts_permissions(self):
+        User.objects.create_user(
+            username="staff5",
+            email="staff5@example.com",
+            password=PASSWORD,
+            is_staff=True,
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            destination = os.path.join(directory, "totp.txt")
+            call_command(
+                "enroll_admin_totp",
+                "--username",
+                "staff5",
+                "--write",
+                destination,
+                stdout=StringIO(),
+            )
+            mode = os.stat(destination).st_mode & 0o777
+
+        self.assertEqual(mode, 0o600)
 
     def test_enroll_command_rejects_non_staff(self):
         user = User.objects.create_user(

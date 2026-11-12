@@ -224,11 +224,13 @@ Si devuelve 404:
 1. En Render → **Shell** (o en local con la `DATABASE_URL` de producción):
 
    ```bash
-   python syntax_sprint/manage.py enroll_admin_totp --username <staff>
+   python syntax_sprint/manage.py enroll_admin_totp --username <staff> --write /tmp/totp.txt
    ```
 
-   El comando imprime el secreto y la URI `otpauth://`. Añádelo a la app de
-   autenticación y limpia la terminal.
+   El comando **no imprime el secreto**: lo guarda en el archivo indicado con permisos
+   `0600`. Añádelo a la app de autenticación y bórralo (`rm /tmp/totp.txt`). Recuerda
+   que la Shell de Render registra lo que muestres en pantalla: evita `cat` en claro o
+   rota el secreto si sospechas que quedó en los logs.
 
 2. Cambia `ADMIN_TOTP_REQUIRED` a `True` en Render → **Environment**.
 3. Entra en `/admin/`: pedirá el código de 6 dígitos.

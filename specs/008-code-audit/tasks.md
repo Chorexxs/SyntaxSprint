@@ -167,11 +167,15 @@ Referencia: `specs/008-code-audit/spec.md`
     `test_disable_invalidates_verified_session` y `test_middleware_rejects_stale_device_version`.
   - DoD: versión de dispositivo en sesión o borrado de sesiones del usuario. ✅
 
-- [ ] **T008-24** Evitar que el secreto TOTP quede en los logs de la Shell.
-  - Requisitos: `RF-008-11`, `RNF-009-01`
-  - Archivos: `enroll_admin_totp.py`
-  - Evidencia: imprime secreto y URI en stdout (AUD-019, BAJA).
-  - DoD: opción `--write <archivo>` o enrolamiento de un solo uso.
+- [x] **T008-24** Evitar que el secreto TOTP quede en los logs de la Shell.
+  - Requisitos: `RF-008-11`, `RNF-009-01`, `RNF-012-02`
+  - Archivos: `enroll_admin_totp.py`, `backend/tests.py`, `backend/tests_totp.py`,
+    `DEPLOY.md`
+  - Evidencia: el comando ya no imprime el secreto ni la URI; `--write <archivo>` los
+    guarda con permisos 0600 y solo informa de la ruta (AUD-019, BAJA). Pruebas:
+    `test_enroll_command_does_not_print_secret`, `test_enroll_and_disable_command` y
+    `test_enroll_write_restricts_permissions` (POSIX).
+  - DoD: opción `--write <archivo>` o enrolamiento de un solo uso. ✅
 
 - [ ] **T008-25** Separar la caché del rate limit de auth y del endpoint de fragmentos.
   - Requisitos: `RF-008-11`, `RF-008-12`

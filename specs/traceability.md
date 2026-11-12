@@ -209,7 +209,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-012-02 | T012-03 | CA-012-02 | ✅ |
 | RF-012-03 | T012-01, T012-03 | CA-012-03, CA-012-04 | ✅ |
 | RF-012-04 | T012-03 | CA-012-05 | ✅ |
-| RF-012-05 | T012-02, T012-05 | CA-012-06 | ✅ |
+| RF-012-05 | T012-02, T012-05 | CA-012-06, CA-012-10 | ✅ |
 | RF-012-06 | T012-04 | CA-012-07 | ✅ |
 | RF-012-07 | T008-22 | CA-012-08 | ✅ |
 | RF-012-08 | T008-23 | CA-012-09 | ✅ |
@@ -219,7 +219,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | Comprobación | Comando | Resultado |
 | --- | --- | --- |
 | Sistema | `manage.py check` | 0 issues |
-| Pruebas | `manage.py test` | 79 tests OK (61,7 s, medido con cobertura) |
+| Pruebas | `manage.py test` | 81 tests (80 OK + 1 omitido en Windows por permisos POSIX) |
 | Pruebas JS | `npm run test:js` | 8 tests OK (Vitest + jsdom) |
 | Imports | `isort --check-only syntax_sprint/` | Sin avisos |
 | Lint | `pylint backend --rcfile=../.pylintrc` | 10.00/10 |

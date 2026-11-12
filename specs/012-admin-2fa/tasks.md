@@ -64,3 +64,4 @@ Referencia: `specs/012-admin-2fa/spec.md`
 | 2026-11-11 | Implementación completa, tests y documentación | Agente |
 | 2026-11-12 | Límite de intentos en `/admin/2fa/` (RF-012-07, seguido en `T008-22`) | Agente |
 | 2026-11-12 | Revocación de sesiones al rotar o desactivar el TOTP (RF-012-08, `T008-23`) | Agente |
+| 2026-11-12 | Secreto fuera de los logs con `--write` (RNF-012-02, `T008-24`) | Agente |

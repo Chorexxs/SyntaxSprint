@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | Estado | Implementada |
-| Versión | 1.2 |
+| Versión | 1.3 |
 | Depende de | 009-cybersecurity |
 | Archivos principales | `backend/totp.py`, `backend/two_factor.py`, `backend/middleware.py`, `backend/management/commands/enroll_admin_totp.py` |
 
@@ -61,7 +61,7 @@ eventos de analítica. La spec 009 deja la 2FA en backlog.
 | Versión de dispositivo | La sesión guarda la versión del dispositivo; el middleware la compara en cada petición al admin y revoca el acceso si no coincide o falta el dispositivo. |
 | Rutas exentas | `/admin/login/`, `/admin/logout/`, `/admin/2fa/`, `/admin/jsi18n/` y estáticos. |
 | Desactivación | `enroll_admin_totp --disable` borra el dispositivo del usuario. |
-| Secreto | Se guarda en la base de datos (necesario para verificar) y nunca se registra en logs. |
+| Secreto | Se guarda en la base de datos (necesario para verificar) y nunca se registra en logs ni se imprime en stdout; con `--write` se deja en un archivo 0600. |
 
 ## 6. Contratos
 
@@ -76,7 +76,7 @@ eventos de analítica. La spec 009 deja la 2FA en backlog.
 
 | Comando | Efecto |
 | --- | --- |
-| `python manage.py enroll_admin_totp --username X` | Crea o rota el secreto y muestra la URI `otpauth://` |
+| `python manage.py enroll_admin_totp --username X --write <archivo>` | Crea o rota el secreto y guarda secreto y URI en `<archivo>` (0600); no los imprime |
 | `python manage.py enroll_admin_totp --username X --disable` | Elimina el dispositivo |
 
 ### Modelo
@@ -113,6 +113,7 @@ eventos de analítica. La spec 009 deja la 2FA en backlog.
 - **CA-012-07** Con la flag desactivada, `/admin/` no redirige a la verificación.
 - **CA-012-08** Tras 5 POST fallidos desde la misma IP, el sexto responde 429, no marca la sesión y deja un aviso en el log.
 - **CA-012-09** Tras rotar o desactivar el TOTP, una sesión ya verificada que pide `/admin/` recibe 302 a `/admin/2fa/` y pierde la bandera de sesión.
+- **CA-012-10** `enroll_admin_totp` no imprime el secreto en stdout; con `--write` lo deja en un archivo con permisos `0600`.
 
 ## 9. Fuera de alcance
 

@@ -30,7 +30,8 @@ exponer un flujo de alta antes de tener 2FA. Todo queda detrás de
 | `syntax_sprint/templates/admin_2fa.html` | Añadir | Formulario del código. |
 | `syntax_sprint/templates/admin_2fa_setup.html` | Añadir | Instrucciones si falta el dispositivo. |
 | `syntax_sprint/settings.py` | Modificar | `ADMIN_TOTP_REQUIRED` y middleware. |
-| `backend/tests.py` | Añadir | `TwoFactorTests`. |
+| `backend/tests.py` | Añadir | `TwoFactorTests` (integración). |
+| `backend/tests_totp.py` | Añadir | `TOTPTests` (unitarios, sin BD). |
 
 ## 3. Diseño de datos
 
@@ -77,7 +78,7 @@ dispositivo. En ambos casos las sesiones verificadas dejan de superar la comprob
 
 | Nivel | Qué se prueba | Herramienta |
 | --- | --- | --- |
-| Unitario | Código válido, inválido, caducado y replay | `TestCase` |
+| Unitario | Código válido, inválido, caducado y replay | `SimpleTestCase` |
 | Unitario | URI de aprovisionamiento sin secretos en logs | `TestCase` |
 | Integración | Middleware redirige/permite según sesión y flag | `Client` + `override_settings` |
 | Integración | Vista de verificación marca la sesión | `Client` |
