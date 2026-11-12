@@ -8,7 +8,7 @@
 | Alcance | Árbol actual, historial completo (138 commits), configuración, dependencias y exposición en GitHub |
 | Commit auditado | `4824abc` (`main`) |
 | Herramientas | `scan_secrets.py` (contenido e historial), `git` (objetos, rutas y mensajes), `pip-audit`, `npm audit`, `manage.py check --deploy` |
-| Resultado global | **BAJO** · 0 CRÍTICAS, 0 ALTAS, 0 MEDIAS, 4 BAJAS y 4 INFO |
+| Resultado global | **BAJO** · 0 CRÍTICAS, 0 ALTAS, 0 MEDIAS, 4 BAJAS (2 cerradas, 2 aceptadas) y 4 INFO |
 
 ## 1. Alcance y exclusiones
 
@@ -37,10 +37,10 @@ y **prevención** (ampliar `.gitignore`). Ninguna es un secreto activo.
 
 | ID | Severidad | Categoría | Ubicación | Evidencia | Impacto | Recomendación | Esfuerzo | Estado |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SEC-023 | BAJA | PII | `README.md:138` | Email personal de contacto con dominio `gmail.com` | Queda visible al publicar; puede atraer spam | Usar alias/GitHub profile o aceptar el contacto público | S | Abierto |
-| SEC-024 | BAJA | PII | Historial (138 commits) | `git log --format=%ae` → 2 dominios: uno `users.noreply.github.com` y otro `gmail.com` | GitHub mostrará el email del autor en cada commit | Activar email privado y reescribir autores a `noreply` antes de publicar, o aceptarlo | M | Abierto |
-| SEC-025 | BAJA | PII / contexto | `381shots_so.png` (README:5) | Captura antigua de la app con la barra de marcadores visible; sin credenciales | Expone intereses personales y una UI obsoleta | Reemplazar por una captura limpia o eliminarla y ajustar el README | S | Abierto |
-| SEC-026 | BAJA | Prevención | `.gitignore` | Cubre `.env`, `*.sqlite3`, `__pycache__`, coverage e `.insforge`, pero no `.env.*`, `*.log`, `*.pem`, `*.key`, `*.p12`, `*.pfx`, `backup.json`, `*.dump`, `.npmrc` ni `.pypirc` | Un despiste futuro podría versionar un secreto | Añadir esos patrones (con `!.env.example`) | S | Abierto |
+| SEC-023 | BAJA | PII | `README.md:138` | Email personal de contacto con dominio `gmail.com` | Queda visible al publicar; puede atraer spam | Usar alias/GitHub profile o aceptar el contacto público | S | Aceptado (público en GitHub) |
+| SEC-024 | BAJA | PII | Historial (138 commits) | `git log --format=%ae` → 2 dominios: uno `users.noreply.github.com` y otro `gmail.com` | GitHub mostrará el email del autor en cada commit | Activar email privado y reescribir autores a `noreply` antes de publicar, o aceptarlo | M | Aceptado (público en GitHub) |
+| SEC-025 | BAJA | PII / contexto | `381shots_so.png` (README:5) | Captura antigua de la app con la barra de marcadores visible; sin credenciales | Expone intereses personales y una UI obsoleta | Reemplazar por una captura limpia o eliminarla y ajustar el README | S | Cerrado (T009-37) |
+| SEC-026 | BAJA | Prevención | `.gitignore` | Cubre `.env`, `*.sqlite3`, `__pycache__`, coverage e `.insforge`, pero no `.env.*`, `*.log`, `*.pem`, `*.key`, `*.p12`, `*.pfx`, `backup.json`, `*.dump`, `.npmrc` ni `.pypirc` | Un despiste futuro podría versionar un secreto | Añadir esos patrones (con `!.env.example`) | S | Cerrado (T009-38) |
 | SEC-027 | INFO | [FP] Historial | `syntax_sprint/backend/views.py @244996ca` | Las coincidencias `password` están dentro de `"code": "..."` del catálogo de fragmentos (ejemplos de `smtplib` y `paramiko`) | Ninguno: no son credenciales de un servicio | Mantener como falso positivo documentado | — | Cerrado |
 | SEC-028 | INFO | [FP] Historial | `.env.example @5fd70189`, `settings.py @1aef412f` | `DEBUG=True` en versiones antiguas | Ninguno: configuración histórica, no secreto | Nada; hoy producción usa `DEBUG=False` | — | Cerrado |
 | SEC-029 | INFO | [FP] CI | `.github/workflows/ci.yml:24` | `SECRET_KEY` es un placeholder `ci-only-placeholder-…` | Ninguno: no se usa en producción | Mantener el nombre explícito | — | Cerrado |
@@ -48,6 +48,11 @@ y **prevención** (ampliar `.gitignore`). Ninguna es un secreto activo.
 
 > Sin secretos ni datos personales en este informe: los emails se describen por dominio,
 > nunca por dirección completa.
+
+> **Decisión del responsable (2026-11-12):** el email de contacto del README y el del
+> autor en los commits se mantienen porque ya figuran en su perfil público de GitHub;
+> no se reescribe el historial. La captura sale del árbol actual, pero permanece en
+> commits antiguos: eliminarla del historial requeriría una reescritura no realizada.
 
 ### Falsos positivos declarados
 
@@ -74,7 +79,7 @@ y **prevención** (ampliar `.gitignore`). Ninguna es un secreto activo.
 | `secrets.*`, `echo` o artefactos en Actions | 0 | ✅ |
 | CI permissions | `contents: read` | ✅ |
 | Visibilidad del repositorio | API 403 y Pages 404 (privado); confirmar en Settings | ⚠️ manual |
-| PII (email contacto, email autor, captura) | 3 elementos | ⚠️ SEC-023…025 |
+| PII | 2 emails aceptados (ya públicos en GitHub) y captura eliminada del árbol | ✅ decisión |
 
 ## 5. Comparación con la verificación anterior
 
@@ -94,12 +99,12 @@ el historial.
 
 ## 6. Acciones antes de hacer público
 
-1. **Decidir PII**: email de contacto del README, email del autor en los commits y la
-   captura `381shots_so.png` (SEC-023…025).
-2. **Ampliar `.gitignore`** con `.env.*`, logs, claves, backups y credenciales npm/pip
-   (SEC-026).
+1. **PII**: decidida (SEC-023/024 aceptados; SEC-025 cerrado con la captura fuera del
+   árbol).
+2. **`.gitignore`**: ampliado (SEC-026 cerrado).
 3. **Verificar en GitHub Settings**: secret scanning, push protection y Dependabot
-   activos; Actions con permisos mínimos; Pages deshabilitado; sin releases con datos.
+   activos; Actions con permisos mínimos; Pages deshabilitado; sin releases con datos
+   (T009-39).
 4. **Confirmar rotaciones** en Render e InsForge (hechas el 2026-11-11) y que no hay
    cuentas ni sesiones en producción.
 5. **Tras publicar**: ejecutar de nuevo `scan_secrets.py --history` y revisar las alertas

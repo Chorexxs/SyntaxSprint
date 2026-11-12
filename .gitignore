@@ -9,9 +9,26 @@ skills-lock.json
 # Bases de datos locales y bytecode (nunca versionar)
 *.sqlite3
 *.sqlite
+*.sqlite3-*
+*.sqlite-*
 syntax_sprint/db.sqlite3
 __pycache__/
 *.py[cod]
+
+# Variantes de entorno y artefactos de secretos (nunca versionar)
+.env.*
+!.env.example
+*.log
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.dump
+backup.json
+.npmrc
+.pypirc
+.netrc
 
 # Estaticos generados por collectstatic
 staticfiles/

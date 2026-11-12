@@ -347,6 +347,8 @@ y las 6 cuentas más las 2 contraseñas hardcodeadas deben considerarse comprome
 > `audits/security/2026-11-12-auditoria-prepublicacion.md` → riesgo **BAJO**, 0
 > CRÍTICAS/ALTAS reales; 4 BAJAS de PII y prevención (SEC-023…026) con tareas
 > `T009-37`…`T009-39`. No hay secretos reales en el árbol ni en el historial.
+> SEC-025/026 quedaron cerradas y SEC-023/024 se aceptaron por decisión del responsable
+> (email ya público en GitHub); queda la verificación manual de GitHub (`T009-39`).
 
 ## 14. Fuera de alcance
 

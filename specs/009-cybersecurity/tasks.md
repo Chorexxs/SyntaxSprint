@@ -235,20 +235,23 @@ Referencia: `specs/009-cybersecurity/spec.md`
 
 ## Fase 9 — Prepublicación (2026-11-12)
 
-- [ ] **T009-37** Decidir y sanear la PII antes de hacer público el repositorio.
+- [x] **T009-37** Decidir y sanear la PII antes de hacer público el repositorio.
   - Requisitos: `RF-009-10`, `RF-009-11`
   - Archivos: `README.md`, `381shots_so.png`, historial de autores
-  - Evidencia: email de contacto en `README.md:138`, email del autor en 138 commits y
-    captura con marcadores visibles (SEC-023…025, BAJA).
-  - DoD: decisión documentada para el email de contacto y del autor, y captura
-    reemplazada o eliminada con el README actualizado.
+  - Evidencia: decisión del responsable (2026-11-12): el email de contacto y el del
+    autor se mantienen porque ya son públicos en su perfil de GitHub. La captura
+    `381shots_so.png` se elimina del árbol y de la portada del README (SEC-023…025).
+  - DoD: decisión documentada y captura fuera del árbol. ✅
+  - Nota: la captura sigue en commits antiguos; eliminarla del historial exigiría una
+    reescritura que no se ha realizado.
 
-- [ ] **T009-38** Ampliar `.gitignore` con patrones de secretos y backups.
+- [x] **T009-38** Ampliar `.gitignore` con patrones de secretos y backups.
   - Requisitos: `RF-009-04`, `RF-009-10`
   - Archivos: `.gitignore`
-  - Evidencia: faltan `.env.*`, `*.log`, `*.pem`, `*.key`, `*.p12`, `*.pfx`,
-    `backup.json`, `*.dump`, `.npmrc` y `.pypirc` (SEC-026, BAJA).
-  - DoD: `git check-ignore` cubre esos nombres y `.env.example` sigue rastreado.
+  - Evidencia: añadidos `.env.*` (con `!.env.example`), `*.log`, `*.pem`, `*.key`,
+    `*.p12`, `*.pfx`, `*.jks`, `*.dump`, `backup.json`, `.npmrc`, `.pypirc`, `.netrc`
+    y variantes `-wal`/`-shm` de SQLite (SEC-026). Verificado con `git check-ignore`.
+  - DoD: los nombres de prueba quedan ignorados y `.env.example` sigue rastreado. ✅
 
 - [ ] **T009-39** Verificar los ajustes de GitHub antes de publicar.
   - Requisitos: `RF-009-10`
@@ -283,3 +286,4 @@ Referencia: `specs/009-cybersecurity/spec.md`
 | 2026-11-11 | Caché compartida del rate limit (T009-35) y 2FA del admin (spec 012) |
 | 2026-11-12 | Reauditoría de código: backlog de CSP y 2FA alineado (AUD-029, T009-36) |
 | 2026-11-12 | Auditoría prepublicación: BAJO; 0 críticas/altas y 4 bajas de PII/prevención |
+| 2026-11-12 | T009-37/38: PII decidida, captura fuera del árbol y `.gitignore` ampliado |
