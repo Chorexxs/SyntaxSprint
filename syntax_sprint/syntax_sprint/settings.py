@@ -33,7 +33,7 @@ def _csv_env(name: str, default: str = "") -> list[str]:
 SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", cast=bool)
+DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = _csv_env("ALLOWED_HOSTS")
 CSRF_TRUSTED_ORIGINS = _csv_env("CSRF_TRUSTED_ORIGINS")
@@ -49,6 +49,23 @@ if RENDER_EXTERNAL_HOSTNAME:
     render_origin = f"https://{RENDER_EXTERNAL_HOSTNAME}"
     if render_origin not in CSRF_TRUSTED_ORIGINS:
         CSRF_TRUSTED_ORIGINS.append(render_origin)
+    TRUST_PROXY_HEADERS = True
+
+
+# Vercel expone el hostname del despliegue y termina el TLS en su proxy.
+VERCEL_URL = os.environ.get("VERCEL_URL", "")
+VERCEL_PROJECT_PRODUCTION_URL = os.environ.get("VERCEL_PROJECT_PRODUCTION_URL", "")
+for _vercel_host in (VERCEL_URL, VERCEL_PROJECT_PRODUCTION_URL):
+    _vercel_host = _vercel_host.removeprefix("https://").removeprefix("http://")
+    _vercel_host = _vercel_host.rstrip("/")
+    if not _vercel_host:
+        continue
+    if _vercel_host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(_vercel_host)
+    _vercel_origin = f"https://{_vercel_host}"
+    if _vercel_origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(_vercel_origin)
+if os.environ.get("VERCEL"):
     TRUST_PROXY_HEADERS = True
 
 
@@ -79,6 +96,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'syntax_sprint.urls'
+WSGI_APPLICATION = 'syntax_sprint.wsgi.application'
 
 TEMPLATES = [
     {
@@ -111,7 +129,9 @@ DATABASES = {
 
 DATABASE_URL = config("DATABASE_URL", default="")
 if DATABASE_URL:
-    DATABASES["default"] = dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+    # En Vercel (serverless) no conviene mantener conexiones entre invocaciones.
+    conn_max_age = 0 if os.environ.get("VERCEL") else 600
+    DATABASES["default"] = dj_database_url.parse(DATABASE_URL, conn_max_age=conn_max_age)
     if DATABASES["default"]["ENGINE"].endswith("postgresql"):
         DATABASES["default"].setdefault("OPTIONS", {}).setdefault(
             "connect_timeout", 5

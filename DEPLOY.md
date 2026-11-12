@@ -35,7 +35,7 @@ Render Dashboard → servicio `syntaxsprint` → **Environment**.
 | `RATE_LIMIT_CACHE_ALIAS` | `shared` (caché de BD entre workers) | Recomendada |
 | `SNIPPET_RATE_LIMIT_CACHE_ALIAS` | `default` (LocMem por worker) | Opcional |
 | `ADMIN_TOTP_REQUIRED` | `False` hasta enrolar el admin | Opcional |
-| `PYTHON_VERSION` | `3.12.1` | Opcional |
+| `PYTHON_VERSION` | `3.12` | Opcional |
 
 Reglas:
 
@@ -241,3 +241,23 @@ Si devuelve 404:
 > Si se activa sin enrolar, el admin queda bloqueado (403 con instrucciones). El
 > comando de desactivación se puede ejecutar desde la Shell de Render sin pasar por
 > la web.
+
+## 12. Despliegue alternativo en Vercel
+
+Vercel detecta Django por `syntax_sprint/manage.py` y resuelve la entrada desde
+`WSGI_APPLICATION`. Para que el build no falle:
+
+1. `.python-version` debe ser `3.12` (Vercel no dispone del parche exacto `3.12.1`).
+2. En Vercel → Settings → Environment Variables:
+   - `SECRET_KEY` y `DEBUG=False`.
+   - `DATABASE_URL` de InsForge.
+   - `CSRF_TRUSTED_ORIGINS=https://<dominio>.vercel.app`.
+   - `TRUST_PROXY_HEADERS=True` y `RATE_LIMIT_CACHE_ALIAS=shared`.
+   - `SNIPPET_RATE_LIMIT_CACHE_ALIAS=default` y `ADMIN_TOTP_REQUIRED=False`.
+3. Vercel añade solo `VERCEL_URL` y el dominio de producción a `ALLOWED_HOSTS` y
+   `CSRF_TRUSTED_ORIGINS`.
+4. `collectstatic` se ejecuta automáticamente al detectar `STATIC_ROOT`.
+5. Las migraciones no se ejecutan en el build: aplícalas antes con la `DATABASE_URL`
+   de producción (`vercel env pull` y `python syntax_sprint/manage.py migrate`).
+6. En Vercel las conexiones no se reutilizan (`conn_max_age=0`) para no agotar el
+   pool de PostgreSQL.

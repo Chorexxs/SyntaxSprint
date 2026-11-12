@@ -37,6 +37,6 @@ services:
         value: "False"
       - key: PYTHON_VERSION
         # Debe coincidir con .python-version; lo valida specs/tools/check_dependencies.py.
-        value: "3.12.1"
+        value: "3.12"
       - key: DATABASE_URL
         sync: false

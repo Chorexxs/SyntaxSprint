@@ -17,7 +17,8 @@ concurrency:
 jobs:
   quality:
     name: Lint, check y pruebas
-    # ubuntu-latest (26.04) ya no publica el patch 3.12.1 que exige .python-version.
+    # ubuntu-24.04: la versión la fija .python-version (minor 3.12) para
+    # Render, CI y Vercel.
     runs-on: ubuntu-24.04
     env:
       # Valores exclusivos de CI. No son secretos de producción.

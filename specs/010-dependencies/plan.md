@@ -75,8 +75,8 @@ npm se usa solo para el build de Tailwind y para las pruebas de frontend
 | --- | --- | --- |
 | Vitest | 4.1.12 | `package.json` (dev) |
 | jsdom | 25.0.1 | `package.json` (dev) |
-| Python | 3.12.1 | `.python-version` (CI lo lee; runner fijado en 24.04) |
-| Render | 3.12.1 | `render.yaml`, validado por el verificador |
+| Python | 3.12 | `.python-version` (CI lo lee; runner fijado en 24.04) |
+| Render | 3.12 | `render.yaml`, validado por el verificador |
 | `actions/checkout` | v4 | `.github/workflows/ci.yml` |
 | `actions/setup-python` | v5 | `.github/workflows/ci.yml` |
 | PostgreSQL | InsForge | `DATABASE_URL` |

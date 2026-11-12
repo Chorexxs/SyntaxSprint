@@ -97,6 +97,18 @@ Referencia: `specs/010-dependencies/spec.md`
     en verde y en CI. Vitest actualizado a 4.1.12 en `T008-30`, sin avisos de
     `npm audit`.
 
+## Fase 4 — Runtime y Vercel (2026-11-12)
+
+- [x] **T010-12** Fijar Python 3.12 (minor) para Render, CI y Vercel.
+  - Requisitos: `RF-010-03`, `RF-010-06`
+  - Archivos: `.python-version`, `render.yaml`, `.github/workflows/ci.yml`,
+    `syntax_sprint/settings.py`, `DEPLOY.md`
+  - Evidencia: Vercel/uv no encuentra el parche exacto `3.12.1`; con `3.12` el build
+    continúa. `check_dependencies --strict` OK. Se añade `WSGI_APPLICATION`, los hosts
+    de Vercel a `ALLOWED_HOSTS`/CSRF y `conn_max_age=0` en serverless.
+  - DoD: Render, CI y Vercel comparten la minor 3.12 y `manage.py check --deploy` en
+    verde. ✅
+
 ## Deuda técnica / Backlog
 
 - [ ] Evaluar Vitest 5 cuando el CI migre a Node 22 (exige Node ≥ 22.12).
@@ -115,3 +127,4 @@ Referencia: `specs/010-dependencies/spec.md`
 | --- | --- |
 | 2026-11-10 | Creación de la spec, el plan y el inventario inicial |
 | 2026-11-10 | Primera ejecución: requirements separados, `requests` eliminado, Tailwind fijado y Dependabot activado |
+| 2026-11-12 | T010-12: Python 3.12 minor, WSGI y hosts de Vercel |
