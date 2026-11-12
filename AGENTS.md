@@ -313,19 +313,23 @@ Al terminar:
 
 ## 8. Deuda técnica conocida (priorizada)
 
-Estado verificado el 2026-11-11: `manage.py check` 0 issues, `manage.py test` 74 tests
-OK, `isort --check-only` sin avisos, `pylint` 10.00/10 y `code_metrics.py --strict` sin
-incumplimientos. La antigua deuda "suite de pruebas vacía" ya está cerrada.
+Estado verificado el 2026-11-12: `manage.py check` 0 issues, `manage.py test` 88 tests
+(87 OK + 1 omitido en Windows por permisos POSIX), 14 tests JS, `isort --check-only`
+sin avisos, `pylint` 10.00/10, `code_metrics.py --strict` sin incumplimientos y
+`npm audit` sin avisos.
 
-No hay deuda priorizada abierta. Tailwind se compila localmente desde el 2026-11-11
-(`npm run build:css`).
+No hay deuda priorizada abierta: las fases 5 y 6 de `specs/008-code-audit` quedaron
+cerradas el 2026-11-12 (`T008-21`…`T008-31`). Tailwind se compila localmente desde el
+2026-11-11 (`npm run build:css`).
 
-No quedan tareas abiertas de gobernanza ni de código: `T000-05` se aprobó y `T000-06`
-se cerró con `specs/011-analytics`. El trabajo futuro vive en el backlog de cada
-`tasks.md`.
+Siguen abiertos, sin severidad asignada, el backlog genérico de 008 (duplicación,
+análisis CSS, Core Web Vitals, cobertura de ramas, informe automatizado) y el backlog
+de cada `tasks.md`. `T000-05` se aprobó y `T000-06` se cerró con
+`specs/011-analytics`.
 
-> No quedan hallazgos **CRÍTICOS** abiertos. Evidencia:
-> `audits/security/2026-11-11-verificacion.md`.
+> No quedan hallazgos **CRÍTICOS**, **ALTOS** ni **MEDIOS** abiertos. Evidencia:
+> `audits/security/2026-11-11-verificacion.md` y
+> `audits/code/2026-11-11-auditoria-post-2fa.md`.
 
 ## 9. Seguridad — reglas rápidas
 
