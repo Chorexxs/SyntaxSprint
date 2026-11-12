@@ -38,7 +38,7 @@ CSP y la 2FA del admin como pendientes aunque ya están implementadas.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | AUD-027 | BAJA | Mantenibilidad | `backend/management/commands/enroll_admin_totp.py:45` | `code_metrics.py --strict` → `handle -> 43 líneas` | El quality gate falla y el comando concentra validación, persistencia y salida | Extraer `_save_device()` y `_report_result()`; dejar `handle` como orquestador | S | Cerrado (T008-32) |
 | AUD-028 | MEDIA | Tooling / tests | `specs/tools/code_metrics.py:247` | `code_metrics.py --strict` lista 14 «funciones sin anotaciones» en `tests_ratelimit.py` y `tests_totp.py` | El quality gate del CI (`ci.yml:87`) está en rojo con código correcto; se normaliza ignorarlo | Excluir `tests*.py` (no solo `tests.py`) en `strict_violations` y `render` | S | Cerrado (T008-33) |
-| AUD-029 | INFO | Documentación | `specs/009-cybersecurity/tasks.md:232-233` | «2FA para el admin» y «Cabecera CSP» siguen en `[ ]`; `T009-28`, `T009-30` y la spec 012 ya los implementan | Backlog engañoso sobre el estado real de seguridad | Eliminar o marcar ambos ítems como cubiertos | S | Abierto |
+| AUD-029 | INFO | Documentación | `specs/009-cybersecurity/tasks.md:232-233` | «2FA para el admin» y «Cabecera CSP» siguen en `[ ]`; `T009-28`, `T009-30` y la spec 012 ya los implementan | Backlog engañoso sobre el estado real de seguridad | Eliminar o marcar ambos ítems como cubiertos | S | Cerrado (T009-36) |
 
 > Sin secretos ni datos personales en este informe.
 

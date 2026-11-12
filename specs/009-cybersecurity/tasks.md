@@ -226,20 +226,20 @@ Referencia: `specs/009-cybersecurity/spec.md`
 
 ## Fase 8 — Reauditoría de código (2026-11-12)
 
-- [ ] **T009-36** Limpiar del backlog la CSP y la 2FA ya implementadas.
+- [x] **T009-36** Limpiar del backlog la CSP y la 2FA ya implementadas.
   - Requisito: `RF-009-06`
   - Archivos: `specs/009-cybersecurity/tasks.md`
-  - Evidencia: los ítems «2FA para el admin» y «Cabecera CSP» siguen abiertos aunque
-    `T009-28`, `T009-30` y la spec 012 los cubren (AUD-029, INFO).
-  - DoD: el backlog solo contiene trabajo pendiente real.
+  - Evidencia: los ítems «2FA para el admin» y «Cabecera CSP» quedan marcados como
+    cubiertos por `specs/012-admin-2fa`, `T009-30` y `T009-28` (AUD-029, INFO).
+  - DoD: el backlog solo contiene trabajo pendiente real. ✅
 
 ## Deuda técnica / Backlog
 
 - [ ] Pre-commit hook con `scan_secrets.py` y `gitleaks`.
 - [ ] Cifrado de backups y política de retención.
 - [ ] Política de borrado de cuenta y datos.
-- [ ] 2FA para el admin.
-- [ ] Cabecera CSP.
+- [x] 2FA para el admin — cubierta por `specs/012-admin-2fa` y `T009-30`.
+- [x] Cabecera CSP — cubierta por `T009-28` (`backend/middleware.py`).
 - [ ] Notificación a usuarios ante brecha (procedimiento legal).
 - [ ] Auditoría de dependencias en CI.
 
@@ -256,3 +256,4 @@ Referencia: `specs/009-cybersecurity/spec.md`
 | 2026-11-11 | Reauditoría post-analítica: 0 CRÍTICAS/ALTAS; 3 MEDIAS y 3 BAJAS nuevas |
 | 2026-11-11 | Remediación completa: SEC-016…SEC-021 cerradas (rate limits, purga, HSTS, pinning) |
 | 2026-11-11 | Caché compartida del rate limit (T009-35) y 2FA del admin (spec 012) |
+| 2026-11-12 | Reauditoría de código: backlog de CSP y 2FA alineado (AUD-029, T009-36) |
