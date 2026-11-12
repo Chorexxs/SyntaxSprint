@@ -723,7 +723,8 @@ class TwoFactorTests(TestCase):
     def test_middleware_disabled_by_default(self):
         self.client.force_login(self.staff)
 
-        response = self.client.get("/admin/")
+        with override_settings(ADMIN_TOTP_REQUIRED=False):
+            response = self.client.get("/admin/")
 
         self.assertEqual(response.status_code, 200)
 

@@ -18,8 +18,8 @@ class CacheConfigTests(TestCase):
     def test_shared_cache_backend_is_database(self):
         self.assertIn("DatabaseCache", settings.CACHES["shared"]["BACKEND"])
 
-    def test_default_alias_is_local(self):
-        self.assertEqual(settings.RATE_LIMIT_CACHE_ALIAS, "default")
+    def test_configured_alias_exists(self):
+        self.assertIn(settings.RATE_LIMIT_CACHE_ALIAS, settings.CACHES)
 
 
 class RateLimitTests(TestCase):

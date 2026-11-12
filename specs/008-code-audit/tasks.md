@@ -204,11 +204,14 @@ Referencia: `specs/008-code-audit/spec.md`
     comprueba `Cache-Control: no-store` (AUD-023, BAJA).
   - DoD: cabecera `Cache-Control: no-store` en `/admin/2fa/`. ✅
 
-- [ ] **T008-29** Hacer los tests de configuración independientes del entorno.
+- [x] **T008-29** Hacer los tests de configuración independientes del entorno.
   - Requisitos: `RF-008-04`, `RNF-008-02`
-  - Archivos: `backend/tests.py`
-  - Evidencia: dos tests leen settings reales (AUD-024, BAJA).
-  - DoD: `override_settings` explícito y verde con variables de entorno distintas.
+  - Archivos: `backend/tests.py`, `backend/tests_ratelimit.py`
+  - Evidencia: `test_middleware_disabled_by_default` usa
+    `override_settings(ADMIN_TOTP_REQUIRED=False)` y `test_configured_alias_exists`
+    comprueba que el alias configurado exista en `CACHES` (AUD-024, BAJA). Verde con
+    `ADMIN_TOTP_REQUIRED=True` y `RATE_LIMIT_CACHE_ALIAS=shared`.
+  - DoD: `override_settings` explícito y verde con variables de entorno distintas. ✅
 
 - [ ] **T008-30** Actualizar Vitest y eliminar los avisos de `npm audit`.
   - Requisitos: `RF-008-11`, `RF-010-04`
@@ -242,3 +245,4 @@ Referencia: `specs/008-code-audit/spec.md`
 | 2026-11-11 | Perfil con 5 consultas y lenguajes extensibles; reauditoría 8.8 (B) (`T008-14`, `T008-15`, `T008-17`) |
 | 2026-11-11 | Reauditoría post-analítica: 8.55 (B), 0 ALTA y 4 hallazgos menores |
 | 2026-11-11 | Auditoría post-2FA: 8.25 (B), 0 ALTA, 2 MEDIA y 8 BAJAS |
+| 2026-11-12 | Cerrados T008-22, T008-23, T008-24, T008-27, T008-28 y T008-29 |
