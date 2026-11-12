@@ -119,7 +119,7 @@ Referencia: `specs/004-typing-engine/spec.md`
 
 ## Deuda técnica / Backlog
 
-- [ ] Tests automatizados de frontend (Vitest + jsdom o Playwright).
+- [x] Tests automatizados de frontend (Vitest + jsdom); DOM y eventos cubiertos en `T008-31`.
 - [ ] Modos de test configurables (15/30/60 s, palabras).
 - [ ] Mostrar progreso del fragmento (carácter actual / total).
 - [ ] Reintento automático del guardado con backoff.

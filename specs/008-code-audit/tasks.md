@@ -229,8 +229,10 @@ Referencia: `specs/008-code-audit/spec.md`
 - [ ] **T008-31** Ampliar los tests de frontend a DOM y eventos.
   - Requisitos: `RF-008-11`, `RNF-004-06`
   - Archivos: `tests/js/script.test.js`
-  - Evidencia: solo fórmulas y `countTypedChars` (AUD-026, BAJA).
-  - DoD: tests de `updateDisplay`, `handlePaste` y reinicio con jsdom.
+  - Evidencia: 6 pruebas nuevas con jsdom para `updateDisplay` (correcto/incorrecto/activo),
+    `handlePaste` (inserción, recorte y estado inactivo) y `restartTest` (AUD-026, BAJA);
+    total 14 tests JS.
+  - DoD: tests de `updateDisplay`, `handlePaste` y reinicio con jsdom. ✅
 
 ## Deuda técnica / Backlog
 
@@ -255,3 +257,4 @@ Referencia: `specs/008-code-audit/spec.md`
 | 2026-11-12 | Cerrados T008-22, T008-23, T008-24, T008-27, T008-28 y T008-29 |
 | 2026-11-12 | T008-25: caché de fragmentos separada de la de autenticación |
 | 2026-11-12 | T008-26: helper único de contadores y fallback ante alias inválido |
+| 2026-11-12 | T008-31: tests JS de DOM, pegado y reinicio (14 en total) |

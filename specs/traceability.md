@@ -220,7 +220,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | --- | --- | --- |
 | Sistema | `manage.py check` | 0 issues |
 | Pruebas | `manage.py test` | 87 tests (86 OK + 1 omitido en Windows por permisos POSIX) |
-| Pruebas JS | `npm run test:js` | 8 tests OK (Vitest + jsdom) |
+| Pruebas JS | `npm run test:js` | 14 tests OK (Vitest + jsdom: fórmulas, contadores, DOM y eventos) |
 | Imports | `isort --check-only syntax_sprint/` | Sin avisos |
 | Lint | `pylint backend --rcfile=../.pylintrc` | 10.00/10 |
 | CI | `.github/workflows/ci.yml` (run 20) | 14 pasos en verde |
