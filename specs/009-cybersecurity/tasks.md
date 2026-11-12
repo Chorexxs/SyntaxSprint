@@ -233,6 +233,31 @@ Referencia: `specs/009-cybersecurity/spec.md`
     cubiertos por `specs/012-admin-2fa`, `T009-30` y `T009-28` (AUD-029, INFO).
   - DoD: el backlog solo contiene trabajo pendiente real. ✅
 
+## Fase 9 — Prepublicación (2026-11-12)
+
+- [ ] **T009-37** Decidir y sanear la PII antes de hacer público el repositorio.
+  - Requisitos: `RF-009-10`, `RF-009-11`
+  - Archivos: `README.md`, `381shots_so.png`, historial de autores
+  - Evidencia: email de contacto en `README.md:138`, email del autor en 138 commits y
+    captura con marcadores visibles (SEC-023…025, BAJA).
+  - DoD: decisión documentada para el email de contacto y del autor, y captura
+    reemplazada o eliminada con el README actualizado.
+
+- [ ] **T009-38** Ampliar `.gitignore` con patrones de secretos y backups.
+  - Requisitos: `RF-009-04`, `RF-009-10`
+  - Archivos: `.gitignore`
+  - Evidencia: faltan `.env.*`, `*.log`, `*.pem`, `*.key`, `*.p12`, `*.pfx`,
+    `backup.json`, `*.dump`, `.npmrc` y `.pypirc` (SEC-026, BAJA).
+  - DoD: `git check-ignore` cubre esos nombres y `.env.example` sigue rastreado.
+
+- [ ] **T009-39** Verificar los ajustes de GitHub antes de publicar.
+  - Requisitos: `RF-009-10`
+  - Archivos: `.github/workflows/ci.yml`, configuración del repositorio
+  - Evidencia: API de GitHub devuelve 403 sin autenticación y Pages 404; el CI ya usa
+    `contents: read` (SEC-030).
+  - DoD: checklist firmado con secret scanning, push protection, Dependabot, permisos
+    de Actions, Pages deshabilitado, sin releases con datos y rotaciones confirmadas.
+
 ## Deuda técnica / Backlog
 
 - [ ] Pre-commit hook con `scan_secrets.py` y `gitleaks`.
@@ -257,3 +282,4 @@ Referencia: `specs/009-cybersecurity/spec.md`
 | 2026-11-11 | Remediación completa: SEC-016…SEC-021 cerradas (rate limits, purga, HSTS, pinning) |
 | 2026-11-11 | Caché compartida del rate limit (T009-35) y 2FA del admin (spec 012) |
 | 2026-11-12 | Reauditoría de código: backlog de CSP y 2FA alineado (AUD-029, T009-36) |
+| 2026-11-12 | Auditoría prepublicación: BAJO; 0 críticas/altas y 4 bajas de PII/prevención |

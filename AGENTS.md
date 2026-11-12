@@ -329,8 +329,10 @@ backlog de cada `tasks.md`. `T000-05` se aprobó y `T000-06` se cerró con
 `specs/011-analytics`.
 
 > No quedan hallazgos **CRÍTICOS** ni **ALTOS** abiertos. Evidencia:
-> `audits/security/2026-11-11-verificacion.md` y
-> `audits/code/2026-11-12-auditoria-arquitectura.md`.
+> `audits/security/2026-11-11-verificacion.md`,
+> `audits/security/2026-11-12-auditoria-prepublicacion.md` y
+> `audits/code/2026-11-12-auditoria-arquitectura.md`. La prepublicación deja 4 BAJAS
+> de PII/prevención (`T009-37`…`T009-39`).
 
 ## 9. Seguridad — reglas rápidas
 
