@@ -240,11 +240,12 @@ Referencia: `specs/008-code-audit/spec.md`
 
 ## Fase 7 — Hallazgos de la reauditoría (2026-11-12)
 
-- [ ] **T008-32** Reducir `handle` de `enroll_admin_totp` por debajo de 40 líneas.
+- [x] **T008-32** Reducir `handle` de `enroll_admin_totp` por debajo de 40 líneas.
   - Requisito: `RF-008-11`
   - Archivos: `backend/management/commands/enroll_admin_totp.py`
-  - Evidencia: `code_metrics.py --strict` → `handle -> 43 líneas` (AUD-027, BAJA).
-  - DoD: `code_metrics.py --strict` sin la infracción y el comando sigue cubierto por tests.
+  - Evidencia: `handle` pasa a 8 líneas y delega en `_get_user`, `_disable`, `_rotate`
+    y `_report`; `code_metrics.py --strict` queda sin incumplimientos (AUD-027, BAJA).
+  - DoD: `code_metrics.py --strict` sin la infracción y el comando sigue cubierto por tests. ✅
 
 - [x] **T008-33** Excluir los módulos `tests*.py` de las métricas de producción.
   - Requisitos: `RF-008-11`, `RNF-008-04`
@@ -281,3 +282,4 @@ Referencia: `specs/008-code-audit/spec.md`
 | 2026-11-12 | T008-30: Vitest 4.1.12, `npm audit` sin avisos |
 | 2026-11-12 | T008-21: ventana única en `build_report`; Fase 5 y 6 completas |
 | 2026-11-12 | Reauditoría: 8.9 (B), 0 ALTA; AUD-027/028 (T008-32/33) y AUD-029 (T009-36) |
+| 2026-11-12 | AUD-027 y AUD-028 cerrados: quality gate en verde |

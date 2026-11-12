@@ -315,14 +315,13 @@ Al terminar:
 
 Estado verificado el 2026-11-12: `manage.py check` 0 issues, `manage.py test` 88 tests
 (87 OK + 1 omitido en Windows por permisos POSIX), 14 tests JS, `isort --check-only`
-sin avisos, `pylint` 10.00/10 y `npm audit` sin avisos. `code_metrics.py --strict`
-tiene 2 incidencias abiertas (`T008-32`/`T008-33`): un comando de 43 líneas y 14 falsos
-positivos de los módulos `tests*.py`.
+sin avisos, `pylint` 10.00/10, `code_metrics.py --strict` sin incumplimientos y
+`npm audit` sin avisos.
 
-No hay deuda estructural abierta: las fases 5 y 6 de `specs/008-code-audit` quedaron
-cerradas el 2026-11-12 (`T008-21`…`T008-31`). Queda `AUD-028` (MEDIA de tooling) y
-`AUD-027` (BAJA), con tareas `T008-32`/`T008-33`. Tailwind se compila localmente desde
-el 2026-11-11 (`npm run build:css`).
+No hay deuda priorizada abierta: las fases 5 y 6 de `specs/008-code-audit` quedaron
+cerradas el 2026-11-12 (`T008-21`…`T008-31`), y `AUD-027`/`AUD-028` se corrigieron el
+mismo día (`T008-32`/`T008-33`). Tailwind se compila localmente desde el 2026-11-11
+(`npm run build:css`).
 
 Siguen abiertos, sin severidad asignada, el backlog genérico de 008 (duplicación,
 análisis CSS, Core Web Vitals, cobertura de ramas, informe automatizado) y el backlog

@@ -43,18 +43,28 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args: Any, **options: Any) -> None:
-        username = options["username"]
+        user = self._get_user(options["username"])
+        if options["disable"]:
+            self._disable(user)
+            return
+        secret = self._rotate(user)
+        self._report(user.username, secret, options.get("write"))
+
+    @staticmethod
+    def _get_user(username: str) -> Any:
         user = get_user_model().objects.filter(username=username, is_staff=True).first()
         if user is None:
             raise CommandError("No existe un usuario staff con ese username")
+        return user
 
-        if options["disable"]:
-            deleted, _ = AdminTOTP.objects.filter(user=user).delete()
-            self.stdout.write(
-                f"TOTP desactivado para {user.username} ({deleted} registro(s))"
-            )
-            return
+    def _disable(self, user: Any) -> None:
+        deleted, _ = AdminTOTP.objects.filter(user=user).delete()
+        self.stdout.write(
+            f"TOTP desactivado para {user.username} ({deleted} registro(s))"
+        )
 
+    @staticmethod
+    def _rotate(user: Any) -> str:
         secret = generate_secret()
         device, created = AdminTOTP.objects.get_or_create(
             user=user,
@@ -68,10 +78,12 @@ class Command(BaseCommand):
             device.save(
                 update_fields=["secret", "confirmed", "last_counter", "version"]
             )
-        destination = options.get("write")
+        return secret
+
+    def _report(self, username: str, secret: str, destination: str | None) -> None:
         if destination:
             try:
-                write_secret_file(destination, user.username, secret)
+                write_secret_file(destination, username, secret)
             except OSError as exc:
                 raise CommandError(
                     f"No se pudo escribir {destination}: {exc}"
@@ -80,8 +92,8 @@ class Command(BaseCommand):
                 f"Secreto y URI guardados en {destination} (permisos 0600)."
             )
             self.stdout.write("Bórralo después de añadirlo a la app de autenticación.")
-        else:
-            self.stdout.write(
-                "Secreto generado, pero no se imprime para no dejarlo en los logs."
-            )
-            self.stdout.write("Repite con --write <archivo> para guardarlo.")
+            return
+        self.stdout.write(
+            "Secreto generado, pero no se imprime para no dejarlo en los logs."
+        )
+        self.stdout.write("Repite con --write <archivo> para guardarlo.")
