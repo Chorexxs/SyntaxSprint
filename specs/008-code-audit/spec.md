@@ -277,6 +277,10 @@ Crear `audits/code/AAAA-MM-DD-<alcance>.md` usando
 > Reauditoría del 2026-11-11: `audits/code/2026-11-11-reauditoria.md` → **8.8/10 (B)**,
 > 0 hallazgos ALTA.
 >
+> Reauditoría del 2026-11-12 tras cerrar la Fase 6:
+> `audits/code/2026-11-12-reauditoria.md` → **8.9/10 (B)**, 0 ALTA; 1 MEDIA de tooling,
+> 1 BAJA y 1 INFO.
+>
 > Reauditoría post-analítica del 2026-11-11:
 > `audits/code/2026-11-11-auditoria-post-analitica.md` → **8.55/10 (B)**, 0 ALTA y
 > 4 hallazgos menores (AUD-013…AUD-016).

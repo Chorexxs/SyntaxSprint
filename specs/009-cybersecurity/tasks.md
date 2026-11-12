@@ -224,6 +224,15 @@ Referencia: `specs/009-cybersecurity/spec.md`
     en `syntax_sprint_cache`.
   - DoD: con varios workers el contador se comparte. ✅
 
+## Fase 8 — Reauditoría de código (2026-11-12)
+
+- [ ] **T009-36** Limpiar del backlog la CSP y la 2FA ya implementadas.
+  - Requisito: `RF-009-06`
+  - Archivos: `specs/009-cybersecurity/tasks.md`
+  - Evidencia: los ítems «2FA para el admin» y «Cabecera CSP» siguen abiertos aunque
+    `T009-28`, `T009-30` y la spec 012 los cubren (AUD-029, INFO).
+  - DoD: el backlog solo contiene trabajo pendiente real.
+
 ## Deuda técnica / Backlog
 
 - [ ] Pre-commit hook con `scan_secrets.py` y `gitleaks`.

@@ -315,21 +315,23 @@ Al terminar:
 
 Estado verificado el 2026-11-12: `manage.py check` 0 issues, `manage.py test` 88 tests
 (87 OK + 1 omitido en Windows por permisos POSIX), 14 tests JS, `isort --check-only`
-sin avisos, `pylint` 10.00/10, `code_metrics.py --strict` sin incumplimientos y
-`npm audit` sin avisos.
+sin avisos, `pylint` 10.00/10 y `npm audit` sin avisos. `code_metrics.py --strict`
+tiene 2 incidencias abiertas (`T008-32`/`T008-33`): un comando de 43 líneas y 14 falsos
+positivos de los módulos `tests*.py`.
 
-No hay deuda priorizada abierta: las fases 5 y 6 de `specs/008-code-audit` quedaron
-cerradas el 2026-11-12 (`T008-21`…`T008-31`). Tailwind se compila localmente desde el
-2026-11-11 (`npm run build:css`).
+No hay deuda estructural abierta: las fases 5 y 6 de `specs/008-code-audit` quedaron
+cerradas el 2026-11-12 (`T008-21`…`T008-31`). Queda `AUD-028` (MEDIA de tooling) y
+`AUD-027` (BAJA), con tareas `T008-32`/`T008-33`. Tailwind se compila localmente desde
+el 2026-11-11 (`npm run build:css`).
 
 Siguen abiertos, sin severidad asignada, el backlog genérico de 008 (duplicación,
 análisis CSS, Core Web Vitals, cobertura de ramas, informe automatizado) y el backlog
 de cada `tasks.md`. `T000-05` se aprobó y `T000-06` se cerró con
 `specs/011-analytics`.
 
-> No quedan hallazgos **CRÍTICOS**, **ALTOS** ni **MEDIOS** abiertos. Evidencia:
+> No quedan hallazgos **CRÍTICOS** ni **ALTOS** abiertos. Evidencia:
 > `audits/security/2026-11-11-verificacion.md` y
-> `audits/code/2026-11-11-auditoria-post-2fa.md`.
+> `audits/code/2026-11-12-reauditoria.md`.
 
 ## 9. Seguridad — reglas rápidas
 

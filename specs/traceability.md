@@ -224,7 +224,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | Imports | `isort --check-only syntax_sprint/` | Sin avisos |
 | Lint | `pylint backend --rcfile=../.pylintrc` | 10.00/10 |
 | CI | `.github/workflows/ci.yml` (run 20) | 14 pasos en verde |
-| Arquitectura | `specs/tools/code_metrics.py` | 0 funciones fuera de umbral; vistas por dominio |
+| Arquitectura | `specs/tools/code_metrics.py` | 1 función > 40 (AUD-027) y 14 falsos positivos de `tests*.py` (AUD-028); vistas por dominio |
 | Cobertura | `coverage run --source=backend manage.py test` + `coverage report` | 98 % (1014 sentencias, 25 sin cubrir) |
 | Dependencias | `specs/tools/check_dependencies.py --strict` | OK (0 sin uso, runtime coherente) |
 | Vulnerabilidades | `pip-audit -r requirements.txt` | 0 avisos |
