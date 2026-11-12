@@ -195,11 +195,12 @@ Referencia: `specs/008-code-audit/spec.md`
   - Evidencia: lectura-modificación-escritura sin bloqueo (AUD-022, BAJA).
   - DoD: actualización condicional y prueba de concurrencia básica.
 
-- [ ] **T008-28** Añadir `@never_cache` a la verificación 2FA.
-  - Requisitos: `RF-008-11`, `RNF-009-02`
-  - Archivos: `backend/two_factor.py`
-  - Evidencia: página con CSRF y estado de sesión sin cabeceras de no-caché (AUD-023, BAJA).
-  - DoD: cabecera `Cache-Control: no-store` en `/admin/2fa/`.
+- [x] **T008-28** Añadir `@never_cache` a la verificación 2FA.
+  - Requisitos: `RF-008-11`, `RNF-009-02`, `RNF-012-06`
+  - Archivos: `backend/two_factor.py`, `backend/tests.py`
+  - Evidencia: la vista lleva `@never_cache` y `test_verify_response_is_not_cached`
+    comprueba `Cache-Control: no-store` (AUD-023, BAJA).
+  - DoD: cabecera `Cache-Control: no-store` en `/admin/2fa/`. ✅
 
 - [ ] **T008-29** Hacer los tests de configuración independientes del entorno.
   - Requisitos: `RF-008-04`, `RNF-008-02`

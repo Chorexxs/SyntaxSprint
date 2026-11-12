@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | Estado | Implementada |
-| Versión | 1.3 |
+| Versión | 1.4 |
 | Depende de | 009-cybersecurity |
 | Archivos principales | `backend/totp.py`, `backend/two_factor.py`, `backend/middleware.py`, `backend/management/commands/enroll_admin_totp.py` |
 
@@ -101,6 +101,7 @@ eventos de analítica. La spec 009 deja la 2FA en backlog.
 | RNF-012-03 | Funciona igual en SQLite y PostgreSQL. |
 | RNF-012-04 | La comprobación no añade más de una consulta por petición al admin. |
 | RNF-012-05 | Con la función desactivada no hay redirecciones ni consultas extra. |
+| RNF-012-06 | La verificación 2FA envía `Cache-Control: no-store` en todas sus respuestas. |
 
 ## 8. Criterios de aceptación
 
@@ -114,6 +115,7 @@ eventos de analítica. La spec 009 deja la 2FA en backlog.
 - **CA-012-08** Tras 5 POST fallidos desde la misma IP, el sexto responde 429, no marca la sesión y deja un aviso en el log.
 - **CA-012-09** Tras rotar o desactivar el TOTP, una sesión ya verificada que pide `/admin/` recibe 302 a `/admin/2fa/` y pierde la bandera de sesión.
 - **CA-012-10** `enroll_admin_totp` no imprime el secreto en stdout; con `--write` lo deja en un archivo con permisos `0600`.
+- **CA-012-11** La respuesta de `/admin/2fa/` incluye `Cache-Control: no-store`.
 
 ## 9. Fuera de alcance
 

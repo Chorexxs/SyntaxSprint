@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
+from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods
 
 from .models import AdminTOTP
@@ -24,6 +25,7 @@ RATE_LIMIT_SCOPE = "admin-2fa"
 
 @login_required(login_url="admin:login")
 @require_http_methods(["GET", "POST"])
+@never_cache
 def admin_2fa(request: HttpRequest) -> HttpResponse:
     """Pide el código TOTP y marca la sesión como verificada."""
     if not request.user.is_staff:

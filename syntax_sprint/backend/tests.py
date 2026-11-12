@@ -828,6 +828,14 @@ class TwoFactorTests(TestCase):
         self.assertIn("bloqueada", logs.output[0])
         self.assertFalse(self.client.session.get(SESSION_KEY))
 
+    def test_verify_response_is_not_cached(self):
+        self.client.force_login(self.staff)
+
+        response = self.client.get(reverse("admin_2fa"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("no-store", response["Cache-Control"])
+
     def test_verify_success_resets_limit(self):
         self.client.force_login(self.staff)
 

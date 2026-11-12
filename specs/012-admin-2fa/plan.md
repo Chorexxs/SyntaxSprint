@@ -23,7 +23,7 @@ exponer un flujo de alta antes de tener 2FA. Todo queda detrás de
 | `backend/totp.py` | Añadir | Secreto, código, verificación y URI `otpauth://`. |
 | `backend/models.py` | Modificar | Modelo `AdminTOTP`. |
 | `backend/migrations/0003_admintotp.py` | Añadir | Migración aditiva. |
-| `backend/two_factor.py` | Añadir | Vista `/admin/2fa/`, límite de intentos y constantes de sesión. |
+| `backend/two_factor.py` | Añadir | Vista `/admin/2fa/`, límite de intentos, `Cache-Control: no-store` y constantes de sesión. |
 | `backend/middleware.py` | Modificar | `AdminTOTPMiddleware`. |
 | `backend/management/commands/enroll_admin_totp.py` | Añadir | Enrolar, rotar y desactivar. |
 | `syntax_sprint/urls.py` | Modificar | Ruta `admin/2fa/`. |

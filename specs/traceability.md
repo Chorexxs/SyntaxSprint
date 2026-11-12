@@ -219,7 +219,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | Comprobación | Comando | Resultado |
 | --- | --- | --- |
 | Sistema | `manage.py check` | 0 issues |
-| Pruebas | `manage.py test` | 81 tests (80 OK + 1 omitido en Windows por permisos POSIX) |
+| Pruebas | `manage.py test` | 82 tests (81 OK + 1 omitido en Windows por permisos POSIX) |
 | Pruebas JS | `npm run test:js` | 8 tests OK (Vitest + jsdom) |
 | Imports | `isort --check-only syntax_sprint/` | Sin avisos |
 | Lint | `pylint backend --rcfile=../.pylintrc` | 10.00/10 |

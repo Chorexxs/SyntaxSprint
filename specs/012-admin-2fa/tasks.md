@@ -65,3 +65,4 @@ Referencia: `specs/012-admin-2fa/spec.md`
 | 2026-11-12 | Límite de intentos en `/admin/2fa/` (RF-012-07, seguido en `T008-22`) | Agente |
 | 2026-11-12 | Revocación de sesiones al rotar o desactivar el TOTP (RF-012-08, `T008-23`) | Agente |
 | 2026-11-12 | Secreto fuera de los logs con `--write` (RNF-012-02, `T008-24`) | Agente |
+| 2026-11-12 | `Cache-Control: no-store` en la verificación 2FA (RNF-012-06, `T008-28`) | Agente |
