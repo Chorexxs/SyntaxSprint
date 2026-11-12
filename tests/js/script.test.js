@@ -73,7 +73,7 @@ function setupDom() {
     <button id="start-btn" type="button"></button>
     <button id="restart-btn" type="button"></button>
     <select id="language-select"><option value="python">Python</option></select>
-    <input id="words-input" />
+    <textarea id="words-input"></textarea>
     <div id="prompt-display"></div>
     <span id="timer"></span>
     <span id="live-wpm"></span>
@@ -181,5 +181,133 @@ describe('TypingTest.restartTest', () => {
     expect(test.elements.resultsSection.classList.contains('hidden')).toBe(true);
     expect(test.elements.testArea.classList.contains('hidden')).toBe(false);
     expect(test.startTest).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('TypingTest — código multilínea', () => {
+  it('no bloquea Enter y cuenta el salto de línea', () => {
+    const test = setupDom();
+    test.state.active = true;
+    test.state.currentCode = 'a\nb';
+    test.state.startTime = Date.now();
+    test.renderCode(test.state.currentCode);
+    const input = test.elements.wordsInput;
+
+    const event = {
+      key: 'Enter',
+      preventDefault: vi.fn(),
+      target: input,
+      ctrlKey: false,
+      metaKey: false,
+      altKey: false,
+    };
+    test.handleKeydown(event);
+
+    input.value = 'a\n';
+    test.handleInput({ target: input });
+
+    expect(event.preventDefault).not.toHaveBeenCalled();
+    expect(test.state.correctChars).toBe(2);
+    expect(test.state.incorrectChars).toBe(0);
+    const letters = test.elements.promptDisplay.querySelectorAll('letter');
+    expect(letters[1].classList.contains('correct')).toBe(true);
+  });
+
+  it('inserta la indentación esperada con Tab (2, 4 y 8 espacios)', () => {
+    for (const spaces of [2, 4, 8]) {
+      const test = setupDom();
+      test.state.active = true;
+      test.state.currentCode = `x\n${' '.repeat(spaces)}y`;
+      test.state.startTime = Date.now();
+      test.elements.wordsInput.value = 'x\n';
+
+      const event = {
+        key: 'Tab',
+        preventDefault: vi.fn(),
+        target: test.elements.wordsInput,
+      };
+      test.handleKeydown(event);
+
+      expect(event.preventDefault).toHaveBeenCalledTimes(1);
+      expect(test.elements.wordsInput.value).toBe(`x\n${' '.repeat(spaces)}`);
+      expect(test.state.correctChars).toBe(2 + spaces);
+    }
+  });
+
+  it('no inserta espacios si la línea no está indentada', () => {
+    const test = setupDom();
+    test.state.active = true;
+    test.state.currentCode = 'abc';
+    test.state.startTime = Date.now();
+    test.elements.wordsInput.value = 'a';
+
+    test.insertIndentation();
+
+    expect(test.elements.wordsInput.value).toBe('a');
+  });
+});
+
+describe('TypingTest — pausa', () => {
+  it('no cuenta el tiempo en pausa en el WPM', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-01-01T00:00:00Z'));
+    try {
+      const test = setupDom();
+      test.state.active = true;
+      test.state.currentCode = 'abcde';
+      test.state.startTime = Date.now();
+      test.state.correctChars = 5;
+      test.startTimer();
+
+      vi.advanceTimersByTime(1000);
+      test.pauseTest();
+      vi.advanceTimersByTime(5000);
+      test.resumeTest();
+      vi.advanceTimersByTime(1000);
+
+      expect(test.elapsedMinutes()).toBeCloseTo(2 / 60, 5);
+      expect(test.elements.liveWpm.textContent).toBe('30');
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
+
+describe('TypingTest — IME', () => {
+  it('no duplica el carácter compuesto', () => {
+    const test = setupDom();
+    test.state.active = true;
+    test.state.currentCode = 'ábc';
+    test.state.startTime = Date.now();
+    const input = test.elements.wordsInput;
+
+    test.handleCompositionStart({});
+    input.value = 'á';
+    test.handleCompositionEnd({ data: 'á' });
+
+    expect(input.value).toBe('á');
+    expect(test.state.correctChars).toBe(1);
+    expect(test.state.totalChars).toBe(1);
+  });
+});
+
+describe('TypingTest — timer', () => {
+  it('muestra 30 al comenzar y no el valor del test anterior', async () => {
+    const test = setupDom();
+    test.elements.timer.textContent = '0';
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.resolve({ json: () => Promise.resolve({ code: 'abc' }) }))
+    );
+    try {
+      await test.startTest();
+      test.stopTimer();
+
+      expect(test.elements.timer.textContent).toBe('30');
+      expect(test.state.timeLeft).toBe(30);
+    } finally {
+      vi.unstubAllGlobals();
+      test.stopTimer();
+    }
   });
 });

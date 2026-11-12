@@ -57,7 +57,9 @@ class TypingTest {
       isFocused: true,
       correctChars: 0,
       incorrectChars: 0,
-      totalChars: 0
+      totalChars: 0,
+      pausedMs: 0,
+      pauseStartedAt: null
     };
 
     this.init = this.init.bind(this);
@@ -81,25 +83,19 @@ class TypingTest {
       }
     });
 
-    this.elements.promptDisplay.addEventListener('keydown', (e) => {
-      if (e.key === 'Tab' && this.state.active) {
-        e.preventDefault();
+    window.addEventListener('focus', () => {
+      if (!this.state.active) return;
+      if (!this.state.isFocused) {
         this.elements.wordsInput.focus();
       }
-    });
-
-    window.addEventListener('focus', () => {
-      if (this.state.active && !this.state.isFocused) {
-        this.elements.wordsInput.focus();
-        if (this.state.timerInterval === null && this.state.timeLeft > 0) {
-          this.startTimer();
-        }
+      if (this.state.timerInterval === null && this.state.timeLeft > 0) {
+        this.resumeTest();
       }
     });
 
     window.addEventListener('blur', () => {
       if (this.state.active) {
-        this.stopTimer();
+        this.pauseTest();
       }
     });
   }
@@ -140,9 +136,12 @@ class TypingTest {
         timerInterval: null,
         language,
         isComposing: false,
-        isFocused: true
+        isFocused: true,
+        pausedMs: 0,
+        pauseStartedAt: null
       };
 
+      this.elements.timer.textContent = this.state.timeLeft;
       this.elements.wordsInput.value = '';
       this.elements.wordsInput.focus();
 
@@ -190,6 +189,32 @@ class TypingTest {
     }
   }
 
+  pauseTest() {
+    if (this.state.pauseStartedAt === null) {
+      this.state.pauseStartedAt = Date.now();
+    }
+    this.stopTimer();
+  }
+
+  resumeTest() {
+    if (this.state.pauseStartedAt !== null) {
+      this.state.pausedMs += Date.now() - this.state.pauseStartedAt;
+      this.state.pauseStartedAt = null;
+    }
+    this.startTimer();
+  }
+
+  elapsedMinutes() {
+    if (!this.state.startTime) return 0;
+
+    const now = this.state.pauseStartedAt ?? Date.now();
+    const elapsedMs = Math.max(
+      now - this.state.startTime - this.state.pausedMs,
+      0
+    );
+    return elapsedMs / 1000 / 60;
+  }
+
   handleInput = (e) => {
     if (!this.state.active || this.state.isComposing) return;
 
@@ -235,11 +260,11 @@ class TypingTest {
 
     if (key === 'Tab') {
       e.preventDefault();
-      this.elements.wordsInput.focus();
+      this.insertIndentation();
       return;
     }
 
-    if (key === 'Enter' || key === 'Escape') {
+    if (key === 'Escape') {
       e.preventDefault();
       return;
     }
@@ -291,6 +316,25 @@ class TypingTest {
     }
   }
 
+  insertIndentation() {
+    if (!this.state.active) return;
+
+    const input = this.elements.wordsInput;
+    const remaining = this.state.currentCode.slice(input.value.length);
+    const indent = remaining.match(/^ +/);
+    if (!indent) return;
+
+    const room = this.state.currentCode.length - input.value.length;
+    input.value += indent[0].slice(0, room);
+    this.countTypedChars(input.value);
+    this.updateDisplay(input.value.length);
+    this.updateLiveStats();
+
+    if (input.value.length >= this.state.currentCode.length) {
+      this.endTest();
+    }
+  }
+
   handlePaste = (e) => {
     if (!this.state.active) return;
 
@@ -320,22 +364,17 @@ class TypingTest {
     this.state.isComposing = true;
   }
 
-  handleCompositionEnd = (e) => {
+  handleCompositionEnd = () => {
     if (!this.state.active || !this.state.isComposing) return;
     this.state.isComposing = false;
 
-    const composedText = e.data || '';
-    if (composedText) {
-      const currentValue = this.elements.wordsInput.value;
-      const newValue = currentValue + composedText;
-      this.elements.wordsInput.value = newValue;
-      this.countTypedChars(newValue);
-      this.updateDisplay(newValue.length);
-      this.updateLiveStats();
+    const input = this.elements.wordsInput;
+    this.countTypedChars(input.value);
+    this.updateDisplay(input.value.length);
+    this.updateLiveStats();
 
-      if (newValue.length >= this.state.currentCode.length) {
-        this.endTest();
-      }
+    if (input.value.length >= this.state.currentCode.length) {
+      this.endTest();
     }
   }
 
@@ -378,7 +417,7 @@ class TypingTest {
   updateLiveStats() {
     if (!this.state.startTime) return;
 
-    const elapsedMinutes = (Date.now() - this.state.startTime) / 1000 / 60;
+    const elapsedMinutes = this.elapsedMinutes();
 
     this.elements.liveWpm.textContent = computeWpm(
       this.state.correctChars,
@@ -393,7 +432,8 @@ class TypingTest {
     this.stopTimer();
     this.elements.wordsInput.blur();
 
-    const elapsedMinutes = (Date.now() - this.state.startTime) / 1000 / 60;
+    const elapsedMinutes = this.elapsedMinutes();
+    this.state.pauseStartedAt = null;
     const wpm = computeWpm(this.state.correctChars, elapsedMinutes);
     const acc = computeAccuracy(this.state.correctChars, this.state.incorrectChars);
 
