@@ -58,3 +58,4 @@ htmlcov/
 
 # Dependencias del build de Tailwind
 node_modules/
+.vercel

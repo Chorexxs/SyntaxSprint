@@ -244,6 +244,8 @@ Si devuelve 404:
 
 ## 12. Despliegue alternativo en Vercel
 
+URL de producción: `https://syntax-sprint-ten.vercel.app`
+
 Vercel detecta Django por `syntax_sprint/manage.py` y resuelve la entrada desde
 `WSGI_APPLICATION`. Para que el build no falle:
 
