@@ -246,12 +246,13 @@ Referencia: `specs/008-code-audit/spec.md`
   - Evidencia: `code_metrics.py --strict` → `handle -> 43 líneas` (AUD-027, BAJA).
   - DoD: `code_metrics.py --strict` sin la infracción y el comando sigue cubierto por tests.
 
-- [ ] **T008-33** Excluir los módulos `tests*.py` de las métricas de producción.
+- [x] **T008-33** Excluir los módulos `tests*.py` de las métricas de producción.
   - Requisitos: `RF-008-11`, `RNF-008-04`
   - Archivos: `specs/tools/code_metrics.py`
-  - Evidencia: `strict_violations` y `render` solo omiten `tests.py`; 14 falsos positivos
-    de `tests_ratelimit.py` y `tests_totp.py` dejan el CI en rojo (AUD-028, MEDIA).
-  - DoD: `code_metrics.py --strict` en verde y el resto de métricas sin cambios.
+  - Evidencia: `is_test_module()` omite `tests.py`, `tests_*.py` y `test_*.py` en
+    `strict_violations` y `render`; los 14 falsos positivos desaparecen (AUD-028,
+    MEDIA). `code_metrics.py --strict` solo muestra ya AUD-027.
+  - DoD: `code_metrics.py --strict` en verde y el resto de métricas sin cambios. ✅
 
 ## Deuda técnica / Backlog
 

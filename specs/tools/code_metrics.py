@@ -233,6 +233,16 @@ def is_migration(metric: FileMetric) -> bool:
     return "/migrations/" in metric.path.replace("\\", "/")
 
 
+def is_test_module(path: str) -> bool:
+    """Indica si el archivo contiene pruebas y no exige anotaciones."""
+    name = Path(path).name
+    return name.endswith(".py") and (
+        name == "tests.py"
+        or name.startswith("tests_")
+        or name.startswith("test_")
+    )
+
+
 def strict_violations(metrics: list[FileMetric]) -> list[str]:
     """Problemas que deben hacer fallar el quality gate."""
     problems: list[str] = []
@@ -249,7 +259,7 @@ def strict_violations(metrics: list[FileMetric]) -> list[str]:
         signals = file_signals(metric)
         if signals:
             problems.append(f"{metric.path}: " + ", ".join(signals))
-        if Path(metric.path).name != "tests.py":
+        if not is_test_module(metric.path):
             for function in metric.functions:
                 if not function.typed:
                     problems.append(
@@ -287,7 +297,7 @@ def render(metrics: list[FileMetric]) -> None:
     untyped = [
         (item.path, function)
         for item in metrics
-        if Path(item.path).name != "tests.py"
+        if not is_test_module(item.path)
         for function in item.functions
         if not function.typed
     ]
