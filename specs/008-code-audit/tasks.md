@@ -148,12 +148,14 @@ Referencia: `specs/008-code-audit/spec.md`
 
 ## Fase 6 — Hallazgos de la auditoría post-2FA (2026-11-11)
 
-- [ ] **T008-22** Limitar los intentos de código en `/admin/2fa/`.
-  - Requisitos: `RF-008-11`, `RF-009-07`
-  - Archivos: `backend/two_factor.py`, `backend/ratelimit.py`
-  - Evidencia: la vista no llama a `is_rate_limited` y está exenta del middleware
-    (AUD-017, MEDIA). Detalle en `audits/code/2026-11-11-auditoria-post-2fa.md`.
-  - DoD: 5 intentos/300 s por IP con 429 y registro del bloqueo.
+- [x] **T008-22** Limitar los intentos de código en `/admin/2fa/`.
+  - Requisitos: `RF-008-11`, `RF-009-07`, `RF-012-07`
+  - Archivos: `backend/two_factor.py`, `backend/ratelimit.py`, `backend/tests.py`
+  - Evidencia: `ADMIN_2FA_LIMIT=5` y `ADMIN_2FA_WINDOW_SECONDS=300` con ámbito
+    `admin-2fa`; el sexto POST responde 429, no marca la sesión y registra
+    "Verificación 2FA bloqueada" (AUD-017, MEDIA); el éxito reinicia el contador.
+    Pruebas: `test_verify_returns_429_after_limit` y `test_verify_success_resets_limit`.
+  - DoD: 5 intentos/300 s por IP con 429 y registro del bloqueo. ✅
 
 - [ ] **T008-23** Invalidar las sesiones verificadas al rotar o desactivar el TOTP.
   - Requisitos: `RF-008-11`, `RF-009-07`

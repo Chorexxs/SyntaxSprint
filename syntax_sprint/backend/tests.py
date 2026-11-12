@@ -20,6 +20,7 @@ from django.utils import timezone
 from .analytics import (PURGE_CACHE_KEY, share_of_users_with_results,
                         snippet_error_rate, tests_per_active_user_per_week)
 from .models import AdminTOTP, SnippetRequest, TypingTestResult
+from .ratelimit import ADMIN_2FA_LIMIT
 from .snippets import CODE_SNIPPETS, validate_catalog
 from .totp import (code_for_counter, current_counter, generate_secret,
                    provisioning_uri, verify_code)
@@ -819,6 +820,34 @@ class TwoFactorTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Código incorrecto", response.content.decode())
         self.assertFalse(self.client.session.get(SESSION_KEY))
+
+    def test_verify_returns_429_after_limit(self):
+        self.client.force_login(self.staff)
+
+        with override_settings(ADMIN_TOTP_REQUIRED=True):
+            for _ in range(ADMIN_2FA_LIMIT):
+                response = self.client.post(reverse("admin_2fa"), {"code": "12345"})
+                self.assertEqual(response.status_code, 200)
+            with self.assertLogs("backend.two_factor", level="WARNING") as logs:
+                blocked = self.client.post(reverse("admin_2fa"), {"code": "12345"})
+
+        self.assertEqual(blocked.status_code, 429)
+        self.assertIn("Demasiados intentos", blocked.content.decode())
+        self.assertIn("bloqueada", logs.output[0])
+        self.assertFalse(self.client.session.get(SESSION_KEY))
+
+    def test_verify_success_resets_limit(self):
+        self.client.force_login(self.staff)
+
+        with override_settings(ADMIN_TOTP_REQUIRED=True):
+            for _ in range(ADMIN_2FA_LIMIT - 1):
+                self.client.post(reverse("admin_2fa"), {"code": "12345"})
+            response = self.client.post(
+                reverse("admin_2fa"), {"code": self._valid_code()}
+            )
+
+        self.assertRedirects(response, reverse("admin:index"))
+        self.assertIsNone(cache.get("ratelimit:admin-2fa:127.0.0.1"))
 
     def test_verify_requires_device(self):
         other = User.objects.create_user(

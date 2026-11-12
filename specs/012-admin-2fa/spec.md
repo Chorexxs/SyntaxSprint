@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | Estado | Implementada |
-| Versión | 1.0 |
+| Versión | 1.1 |
 | Depende de | 009-cybersecurity |
 | Archivos principales | `backend/totp.py`, `backend/two_factor.py`, `backend/middleware.py`, `backend/management/commands/enroll_admin_totp.py` |
 
@@ -45,6 +45,7 @@ eventos de analítica. La spec 009 deja la 2FA en backlog.
 | RF-012-04 | Cuando un staff no tiene dispositivo confirmado, el sistema debe responder 403 con instrucciones de enrolamiento. | Media |
 | RF-012-05 | El sistema debe ofrecer un comando para enrolar, rotar y desactivar el TOTP de un usuario staff. | Alta |
 | RF-012-06 | Cuando `ADMIN_TOTP_REQUIRED` está desactivado, el admin debe funcionar como antes. | Alta |
+| RF-012-07 | Cuando una IP supera 5 intentos de código en 300 s en `/admin/2fa/`, el sistema debe responder 429, no marcar la sesión y registrar el bloqueo. | Media |
 
 ## 5. Reglas de negocio y validaciones
 
@@ -55,6 +56,7 @@ eventos de analítica. La spec 009 deja la 2FA en backlog.
 | Replay | Se guarda el último contador aceptado; un código con contador ≤ al guardado se rechaza. |
 | Comparación | `hmac.compare_digest` para evitar ataques de tiempo. |
 | Sesión | Bandera `admin_totp_ok`; se rota la clave de sesión al verificar y desaparece al cerrar sesión. |
+| Límite de intentos | 5 POST por IP y ventana de 300 s sobre la caché del rate limiting; se reinicia tras una verificación correcta. |
 | Rutas exentas | `/admin/login/`, `/admin/logout/`, `/admin/2fa/`, `/admin/jsi18n/` y estáticos. |
 | Desactivación | `enroll_admin_totp --disable` borra el dispositivo del usuario. |
 | Secreto | Se guarda en la base de datos (necesario para verificar) y nunca se registra en logs. |
@@ -66,7 +68,7 @@ eventos de analítica. La spec 009 deja la 2FA en backlog.
 | Método | Ruta | Auth | Respuesta |
 | --- | --- | --- | --- |
 | GET | `/admin/2fa/` | Staff | Formulario de código o 403 si no hay dispositivo |
-| POST | `/admin/2fa/` | Staff | 302 a `/admin/` si el código es válido; 200 con error si no |
+| POST | `/admin/2fa/` | Staff | 302 a `/admin/` si el código es válido; 200 con error si no; 429 si se supera el límite |
 
 ### Comandos
 
@@ -106,6 +108,7 @@ eventos de analítica. La spec 009 deja la 2FA en backlog.
 - **CA-012-05** Un staff sin dispositivo recibe 403 con instrucciones.
 - **CA-012-06** `enroll_admin_totp` crea el dispositivo y `--disable` lo elimina.
 - **CA-012-07** Con la flag desactivada, `/admin/` no redirige a la verificación.
+- **CA-012-08** Tras 5 POST fallidos desde la misma IP, el sexto responde 429, no marca la sesión y deja un aviso en el log.
 
 ## 9. Fuera de alcance
 

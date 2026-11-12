@@ -23,7 +23,7 @@ exponer un flujo de alta antes de tener 2FA. Todo queda detrás de
 | `backend/totp.py` | Añadir | Secreto, código, verificación y URI `otpauth://`. |
 | `backend/models.py` | Modificar | Modelo `AdminTOTP`. |
 | `backend/migrations/0003_admintotp.py` | Añadir | Migración aditiva. |
-| `backend/two_factor.py` | Añadir | Vista `/admin/2fa/` y constantes de sesión. |
+| `backend/two_factor.py` | Añadir | Vista `/admin/2fa/`, límite de intentos y constantes de sesión. |
 | `backend/middleware.py` | Modificar | `AdminTOTPMiddleware`. |
 | `backend/management/commands/enroll_admin_totp.py` | Añadir | Enrolar, rotar y desactivar. |
 | `syntax_sprint/urls.py` | Modificar | Ruta `admin/2fa/`. |
@@ -52,8 +52,9 @@ GET /admin/ (staff, sin bandera)
   → AdminTOTPMiddleware → 302 /admin/2fa/
 GET /admin/2fa/ → formulario
 POST /admin/2fa/ {code}
+  ├─ más de 5 intentos/300 s por IP → 429, log de bloqueo y sesión intacta
   → verify_code(secreto, código, last_counter)
-      ├─ válido → guarda contador, session["admin_totp_ok"]=True, cycle_key → 302 /admin/
+      ├─ válido → reinicia contador, guarda contador, session["admin_totp_ok"]=True, cycle_key → 302 /admin/
       └─ inválido → 200 con "Código incorrecto"
 ```
 
