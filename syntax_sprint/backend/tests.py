@@ -24,7 +24,7 @@ from .ratelimit import ADMIN_2FA_LIMIT
 from .snippets import CODE_SNIPPETS, validate_catalog
 from .totp import (code_for_counter, current_counter, generate_secret,
                    provisioning_uri, verify_code)
-from .two_factor import SESSION_KEY
+from .two_factor import SESSION_KEY, VERSION_KEY
 
 PASSWORD = "".join(("Str0ng", "-Pass!2026"))
 User = get_user_model()
@@ -779,12 +779,28 @@ class TwoFactorTests(TestCase):
         self.client.force_login(self.staff)
         session = self.client.session
         session[SESSION_KEY] = True
+        session[VERSION_KEY] = self.device.version
         session.save()
 
         with override_settings(ADMIN_TOTP_REQUIRED=True):
             response = self.client.get("/admin/")
 
         self.assertEqual(response.status_code, 200)
+
+    def test_middleware_rejects_stale_device_version(self):
+        self.client.force_login(self.staff)
+        session = self.client.session
+        session[SESSION_KEY] = True
+        session[VERSION_KEY] = self.device.version - 1
+        session.save()
+
+        with override_settings(ADMIN_TOTP_REQUIRED=True):
+            response = self.client.get("/admin/")
+
+        self.assertRedirects(
+            response, reverse("admin_2fa"), fetch_redirect_response=False
+        )
+        self.assertFalse(self.client.session.get(SESSION_KEY))
 
     def test_middleware_disabled_by_default(self):
         self.client.force_login(self.staff)
@@ -810,6 +826,7 @@ class TwoFactorTests(TestCase):
 
         self.assertRedirects(response, reverse("admin:index"))
         self.assertTrue(self.client.session.get(SESSION_KEY))
+        self.assertEqual(self.client.session.get(VERSION_KEY), self.device.version)
 
     def test_verify_rejects_wrong_code(self):
         self.client.force_login(self.staff)
@@ -848,6 +865,44 @@ class TwoFactorTests(TestCase):
 
         self.assertRedirects(response, reverse("admin:index"))
         self.assertIsNone(cache.get("ratelimit:admin-2fa:127.0.0.1"))
+
+    def test_rotation_invalidates_verified_session(self):
+        self.client.force_login(self.staff)
+        with override_settings(ADMIN_TOTP_REQUIRED=True):
+            self.client.post(reverse("admin_2fa"), {"code": self._valid_code()})
+            call_command(
+                "enroll_admin_totp",
+                "--username",
+                self.staff.username,
+                stdout=StringIO(),
+            )
+            response = self.client.get("/admin/")
+
+        self.assertRedirects(
+            response, reverse("admin_2fa"), fetch_redirect_response=False
+        )
+        self.assertFalse(self.client.session.get(SESSION_KEY))
+        self.assertFalse(self.client.session.get(VERSION_KEY))
+        self.device.refresh_from_db()
+        self.assertEqual(self.device.version, 2)
+
+    def test_disable_invalidates_verified_session(self):
+        self.client.force_login(self.staff)
+        with override_settings(ADMIN_TOTP_REQUIRED=True):
+            self.client.post(reverse("admin_2fa"), {"code": self._valid_code()})
+            call_command(
+                "enroll_admin_totp",
+                "--username",
+                self.staff.username,
+                "--disable",
+                stdout=StringIO(),
+            )
+            response = self.client.get("/admin/")
+
+        self.assertRedirects(
+            response, reverse("admin_2fa"), fetch_redirect_response=False
+        )
+        self.assertFalse(self.client.session.get(SESSION_KEY))
 
     def test_verify_requires_device(self):
         other = User.objects.create_user(

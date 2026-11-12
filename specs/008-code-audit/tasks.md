@@ -157,11 +157,15 @@ Referencia: `specs/008-code-audit/spec.md`
     Pruebas: `test_verify_returns_429_after_limit` y `test_verify_success_resets_limit`.
   - DoD: 5 intentos/300 s por IP con 429 y registro del bloqueo. ✅
 
-- [ ] **T008-23** Invalidar las sesiones verificadas al rotar o desactivar el TOTP.
-  - Requisitos: `RF-008-11`, `RF-009-07`
-  - Archivos: `backend/middleware.py`, `backend/management/commands/enroll_admin_totp.py`
-  - Evidencia: el middleware solo comprueba `admin_totp_ok` (AUD-018, MEDIA).
-  - DoD: versión de dispositivo en sesión o borrado de sesiones del usuario.
+- [x] **T008-23** Invalidar las sesiones verificadas al rotar o desactivar el TOTP.
+  - Requisitos: `RF-008-11`, `RF-009-07`, `RF-012-08`
+  - Archivos: `backend/middleware.py`, `backend/models.py`,
+    `backend/management/commands/enroll_admin_totp.py`, `backend/migrations/0004_admintotp_version.py`
+  - Evidencia: `AdminTOTP.version` se incrementa al rotar y el middleware compara la
+    versión de la sesión con la del dispositivo (o detecta que falta), revocando ambas
+    claves (AUD-018, MEDIA). Pruebas: `test_rotation_invalidates_verified_session`,
+    `test_disable_invalidates_verified_session` y `test_middleware_rejects_stale_device_version`.
+  - DoD: versión de dispositivo en sesión o borrado de sesiones del usuario. ✅
 
 - [ ] **T008-24** Evitar que el secreto TOTP quede en los logs de la Shell.
   - Requisitos: `RF-008-11`, `RNF-009-01`

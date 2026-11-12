@@ -39,6 +39,7 @@ class AdminTOTP(models.Model):
     secret = models.CharField(max_length=32)
     confirmed = models.BooleanField(default=False)
     last_counter = models.BigIntegerField(default=0)
+    version = models.PositiveIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:

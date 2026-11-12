@@ -37,10 +37,18 @@ class Command(BaseCommand):
             return
 
         secret = generate_secret()
-        AdminTOTP.objects.update_or_create(
+        device, created = AdminTOTP.objects.get_or_create(
             user=user,
             defaults={"secret": secret, "confirmed": True, "last_counter": 0},
         )
+        if not created:
+            device.secret = secret
+            device.confirmed = True
+            device.last_counter = 0
+            device.version += 1
+            device.save(
+                update_fields=["secret", "confirmed", "last_counter", "version"]
+            )
         self.stdout.write(f"Secreto TOTP para {user.username}: {secret}")
         self.stdout.write(f"URI: {provisioning_uri(secret, user.username)}")
         self.stdout.write("Añádelo a tu app de autenticación y limpia la terminal.")

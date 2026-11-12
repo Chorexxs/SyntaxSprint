@@ -8,10 +8,12 @@ from django.conf import settings
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 
+from .models import AdminTOTP
 from .ratelimit import (ADMIN_LOGIN_LIMIT, ADMIN_LOGIN_PATH,
                         ADMIN_LOGIN_WINDOW_SECONDS, is_rate_limited,
                         reset_rate_limit)
 from .two_factor import SESSION_KEY as ADMIN_TOTP_SESSION_KEY
+from .two_factor import VERSION_KEY as ADMIN_TOTP_VERSION_KEY
 
 # Sin `unsafe-inline`: el tema se inicializa con un script externo y Tailwind está
 # compilado localmente, así que no hay scripts ni estilos en línea.
@@ -69,11 +71,21 @@ class AdminTOTPMiddleware:
             return self.get_response(request)
 
         user = request.user
+        if not (user.is_authenticated and user.is_staff):
+            return self.get_response(request)
+
+        version = (
+            AdminTOTP.objects.filter(user=user, confirmed=True)
+            .values_list("version", flat=True)
+            .first()
+        )
         if (
-            user.is_authenticated
-            and user.is_staff
-            and not request.session.get(ADMIN_TOTP_SESSION_KEY)
+            version is None
+            or not request.session.get(ADMIN_TOTP_SESSION_KEY)
+            or request.session.get(ADMIN_TOTP_VERSION_KEY) != version
         ):
+            request.session.pop(ADMIN_TOTP_SESSION_KEY, None)
+            request.session.pop(ADMIN_TOTP_VERSION_KEY, None)
             return redirect("admin_2fa")
         return self.get_response(request)
 

@@ -212,13 +212,14 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-012-05 | T012-02, T012-05 | CA-012-06 | ✅ |
 | RF-012-06 | T012-04 | CA-012-07 | ✅ |
 | RF-012-07 | T008-22 | CA-012-08 | ✅ |
+| RF-012-08 | T008-23 | CA-012-09 | ✅ |
 
 ## Notas de verificación
 
 | Comprobación | Comando | Resultado |
 | --- | --- | --- |
 | Sistema | `manage.py check` | 0 issues |
-| Pruebas | `manage.py test` | 76 tests OK (52,9 s, medido con cobertura) |
+| Pruebas | `manage.py test` | 79 tests OK (61,7 s, medido con cobertura) |
 | Pruebas JS | `npm run test:js` | 8 tests OK (Vitest + jsdom) |
 | Imports | `isort --check-only syntax_sprint/` | Sin avisos |
 | Lint | `pylint backend --rcfile=../.pylintrc` | 10.00/10 |
@@ -266,8 +267,8 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | 009 | 14 | 14 | 0 | 0 |
 | 010 | 12 | 12 | 0 | 0 |
 | 011 | 8 | 8 | 0 | 0 |
-| 012 | 7 | 7 | 0 | 0 |
-| **Total** | **141** | **141** | **0** | **0** |
+| 012 | 8 | 8 | 0 | 0 |
+| **Total** | **142** | **142** | **0** | **0** |
 
 > La matriz se actualiza al cerrar cada tarea. Un requisito no puede pasar a ✅ sin su
 > verificación ejecutada.

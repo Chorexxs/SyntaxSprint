@@ -40,23 +40,29 @@ AdminTOTP
 ├── secret: CharField(32)
 ├── confirmed: BooleanField(default=False)
 ├── last_counter: BigIntegerField(default=0)
+├── version: PositiveIntegerField(default=1)
 └── created_at: DateTimeField(auto_now_add)
 ```
 
-Migración necesaria: sí (`0003_admintotp`). Reversible: sí.
+Migración necesaria: sí (`0003_admintotp`, `0004_admintotp_version`). Reversible: sí.
 
 ## 4. Contratos y flujos
 
 ```text
-GET /admin/ (staff, sin bandera)
-  → AdminTOTPMiddleware → 302 /admin/2fa/
+GET /admin/ (staff)
+  → AdminTOTPMiddleware → compara session["admin_totp_version"] con device.version
+      ├─ coincide → continúa
+      └─ falta sesión, no coincide o no hay dispositivo → revoca y 302 /admin/2fa/
 GET /admin/2fa/ → formulario
 POST /admin/2fa/ {code}
   ├─ más de 5 intentos/300 s por IP → 429, log de bloqueo y sesión intacta
   → verify_code(secreto, código, last_counter)
-      ├─ válido → reinicia contador, guarda contador, session["admin_totp_ok"]=True, cycle_key → 302 /admin/
+      ├─ válido → reinicia contador, guarda contador y versión en sesión, cycle_key → 302 /admin/
       └─ inválido → 200 con "Código incorrecto"
 ```
+
+Rotar (`enroll_admin_totp` sin `--disable`) incrementa `version`; desactivar borra el
+dispositivo. En ambos casos las sesiones verificadas dejan de superar la comprobación.
 
 ## 5. Alternativas consideradas
 
@@ -85,6 +91,7 @@ POST /admin/2fa/ {code}
 | Desfase de reloj | Baja | Ventana ±1 |
 | Regresión en login del admin | Media | Tests con flag on/off y exención de `/admin/login/` |
 | Secreto en logs | Baja | No se registra y la plantilla no lo recibe |
+| Sesión verificada tras perder el dispositivo | Media | Versión de dispositivo en sesión; rotar o desactivar revoca el acceso |
 
 ## 8. Orden de implementación
 

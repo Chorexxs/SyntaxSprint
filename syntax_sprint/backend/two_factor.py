@@ -18,6 +18,7 @@ from .totp import verify_code
 logger = logging.getLogger(__name__)
 
 SESSION_KEY = "admin_totp_ok"
+VERSION_KEY = "admin_totp_version"
 RATE_LIMIT_SCOPE = "admin-2fa"
 
 
@@ -53,6 +54,7 @@ def admin_2fa(request: HttpRequest) -> HttpResponse:
             device.last_counter = counter
             device.save(update_fields=["last_counter"])
             request.session[SESSION_KEY] = True
+            request.session[VERSION_KEY] = device.version
             request.session.cycle_key()
             return redirect("admin:index")
         messages.error(request, "Código incorrecto o ya utilizado.")
