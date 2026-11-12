@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | Estado | Implementada |
-| Versión | 1.4 |
+| Versión | 1.5 |
 | Depende de | 009-cybersecurity |
 | Archivos principales | `backend/totp.py`, `backend/two_factor.py`, `backend/middleware.py`, `backend/management/commands/enroll_admin_totp.py` |
 
@@ -54,7 +54,7 @@ eventos de analítica. La spec 009 deja la 2FA en backlog.
 | --- | --- |
 | Algoritmo | TOTP RFC 6238: HMAC-SHA1, 6 dígitos, paso de 30 s, secreto base32 de 20 bytes. |
 | Ventana | ±1 paso para tolerar desfase de reloj. |
-| Replay | Se guarda el último contador aceptado; un código con contador ≤ al guardado se rechaza. |
+| Replay | Se guarda el último contador aceptado; un código con contador ≤ al guardado se rechaza y la actualización es condicional (`last_counter__lt`) para que dos peticiones simultáneas no acepten el mismo código. |
 | Comparación | `hmac.compare_digest` para evitar ataques de tiempo. |
 | Sesión | Bandera `admin_totp_ok`; se rota la clave de sesión al verificar y desaparece al cerrar sesión. |
 | Límite de intentos | 5 POST por IP y ventana de 300 s sobre la caché del rate limiting; se reinicia tras una verificación correcta. |
@@ -116,6 +116,7 @@ eventos de analítica. La spec 009 deja la 2FA en backlog.
 - **CA-012-09** Tras rotar o desactivar el TOTP, una sesión ya verificada que pide `/admin/` recibe 302 a `/admin/2fa/` y pierde la bandera de sesión.
 - **CA-012-10** `enroll_admin_totp` no imprime el secreto en stdout; con `--write` lo deja en un archivo con permisos `0600`.
 - **CA-012-11** La respuesta de `/admin/2fa/` incluye `Cache-Control: no-store`.
+- **CA-012-12** Dos peticiones simultáneas con el mismo código: solo una responde 302 y marca la sesión; la otra recibe 200 con error.
 
 ## 9. Fuera de alcance
 

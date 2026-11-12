@@ -58,7 +58,7 @@ GET /admin/2fa/ → formulario
 POST /admin/2fa/ {code}
   ├─ más de 5 intentos/300 s por IP → 429, log de bloqueo y sesión intacta
   → verify_code(secreto, código, last_counter)
-      ├─ válido → reinicia contador, guarda contador y versión en sesión, cycle_key → 302 /admin/
+      ├─ válido → reinicia contador, consume el contador y la versión de forma condicional, cycle_key → 302 /admin/
       └─ inválido → 200 con "Código incorrecto"
 ```
 

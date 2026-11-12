@@ -52,13 +52,15 @@ def admin_2fa(request: HttpRequest) -> HttpResponse:
         code = (request.POST.get("code") or "").strip()
         valid, counter = verify_code(device.secret, code, device.last_counter)
         if valid:
-            reset_rate_limit(request, RATE_LIMIT_SCOPE)
-            device.last_counter = counter
-            device.save(update_fields=["last_counter"])
-            request.session[SESSION_KEY] = True
-            request.session[VERSION_KEY] = device.version
-            request.session.cycle_key()
-            return redirect("admin:index")
+            consumed = AdminTOTP.objects.filter(
+                pk=device.pk, last_counter__lt=counter
+            ).update(last_counter=counter)
+            if consumed:
+                reset_rate_limit(request, RATE_LIMIT_SCOPE)
+                request.session[SESSION_KEY] = True
+                request.session[VERSION_KEY] = device.version
+                request.session.cycle_key()
+                return redirect("admin:index")
         messages.error(request, "Código incorrecto o ya utilizado.")
 
     return render(request, "admin_2fa.html")

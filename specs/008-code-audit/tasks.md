@@ -189,11 +189,13 @@ Referencia: `specs/008-code-audit/spec.md`
   - Evidencia: lógica duplicada y solo se captura `DatabaseError` (AUD-021, BAJA).
   - DoD: helper único y error controlado ante alias inválido.
 
-- [ ] **T008-27** Hacer atómica la actualización de `last_counter`.
+- [x] **T008-27** Hacer atómica la actualización de `last_counter`.
   - Requisitos: `RF-008-11`, `RNF-008-02`
-  - Archivos: `backend/two_factor.py`
-  - Evidencia: lectura-modificación-escritura sin bloqueo (AUD-022, BAJA).
-  - DoD: actualización condicional y prueba de concurrencia básica.
+  - Archivos: `backend/two_factor.py`, `backend/tests.py`
+  - Evidencia: `filter(pk=..., last_counter__lt=counter).update(...)`; si otra petición
+    ya consumió el contador, no se marca la sesión (AUD-022, BAJA). Prueba:
+    `test_replay_race_allows_only_one_session`.
+  - DoD: actualización condicional y prueba de concurrencia básica. ✅
 
 - [x] **T008-28** Añadir `@never_cache` a la verificación 2FA.
   - Requisitos: `RF-008-11`, `RNF-009-02`, `RNF-012-06`
