@@ -220,11 +220,13 @@ Referencia: `specs/008-code-audit/spec.md`
     `ADMIN_TOTP_REQUIRED=True` y `RATE_LIMIT_CACHE_ALIAS=shared`.
   - DoD: `override_settings` explícito y verde con variables de entorno distintas. ✅
 
-- [ ] **T008-30** Actualizar Vitest y eliminar los avisos de `npm audit`.
+- [x] **T008-30** Actualizar Vitest y eliminar los avisos de `npm audit`.
   - Requisitos: `RF-008-11`, `RF-010-04`
-  - Archivos: `package.json`, `package-lock.json`, `.github/workflows/ci.yml`
-  - Evidencia: 6 avisos dev (tinypool/vitest 2.1.9) (AUD-025, BAJA).
-  - DoD: `npm audit` sin avisos y Node 20 en CI en verde.
+  - Archivos: `package.json`, `package-lock.json`
+  - Evidencia: `vitest` 2.1.9 → 4.1.12 (Vite 7, sin `tinypool`); `npm audit` y
+    `npm audit --omit=dev` sin avisos y 14 tests JS en verde (AUD-025, BAJA). Se
+    descartó Vitest 5 porque exige Node ≥ 22.12 y el CI usa Node 20.
+  - DoD: `npm audit` sin avisos y Node 20 en CI en verde. ✅
 
 - [ ] **T008-31** Ampliar los tests de frontend a DOM y eventos.
   - Requisitos: `RF-008-11`, `RNF-004-06`
@@ -258,3 +260,4 @@ Referencia: `specs/008-code-audit/spec.md`
 | 2026-11-12 | T008-25: caché de fragmentos separada de la de autenticación |
 | 2026-11-12 | T008-26: helper único de contadores y fallback ante alias inválido |
 | 2026-11-12 | T008-31: tests JS de DOM, pegado y reinicio (14 en total) |
+| 2026-11-12 | T008-30: Vitest 4.1.12, `npm audit` sin avisos |

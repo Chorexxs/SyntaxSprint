@@ -228,6 +228,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | Cobertura | `coverage run --source=backend manage.py test` + `coverage report` | 98 % (1014 sentencias, 25 sin cubrir) |
 | Dependencias | `specs/tools/check_dependencies.py --strict` | OK (0 sin uso, runtime coherente) |
 | Vulnerabilidades | `pip-audit -r requirements.txt` | 0 avisos |
+| Vulnerabilidades JS | `npm audit` | 0 avisos (dev y producción) |
 | BD versionada | `git ls-files \| grep db.sqlite3` | Sin resultados |
 | AGENTS versionado | `git ls-files AGENTS.md` | Rastreado |
 

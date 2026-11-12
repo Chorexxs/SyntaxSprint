@@ -73,7 +73,7 @@ npm se usa solo para el build de Tailwind y para las pruebas de frontend
 
 | Recurso | Versión | Fuente |
 | --- | --- | --- |
-| Vitest | 2.1.9 | `package.json` (dev) |
+| Vitest | 4.1.12 | `package.json` (dev) |
 | jsdom | 25.0.1 | `package.json` (dev) |
 | Python | 3.12.1 | `.python-version` (CI lo lee; runner fijado en 24.04) |
 | Render | 3.12.1 | `render.yaml`, validado por el verificador |

@@ -94,10 +94,12 @@ Referencia: `specs/010-dependencies/spec.md`
   - Requisitos: `RF-010-01`, `RF-010-05`
   - Archivos: `package.json`, `specs/010-dependencies/plan.md`
   - Evidencia: `vitest@2.1.9` y `jsdom@25.0.1` fijadas como dev; `npm run test:js`
-    en verde y en CI.
+    en verde y en CI. Vitest actualizado a 4.1.12 en `T008-30`, sin avisos de
+    `npm audit`.
 
 ## Deuda técnica / Backlog
 
+- [ ] Evaluar Vitest 5 cuando el CI migre a Node 22 (exige Node ≥ 22.12).
 - [ ] Migrar a `requirements.in` + `pip-compile` con hashes.
 - [ ] Evaluar Django 6.x (mayor, requiere plan de migración).
 - [ ] Evaluar gunicorn 27 (mayor, requiere prueba de despliegue).
