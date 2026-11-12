@@ -187,11 +187,14 @@ Referencia: `specs/008-code-audit/spec.md`
     `test_snippet_limit_uses_snippet_cache_alias`.
   - DoD: auth en caché compartida y fragmentos en LocMem o Redis. ✅
 
-- [ ] **T008-26** Unificar el incremento de contadores y validar el alias de caché.
+- [x] **T008-26** Unificar el incremento de contadores y validar el alias de caché.
   - Requisitos: `RF-008-11`, `RNF-008-02`
-  - Archivos: `backend/ratelimit.py`
-  - Evidencia: lógica duplicada y solo se captura `DatabaseError` (AUD-021, BAJA).
-  - DoD: helper único y error controlado ante alias inválido.
+  - Archivos: `backend/ratelimit.py`, `backend/tests_ratelimit.py`
+  - Evidencia: `_bump_counter` centraliza `add`/`incr`/`set`; `_cache` degrada a
+    `default` y registra error si el alias no existe, sin 500 (AUD-021, BAJA). Pruebas:
+    `test_unknown_auth_alias_does_not_break_login` y
+    `test_unknown_snippet_alias_does_not_break_endpoint`.
+  - DoD: helper único y error controlado ante alias inválido. ✅
 
 - [x] **T008-27** Hacer atómica la actualización de `last_counter`.
   - Requisitos: `RF-008-11`, `RNF-008-02`
@@ -251,3 +254,4 @@ Referencia: `specs/008-code-audit/spec.md`
 | 2026-11-11 | Auditoría post-2FA: 8.25 (B), 0 ALTA, 2 MEDIA y 8 BAJAS |
 | 2026-11-12 | Cerrados T008-22, T008-23, T008-24, T008-27, T008-28 y T008-29 |
 | 2026-11-12 | T008-25: caché de fragmentos separada de la de autenticación |
+| 2026-11-12 | T008-26: helper único de contadores y fallback ante alias inválido |

@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 
 from django.conf import settings
-from django.core.cache import caches
+from django.core.cache import InvalidCacheBackendError, caches
 from django.core.cache.backends.base import BaseCache
 from django.db import DatabaseError
 from django.http import HttpRequest
@@ -22,8 +22,24 @@ ADMIN_2FA_WINDOW_SECONDS = 300
 
 
 def _cache(alias: str | None = None) -> BaseCache:
-    """Devuelve la caché del alias indicado o la de autenticación."""
-    return caches[alias or settings.RATE_LIMIT_CACHE_ALIAS]
+    """Devuelve la caché del alias indicado, con fallback a la local."""
+    name = alias or settings.RATE_LIMIT_CACHE_ALIAS
+    try:
+        return caches[name]
+    except InvalidCacheBackendError:
+        logger.error("Alias de caché desconocido (%s); se usa default", name)
+        return caches["default"]
+
+
+def _bump_counter(cache: BaseCache, key: str, window_seconds: int) -> int:
+    """Suma uno al contador y devuelve el valor resultante."""
+    if cache.add(key, 1, timeout=window_seconds):
+        return 1
+    try:
+        return cache.incr(key)
+    except ValueError:
+        cache.set(key, 1, timeout=window_seconds)
+        return 1
 
 
 def client_ip(request: HttpRequest) -> str:
@@ -54,15 +70,8 @@ def is_rate_limited(
     limit roto no debe bloquear el sitio.
     """
     key = rate_limit_key(request, scope)
-    cache = _cache(alias)
     try:
-        if cache.add(key, 1, timeout=window_seconds):
-            return False
-        try:
-            count = cache.incr(key)
-        except ValueError:
-            cache.set(key, 1, timeout=window_seconds)
-            return False
+        count = _bump_counter(_cache(alias), key, window_seconds)
     except DatabaseError:
         logger.exception("Caché de rate limiting no disponible")
         return False
@@ -88,14 +97,8 @@ def get_counter(key: str) -> int:
 
 def increment_counter(key: str, window_seconds: int) -> None:
     """Suma uno al contador, creándolo con la ventana indicada."""
-    cache = _cache()
     try:
-        if cache.add(key, 1, timeout=window_seconds):
-            return
-        try:
-            cache.incr(key)
-        except ValueError:
-            cache.set(key, 1, timeout=window_seconds)
+        _bump_counter(_cache(), key, window_seconds)
     except DatabaseError:
         logger.exception("No se pudo incrementar el contador de intentos")
 

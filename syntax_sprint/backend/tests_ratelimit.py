@@ -52,6 +52,22 @@ class RateLimitTests(TestCase):
 
         self.assertEqual(limited.call_args.kwargs["alias"], "shared")
 
+    def test_unknown_auth_alias_does_not_break_login(self):
+        with override_settings(RATE_LIMIT_CACHE_ALIAS="desconocido"):
+            with self.assertLogs("backend.ratelimit", level="ERROR"):
+                response = self.client.post(
+                    "/admin/login/", {"username": "x", "password": "y"}
+                )
+
+        self.assertNotEqual(response.status_code, 500)
+
+    def test_unknown_snippet_alias_does_not_break_endpoint(self):
+        with override_settings(SNIPPET_RATE_LIMIT_CACHE_ALIAS="desconocido"):
+            with self.assertLogs("backend.ratelimit", level="ERROR"):
+                response = self.client.get(reverse("get_python_function"))
+
+        self.assertEqual(response.status_code, 200)
+
     def test_admin_login_returns_429_after_limit(self):
         for _ in range(5):
             response = self.client.post(
