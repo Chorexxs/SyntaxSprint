@@ -167,7 +167,9 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
   - Archivos: `backend/tests.py`, `backend/tests_auth.py`, `backend/tests_snippets.py`,
     `backend/tests_results.py`, `backend/tests_analytics.py`, `backend/tests_security.py`
   - Evidencia: `tests.py` tiene 971 líneas y 8 clases; el umbral de módulo es 400
-    (AUD-032, BAJA). `tests_ratelimit.py` y `tests_totp.py` ya están separados.
+    (AUD-032, INFO tras la revisión de impacto: no afecta al producto; hacerlo solo si
+    el archivo empieza a molestar). `tests_ratelimit.py` y `tests_totp.py` ya están
+    separados.
   - DoD: cada módulo ≤ 400 líneas, misma cobertura y `manage.py test` en verde.
 
 ## Deuda técnica / Backlog

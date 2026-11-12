@@ -71,7 +71,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 
 | Requisito | Tarea | Verificación | Estado |
 | --- | --- | --- | --- |
-| RF-004-01 | T004-01 | CA-004-01 | ✅ |
+| RF-004-01 | T004-01, T004-26 | CA-004-01, CA-004-13 | ✅ |
 | RF-004-02 | T004-03, T004-21 | CA-004-06 | ✅ |
 | RF-004-03 | T004-02 | CA-004-04 | ✅ |
 | RF-004-04 | T004-04, T004-11 | CA-004-02 | ✅ |
@@ -84,7 +84,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-004-11 | T004-06 | CA-004-07 | ✅ |
 | RF-004-12 | T004-06, T004-09 | CA-004-08 | ✅ |
 | RF-004-13 | T004-07, T004-20 | IME sin duplicar | ✅ |
-| RF-004-14 | T004-07, T004-13, T004-19 | CA-004-09, CA-004-12 | ✅ |
+| RF-004-14 | T004-07, T004-13, T004-19, T004-27 | CA-004-09, CA-004-12, CA-004-14 | ✅ |
 | RF-004-16 | T006-02 | CA-006-02 | ✅ |
 
 ## 005 — Resultados y perfil
@@ -220,7 +220,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | --- | --- | --- |
 | Sistema | `manage.py check` | 0 issues |
 | Pruebas | `manage.py test` | 88 tests (87 OK + 1 omitido en Windows por permisos POSIX) |
-| Pruebas JS | `npm run test:js` | 21 tests OK (Vitest + jsdom: fórmulas, contadores, DOM, eventos, Enter/Tab, pausa e IME) |
+| Pruebas JS | `npm run test:js` | 26 tests OK (Vitest + jsdom: fórmulas, contadores, DOM, eventos, Enter/Tab, pausa, IME y arranque) |
 | Imports | `isort --check-only syntax_sprint/` | Sin avisos |
 | Lint | `pylint backend --rcfile=../.pylintrc` | 10.00/10 |
 | CI | `.github/workflows/ci.yml` (run 20) | 14 pasos en verde |

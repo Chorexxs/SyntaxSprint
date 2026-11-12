@@ -43,6 +43,7 @@ class TypingTest {
       liveAcc: document.getElementById('live-acc'),
       wpmResult: document.getElementById('wpm-result'),
       accResult: document.getElementById('acc-result'),
+      startError: document.getElementById('start-error'),
     };
 
     this.state = {
@@ -59,7 +60,8 @@ class TypingTest {
       incorrectChars: 0,
       totalChars: 0,
       pausedMs: 0,
-      pauseStartedAt: null
+      pauseStartedAt: null,
+      starting: false
     };
 
     this.init = this.init.bind(this);
@@ -101,7 +103,11 @@ class TypingTest {
   }
 
   async startTest() {
+    if (this.state.starting) return;
+
+    this.state.starting = true;
     this.stopTimer();
+    this.hideStartError();
     const language = this.elements.languageSelect.value;
 
     try {
@@ -114,7 +120,14 @@ class TypingTest {
         body: JSON.stringify({ language })
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
       const data = await response.json();
+      if (!data || typeof data.code !== 'string' || !data.code) {
+        throw new Error('Fragmento no válido');
+      }
 
       this.elements.heroSection.classList.add('hidden');
       this.elements.resultsSection.classList.add('hidden');
@@ -149,6 +162,28 @@ class TypingTest {
 
     } catch (error) {
       console.error('Error starting test:', error);
+      this.showStartError('No se pudo cargar el fragmento. Inténtalo de nuevo.');
+    } finally {
+      this.state.starting = false;
+    }
+  }
+
+  showStartError(message) {
+    this.state.active = false;
+    this.stopTimer();
+    this.elements.heroSection.classList.remove('hidden');
+    this.elements.testArea.classList.add('hidden');
+    this.elements.resultsSection.classList.add('hidden');
+    if (this.elements.startError) {
+      this.elements.startError.textContent = message;
+      this.elements.startError.classList.remove('hidden');
+    }
+  }
+
+  hideStartError() {
+    if (this.elements.startError) {
+      this.elements.startError.textContent = '';
+      this.elements.startError.classList.add('hidden');
     }
   }
 
@@ -218,12 +253,22 @@ class TypingTest {
   handleInput = (e) => {
     if (!this.state.active || this.state.isComposing) return;
 
-    const typedLength = e.target.value.length;
-    this.countTypedChars(e.target.value);
-    this.updateDisplay(typedLength);
+    this.syncTypedValue(e.target.value);
+  }
+
+  /**
+   * Recalcula contadores y pinta el input actual.
+   *
+   * Centraliza el bloque que compartían input, Enter, Tab, pegado e IME
+   * para que un cambio de recuento no se olvide en ningún manejador.
+   */
+  syncTypedValue(value) {
+    this.elements.wordsInput.value = value;
+    this.countTypedChars(value);
+    this.updateDisplay(value.length);
     this.updateLiveStats();
 
-    if (typedLength >= this.state.currentCode.length) {
+    if (value.length >= this.state.currentCode.length) {
       this.endTest();
     }
   }
@@ -342,13 +387,7 @@ class TypingTest {
     }
 
     input.value += text;
-    this.countTypedChars(input.value);
-    this.updateDisplay(input.value.length);
-    this.updateLiveStats();
-
-    if (input.value.length >= code.length) {
-      this.endTest();
-    }
+    this.syncTypedValue(input.value);
   }
 
   insertIndentation() {
@@ -361,13 +400,7 @@ class TypingTest {
 
     const room = this.state.currentCode.length - input.value.length;
     input.value += indent[0].slice(0, room);
-    this.countTypedChars(input.value);
-    this.updateDisplay(input.value.length);
-    this.updateLiveStats();
-
-    if (input.value.length >= this.state.currentCode.length) {
-      this.endTest();
-    }
+    this.syncTypedValue(input.value);
   }
 
   handlePaste = (e) => {
@@ -384,14 +417,7 @@ class TypingTest {
     const textToInsert = pastedText.slice(0, remainingLength);
     const newValue = currentValue + textToInsert;
 
-    this.elements.wordsInput.value = newValue;
-    this.countTypedChars(newValue);
-    this.updateDisplay(newValue.length);
-    this.updateLiveStats();
-
-    if (newValue.length >= this.state.currentCode.length) {
-      this.endTest();
-    }
+    this.syncTypedValue(newValue);
   }
 
   handleCompositionStart = (e) => {
@@ -402,25 +428,22 @@ class TypingTest {
   handleCompositionEnd = () => {
     if (!this.state.active || !this.state.isComposing) return;
     this.state.isComposing = false;
-
-    const input = this.elements.wordsInput;
-    this.countTypedChars(input.value);
-    this.updateDisplay(input.value.length);
-    this.updateLiveStats();
-
-    if (input.value.length >= this.state.currentCode.length) {
-      this.endTest();
-    }
+    this.syncTypedValue(this.elements.wordsInput.value);
   }
 
   handleFocus = () => {
-    if (this.state.active) {
-      this.state.isFocused = true;
+    if (!this.state.active) return;
+    this.state.isFocused = true;
+    if (this.state.timerInterval === null && this.state.timeLeft > 0) {
+      this.resumeTest();
     }
   }
 
   handleBlur = () => {
     this.state.isFocused = false;
+    if (this.state.active) {
+      this.pauseTest();
+    }
   }
 
   updateDisplay(typedLength) {

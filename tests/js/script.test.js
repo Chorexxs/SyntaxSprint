@@ -80,6 +80,7 @@ function setupDom() {
     <span id="live-acc"></span>
     <span id="wpm-result"></span>
     <span id="acc-result"></span>
+    <p id="start-error" class="hidden"></p>
     <p id="save-status" class="hidden"></p>
   `;
   return new TypingTest();
@@ -294,6 +295,30 @@ describe('TypingTest — pausa', () => {
       vi.useRealTimers();
     }
   });
+
+  it('pausa y reanuda al perder y recuperar el foco del input', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-01-01T00:00:00Z'));
+    try {
+      const test = setupDom();
+      test.state.active = true;
+      test.state.currentCode = 'abcde';
+      test.state.startTime = Date.now();
+      test.startTimer();
+
+      vi.advanceTimersByTime(1000);
+      test.handleBlur();
+      vi.advanceTimersByTime(5000);
+      expect(test.state.timeLeft).toBe(29);
+
+      test.handleFocus();
+      vi.advanceTimersByTime(1000);
+      expect(test.state.timeLeft).toBe(28);
+      expect(test.elapsedMinutes()).toBeCloseTo(2 / 60, 5);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });
 
 describe('TypingTest — IME', () => {
@@ -320,7 +345,10 @@ describe('TypingTest — timer', () => {
     test.elements.timer.textContent = '0';
     vi.stubGlobal(
       'fetch',
-      vi.fn(() => Promise.resolve({ json: () => Promise.resolve({ code: 'abc' }) }))
+      vi.fn(() => Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ code: 'abc' }),
+      }))
     );
     try {
       await test.startTest();
@@ -328,6 +356,91 @@ describe('TypingTest — timer', () => {
 
       expect(test.elements.timer.textContent).toBe('30');
       expect(test.state.timeLeft).toBe(30);
+    } finally {
+      vi.unstubAllGlobals();
+      test.stopTimer();
+    }
+  });
+});
+
+describe('TypingTest — arranque', () => {
+  it('muestra un aviso y vuelve al inicio si la petición falla', async () => {
+    const test = setupDom();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.resolve({ ok: false, status: 500 }))
+    );
+    try {
+      await test.startTest();
+
+      expect(test.elements.startError.textContent).toContain('No se pudo cargar');
+      expect(test.elements.startError.classList.contains('hidden')).toBe(false);
+      expect(test.elements.heroSection.classList.contains('hidden')).toBe(false);
+      expect(test.elements.testArea.classList.contains('hidden')).toBe(true);
+      expect(test.state.active).toBe(false);
+      expect(test.state.starting).toBe(false);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('rechaza una respuesta sin código', async () => {
+    const test = setupDom();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({}),
+      }))
+    );
+    try {
+      await test.startTest();
+
+      expect(test.elements.startError.textContent).toContain('No se pudo cargar');
+      expect(test.elements.testArea.classList.contains('hidden')).toBe(true);
+      expect(test.state.active).toBe(false);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it('evita dos peticiones si se pulsa start dos veces', async () => {
+    const test = setupDom();
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ code: 'abc' }),
+      }))
+    );
+    try {
+      await Promise.all([test.startTest(), test.startTest()]);
+      test.stopTimer();
+
+      expect(fetch).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.unstubAllGlobals();
+      test.stopTimer();
+    }
+  });
+
+  it('oculta el aviso anterior cuando el arranque va bien', async () => {
+    const test = setupDom();
+    test.elements.startError.textContent = 'Error previo';
+    test.elements.startError.classList.remove('hidden');
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ code: 'abc' }),
+      }))
+    );
+    try {
+      await test.startTest();
+      test.stopTimer();
+
+      expect(test.elements.startError.classList.contains('hidden')).toBe(true);
+      expect(test.elements.startError.textContent).toBe('');
     } finally {
       vi.unstubAllGlobals();
       test.stopTimer();

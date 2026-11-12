@@ -3,7 +3,7 @@
 | Campo | Valor |
 | --- | --- |
 | Estado | Implementada |
-| Versión | 1.2 |
+| Versión | 1.3 |
 | Depende de | 003-snippet-service |
 | Archivos principales | `static/js/script.js`, `templates/index.html`, `static/css/styles.css` |
 
@@ -54,8 +54,9 @@ el CSRF esté inicializado y no informa al usuario si el guardado falla.
 | RF-004-11 | Cuando el test termina, el sistema debe mostrar resultados y permitir "try again". | Alta |
 | RF-004-12 | Cuando el usuario está autenticado, el sistema debe enviar WPM y precisión a `/save_typing_test_result`. | Alta |
 | RF-004-13 | El sistema debe soportar IME sin contar composiciones intermedias. | Media |
-| RF-004-14 | El sistema debe pausar el temporizador si la ventana pierde el foco. | Media |
+| RF-004-14 | El sistema debe pausar el temporizador si la ventana o el input pierden el foco, y reanudarlo al recuperarlo. | Media |
 | RF-004-16 | El sistema debe recordar el tema claro/oscuro en `localStorage`. | Media |
+| RF-004-17 | Si no se puede cargar el fragmento, el sistema debe mostrar un aviso visible y permitir reintentar sin recargar la página. | Alta |
 
 > `RF-004-15` (métricas avanzadas) se retiró el 2026-11-11: se calculaban y no se
 > mostraban en ninguna vista (`T004-15`).
@@ -71,7 +72,8 @@ el CSRF esté inicializado y no informa al usuario si el guardado falla.
 | Atajos | Ctrl/Cmd, F1–F12, Alt, Shift, Meta y bloqueos se ignoran. |
 | Enter | Inserta `\n` y, si la línea siguiente está indentada, sus espacios (2, 4 u 8) de una vez; fuera de un salto esperado inserta solo `\n`. |
 | Tab | Inserta el tramo de espacios que espera el fragmento en la posición actual (2, 4 u 8) y no mueve el foco. |
-| Pausa | El tiempo sin foco no cuenta para el WPM: se acumula y se descuenta del tiempo transcurrido. |
+| Pausa | El tiempo sin foco (ventana o input) no cuenta para el WPM: se acumula y se descuenta del tiempo transcurrido. |
+| Fallo de arranque | Se muestra un aviso con `role="alert"` y se vuelve al inicio; el botón "start" reintenta. |
 | Fin por tiempo | `timeLeft <= 0`. |
 | Fin por longitud | `typedLength >= currentCode.length`. |
 | Visitante | Intenta guardar; el backend responde redirección y el error se registra en consola. |
@@ -116,6 +118,7 @@ TypingTest.state
 | RNF-004-05 | Tolerante a fallos de red: el test debe completarse aunque el guardado falle. |
 | RNF-004-06 | Las fórmulas y el conteo del motor deben tener pruebas automatizadas en JS. |
 | RNF-004-07 | El WPM debe ser independiente del tiempo que el test pasa en pausa. |
+| RNF-004-08 | Los errores de arranque deben anunciarse con `role="alert"` y texto legible. |
 
 ## 8. Criterios de aceptación
 
@@ -131,6 +134,8 @@ TypingTest.state
 - **CA-004-10** Dado un fragmento con `\n`, cuando el usuario pulsa Enter, el salto y la indentación de la línea siguiente se insertan y se marcan correctos.
 - **CA-004-11** Dada una línea indentada, cuando el usuario pulsa Tab, se insertan exactamente los espacios esperados (2, 4 u 8).
 - **CA-004-12** Dado un test pausado por pérdida de foco, al volver el WPM no incluye el tiempo en pausa.
+- **CA-004-13** Si el inicio responde 4xx/5xx o sin código, se muestra un aviso visible, el test no arranca y "start" permite reintentar.
+- **CA-004-14** Al perder el foco del input durante el test, el temporizador se pausa; al recuperarlo, continúa sin contar la pausa.
 
 ## 9. Fuera de alcance
 

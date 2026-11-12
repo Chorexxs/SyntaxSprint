@@ -8,7 +8,7 @@
 | Alcance | Repo completo; foco en arquitectura, duplicación y tamaño de unidades |
 | Commit auditado | `9fb738c` (`main`) |
 | Herramientas | `code_metrics.py`, `pylint` 4.1.3, `isort`, `coverage` 7.17.2, `manage.py check/test`, `npm audit`, Vitest 4.1.12, Node 26.13.0 |
-| Resultado global | **8.6/10 (B)** · 0 CRÍTICOS, 0 ALTOS, 2 MEDIOS, 2 BAJAS y 1 INFO |
+| Resultado global | **8.6/10 (B)** · 0 CRÍTICOS/ALTOS; 2 MEDIA, 1 BAJA y 2 INFO |
 
 ## 1. Alcance y exclusiones
 
@@ -36,11 +36,30 @@ grave; son mejoras de mantenibilidad, no bloqueantes.
 
 | ID | Severidad | Categoría | Ubicación | Evidencia | Impacto | Recomendación | Esfuerzo | Estado |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| AUD-030 | MEDIA | Arquitectura frontend | `static/js/script.js:103-154, 255-325` | `handleKeydown` 71 líneas y `startTest` 52; archivo de 559 líneas | Clase con demasiadas responsabilidades; difícil de probar y extender | Extraer ayudantes de teclado (`handleBackspace`, `handleNavigation`, `handleTab`) y separar timer/render/guardado en módulos | M | Abierto |
-| AUD-031 | MEDIA | Duplicación | `script.js:222-227, 345-350, 364-369, 388-393, 407-412` | El bloque `countTypedChars` + `updateDisplay` + `updateLiveStats` + fin se repite 5 veces | Un cambio en el recuento obliga a tocar cinco sitios | Extraer `syncTypedValue(value)` y reutilizarlo | S | Abierto |
-| AUD-032 | BAJA | Tests | `backend/tests.py:1-971` | 971 líneas y 8 clases (`AuthTests`, `SnippetTests`, `ResultTests`, `ProfileTests`, `SecurityHeadersTests`, `CsrfTests`, `AnalyticsTests`, `TwoFactorTests`) | Umbral de módulo (400) superado; navegación y revisión más lentas | Repartir por dominio en `tests_auth.py`, `tests_snippets.py`, etc., siguiendo `tests_ratelimit.py` y `tests_totp.py` | M | Abierto |
-| AUD-033 | BAJA | Manejo de errores | `script.js:151-153` | `startTest` solo hace `console.error` si falla el fetch | El usuario no sabe por qué no arranca el test | Mostrar un aviso en el área de test y permitir reintentar | S | Abierto |
-| AUD-034 | INFO | Documentación | `syntax_sprint/urls.py:1-16` | Docstring de plantilla de Django sin adaptar | Ruido menor en un archivo de configuración | Sustituirlo por una descripción del enrutado real | S | Abierto |
+| AUD-030 | BAJA | Arquitectura frontend | `static/js/script.js:103-154, 255-325` | `handleKeydown` 71 líneas y `startTest` 52; archivo de 559 líneas | Coste de evolución; no hay fallo funcional | Extraer ayudantes de teclado y separar timer/render/guardado en módulos | M | Abierto |
+| AUD-031 | MEDIA | Duplicación | `script.js:222-227, 345-350, 364-369, 388-393, 407-412` | El bloque `countTypedChars` + `updateDisplay` + `updateLiveStats` + fin se repetía 5 veces | Un cambio en el recuento obliga a tocar cinco sitios | Extraer `syncTypedValue(value)` | S | Cerrado (T004-25) |
+| AUD-032 | INFO | Tests | `backend/tests.py:1-971` | 971 líneas y 8 clases | Sin impacto en producto; solo navegación | Repartir por dominio cuando moleste | M | Backlog (T007-23) |
+| AUD-033 | MEDIA | Manejo de errores | `script.js:151-153` | `startTest` solo hacía `console.error` si fallaba el fetch | El usuario no sabía por qué no arrancaba el test | Aviso `role="alert"`, validar `response.ok`/`data.code` y evitar dobles peticiones | S | Cerrado (T004-26) |
+| AUD-034 | INFO | Documentación | `syntax_sprint/urls.py:1-16` | Docstring de plantilla de Django sin adaptar | Ruido menor | Sustituirlo por una descripción del enrutado real | S | Abierto |
+
+### Revisión de impacto (2026-11-12)
+
+El tamaño y la duplicación no se priorizan por sí solos: se ordenan por lo que pueden
+romper o hacer perder al usuario.
+
+1. **AUD-033 (ahora MEDIA)**: un 429/500 al pedir el fragmento dejaba la pantalla igual y
+   solo escribía en consola. Corregido con aviso visible, validación de la respuesta y
+   guardia contra dobles peticiones (`T004-26`).
+2. **AUD-031 (MEDIA)**: la duplicación del bloque de recuento es el origen histórico de
+   desincronizaciones (`T004-10`). Corregido con `syncTypedValue()` (`T004-25`).
+3. **AUD-030 (baja a BAJA)**: no hay un fallo funcional; es coste de evolución. Se deja
+   para cuando se añadan modos de test o se separen módulos.
+4. **AUD-032 (baja a INFO)**: organizar `tests.py` no mejora al usuario; queda en el
+   backlog de 007.
+
+Además se añadió una mejora derivada de la revisión: el test ahora se pausa al perder el
+foco del input, no solo de la ventana (`T004-27`), evitando que el WPM cuente tiempo sin
+escribir.
 
 > Sin secretos ni datos personales en este informe.
 
@@ -108,9 +127,9 @@ cierre de la Fase 6; esta revisa explícitamente arquitectura y tamaño de unida
 
 ## 6. Acciones inmediatas (≤ 24 h)
 
-1. Ninguna bloqueante: no hay hallazgos CRÍTICOS ni ALTOS.
-2. Los MEDIA (`AUD-030`, `AUD-031`) tienen SLA de 30 días; se pueden agrupar en un
-   único refactor del motor JS.
+1. `AUD-031` y `AUD-033` ya están corregidos (`T004-25`, `T004-26`).
+2. `AUD-030` (BAJA) puede esperar a la próxima funcionalidad del motor; `T007-23` es
+   INFO y solo se hará si el archivo empieza a molestar.
 
 ## 7. Tareas y specs creadas
 

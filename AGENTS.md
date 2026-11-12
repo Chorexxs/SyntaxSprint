@@ -20,7 +20,7 @@ historial del usuario y calcula promedios.
 | JavaScript | Vanilla ES6+ (clase `TypingTest`); jQuery 3.x permitido |
 | Servidor | Gunicorn (`syntax_sprint.wsgi`) |
 | Configuración | `python-decouple` + `.env` |
-| Pruebas | `django.test.TestCase` (88 tests) y Vitest (21 tests JS) |
+| Pruebas | `django.test.TestCase` (88 tests) y Vitest (26 tests JS) |
 | Lint | `pylint`, `isort` |
 | App principal | `backend` |
 
@@ -318,10 +318,10 @@ Estado verificado el 2026-11-12: `manage.py check` 0 issues, `manage.py test` 88
 sin avisos, `pylint` 10.00/10, `code_metrics.py --strict` sin incumplimientos y
 `npm audit` sin avisos.
 
-Hay deuda priorizada abierta: `AUD-030` y `AUD-031` (MEDIA, motor JS) y `AUD-032`/
-`AUD-033` (BAJA, tests y arranque), con tareas `T004-24`…`T004-26` y `T007-23`.
-Evidencia: `audits/code/2026-11-12-auditoria-arquitectura.md`. La Fase 6 de
-`specs/008-code-audit` sigue cerrada (`T008-21`…`T008-33`).
+Hay deuda abierta sin impacto urgente: `AUD-030` (BAJA, motor JS) y `T007-23` (INFO,
+`tests.py`); `AUD-031` y `AUD-033` se corrigieron el mismo día (`T004-25`, `T004-26`) y
+se añadió la pausa por foco del input (`T004-27`). Evidencia:
+`audits/code/2026-11-12-auditoria-arquitectura.md`.
 
 Siguen abiertos, sin severidad asignada, el backlog genérico de 008 (duplicación con
 `jscpd`, análisis CSS, Core Web Vitals, cobertura de ramas, informe automatizado) y el

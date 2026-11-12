@@ -176,21 +176,32 @@ Referencia: `specs/004-typing-engine/spec.md`
   - Requisitos: `RF-008-11`, `RNF-004-06`
   - Archivos: `static/js/script.js`
   - Evidencia: `handleKeydown` 71 líneas y `startTest` 52; archivo de 559 líneas
-    (AUD-030, MEDIA). Medición manual con Node sobre los métodos de la clase.
+    (AUD-030, BAJA tras la revisión de impacto: no hay fallo funcional, es coste de
+    evolución). Medición manual con Node sobre los métodos de la clase.
   - DoD: métodos ≤ 40 líneas y timer/render/guardado con límites claros.
 
-- [ ] **T004-25** Extraer la sincronización repetida del input.
-  - Requisitos: `RF-008-11`, `RNF-008-06`
-  - Archivos: `static/js/script.js`
-  - Evidencia: `countTypedChars` + `updateDisplay` + `updateLiveStats` + fin se repite
-    en cinco manejadores (AUD-031, MEDIA).
-  - DoD: helper único `syncTypedValue(value)` y tests en verde.
+- [x] **T004-25** Extraer la sincronización repetida del input.
+  - Requisitos: `RF-008-11`, `RNF-004-06`
+  - Archivos: `static/js/script.js`, `tests/js/script.test.js`
+  - Evidencia: `syncTypedValue(value)` centraliza contadores, display, stats y fin; lo
+    usan input, Enter, Tab, pegado e IME (AUD-031, MEDIA: riesgo de desincronizar
+    contadores). 26 tests JS en verde.
+  - DoD: helper único y tests en verde. ✅
 
-- [ ] **T004-26** Avisar al usuario cuando falla el arranque del test.
-  - Requisito: `RNF-004-05`
-  - Archivos: `static/js/script.js`, `templates/index.html`
-  - Evidencia: `startTest` solo registra el error en consola (AUD-033, BAJA).
-  - DoD: mensaje visible y opción de reintentar.
+- [x] **T004-26** Avisar al usuario cuando falla el arranque del test.
+  - Requisitos: `RF-004-01`, `RF-004-17`, `RNF-004-08`
+  - Archivos: `static/js/script.js`, `templates/index.html`, `static/css/styles.css`
+  - Evidencia: se valida `response.ok` y `data.code`; `#start-error` con `role="alert"`
+    muestra el fallo, vuelve al inicio y "start" reintenta; `starting` evita dobles
+    peticiones (AUD-033, MEDIA). Tests de 500, respuesta sin código y doble start.
+  - DoD: `CA-004-13` verificado. ✅
+
+- [x] **T004-27** Pausar el test al perder el foco del input.
+  - Requisitos: `RF-004-14`, `CA-004-14`
+  - Archivos: `static/js/script.js`, `tests/js/script.test.js`
+  - Evidencia: `handleBlur` pausa y `handleFocus` reanuda; el tiempo no cuenta
+    (`pausedMs`). Test con temporizadores falsos: 29 → pausa 5 s → 28.
+  - DoD: `CA-004-14` verificado. ✅
 
 ## Deuda técnica / Backlog
 
@@ -213,3 +224,4 @@ Referencia: `specs/004-typing-engine/spec.md`
 | 2026-11-12 | T004-17…T004-21 cerradas: código multilínea, pausa e IME corregidos |
 | 2026-11-12 | T004-22: Enter auto-indenta con los espacios de la línea siguiente |
 | 2026-11-12 | Auditoría de arquitectura: AUD-030/031/033 (T004-24…T004-26) |
+| 2026-11-12 | T004-25/26/27: sync único, aviso de arranque y pausa por foco |

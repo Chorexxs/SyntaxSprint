@@ -48,6 +48,11 @@ html {
   outline-offset: 2px;
 }
 
+/* Mensaje de error del arranque del test */
+.status-error {
+  color: var(--error);
+}
+
 /* La interacción con puntero no necesita el anillo de foco */
 :focus:not(:focus-visible) {
   outline: none;
