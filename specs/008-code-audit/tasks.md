@@ -228,7 +228,7 @@ Referencia: `specs/008-code-audit/spec.md`
     descartó Vitest 5 porque exige Node ≥ 22.12 y el CI usa Node 20.
   - DoD: `npm audit` sin avisos y Node 20 en CI en verde. ✅
 
-- [ ] **T008-31** Ampliar los tests de frontend a DOM y eventos.
+- [x] **T008-31** Ampliar los tests de frontend a DOM y eventos.
   - Requisitos: `RF-008-11`, `RNF-004-06`
   - Archivos: `tests/js/script.test.js`
   - Evidencia: 6 pruebas nuevas con jsdom para `updateDisplay` (correcto/incorrecto/activo),
