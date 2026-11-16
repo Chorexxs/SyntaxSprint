@@ -256,6 +256,15 @@ Vercel detecta Django por `syntax_sprint/manage.py` y resuelve la entrada desde
    - `CSRF_TRUSTED_ORIGINS=https://<dominio>.vercel.app`.
    - `TRUST_PROXY_HEADERS=True` y `RATE_LIMIT_CACHE_ALIAS=shared`.
    - `SNIPPET_RATE_LIMIT_CACHE_ALIAS=default` y `ADMIN_TOTP_REQUIRED=False`.
+   - **Define `SECRET_KEY` también en el entorno `Preview`.** El build carga
+     `settings.py` y falla con `UndefinedValueError` (o el mensaje
+     `Falta la variable de entorno SECRET_KEY`) si el entorno no la tiene. Las
+     ramas y los PRs (incluidos los de Dependabot) generan despliegues de
+     Preview, así que la variable debe existir en `Production` y en `Preview`
+     por separado. Usa una clave distinta para Preview:
+     `python -c "import secrets;print(secrets.token_urlsafe(64))" | vercel env add SECRET_KEY preview`.
+     Si el Preview debe ser funcional, añade también su propio `DATABASE_URL`
+     (no compartas la base de producción con ramas no revisadas).
 3. Vercel añade solo `VERCEL_URL` y el dominio de producción a `ALLOWED_HOSTS` y
    `CSRF_TRUSTED_ORIGINS`.
 4. `collectstatic` se ejecuta automáticamente al detectar `STATIC_ROOT`.
@@ -263,3 +272,10 @@ Vercel detecta Django por `syntax_sprint/manage.py` y resuelve la entrada desde
    de producción (`vercel env pull` y `python syntax_sprint/manage.py migrate`).
 6. En Vercel las conexiones no se reutilizan (`conn_max_age=0`) para no agotar el
    pool de PostgreSQL.
+7. Los despliegues con **Vercel CLI** (`vercel deploy`) **no aplican `.gitignore`**:
+   suben `.env`, `.insforge/` y `*.sqlite3` si no están excluidos. El repositorio
+   incluye un `.vercelignore` para impedirlo; no lo elimines. Antes de desplegar,
+   comprueba que no se cuelan secretos:
+   `vercel deploy --dry --json` no debe listar `.env`, `.insforge` ni bases SQLite.
+   Los despliegues desde Git (ramas y PRs) sí respetan `.gitignore`, y por eso
+   Preview necesita sus propias variables de entorno.

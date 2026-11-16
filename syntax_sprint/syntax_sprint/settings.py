@@ -14,7 +14,8 @@ import os
 from pathlib import Path
 
 import dj_database_url
-from decouple import config
+from decouple import UndefinedValueError, config
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,7 +31,14 @@ def _csv_env(name: str, default: str = "") -> list[str]:
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY")
+try:
+    SECRET_KEY = config("SECRET_KEY")
+except UndefinedValueError as exc:
+    raise ImproperlyConfigured(
+        "Falta la variable de entorno SECRET_KEY. Defínela en el panel del "
+        "hosting (Vercel: Production y Preview; Render: Environment) o en tu "
+        ".env local antes de arrancar."
+    ) from exc
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)

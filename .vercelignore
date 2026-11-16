@@ -1,0 +1,21 @@
+# Vercel no aplica .gitignore a los despliegues hechos con el CLI: este archivo
+# evita subir secretos y datos locales al bundle del despliegue.
+
+# Secretos y configuración de entorno (solo se envía .env.example)
+.env
+.env.*
+!.env.example
+.insforge/
+.insforge
+
+# Bases de datos locales y datos de usuario
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.sqlite-*
+syntax_sprint/db.sqlite3
+backup.json
+
+# Entornos y artefactos que no hacen falta en el build
+venv/
+staticfiles/
