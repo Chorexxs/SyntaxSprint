@@ -134,6 +134,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-007-09 | T004-08, T007-06 | POST 200 | ✅ |
 | RF-007-10 | T007-09 | CA-007-04 | ✅ |
 | RF-007-11 | T007-11 | CI | ✅ |
+| RF-007-12 | T007-25 | CA-007-08 | ✅ |
 
 ## 008 — Auditoría de código
 
@@ -263,13 +264,13 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | 004 | 15 | 15 | 0 | 0 |
 | 005 | 12 | 12 | 0 | 0 |
 | 006 | 10 | 10 | 0 | 0 |
-| 007 | 11 | 11 | 0 | 0 |
+| 007 | 12 | 12 | 0 | 0 |
 | 008 | 12 | 12 | 0 | 0 |
 | 009 | 14 | 14 | 0 | 0 |
 | 010 | 12 | 12 | 0 | 0 |
 | 011 | 8 | 8 | 0 | 0 |
 | 012 | 8 | 8 | 0 | 0 |
-| **Total** | **142** | **142** | **0** | **0** |
+| **Total** | **143** | **143** | **0** | **0** |
 
 > La matriz se actualiza al cerrar cada tarea. Un requisito no puede pasar a ✅ sin su
 > verificación ejecutada.

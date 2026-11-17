@@ -106,6 +106,14 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
   - Archivos: `.github/workflows/ci.yml`, `package.json`
   - Evidencia: paso "Probar el JavaScript" con `npm run test:js` (8 tests).
 
+- [x] **T007-25** Programar actividad semanal para no pausar los tiers gratuitos.
+  - Requisito: `RF-007-12`
+  - Archivos: `.github/workflows/keepalive.yml`, `DEPLOY.md`
+  - DoD: la ejecución manual termina en verde y hay dos ejecuciones por semana.
+  - Evidencia: workflow `Keep-alive` con cron `17 6 * * 1,4`; job de InsForge
+    (`GET /api/health` y, si existe el secreto, `select 1` por `psql`) y job de
+    Render (`GET /`). Configuración y límites en `DEPLOY.md` §13.
+
 ## Fase 5 — Documentación
 
 - [x] **T007-14** Corregir el árbol de directorios del README y la versión de Django.
@@ -193,3 +201,4 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
 | 2026-11-10 | Verificación contra código: 26 tests en verde, `check` 0 issues, `isort` limpio; `T007-01`…`T007-03`, `T007-06`…`T007-10` y `T007-14`…`T007-16` cerradas |
 | 2026-11-10 | CI en GitHub Actions con isort, check, migraciones y tests (`T007-11`) |
 | 2026-11-12 | Auditoría de arquitectura: `tests.py` de 971 líneas (AUD-032, `T007-23`) |
+| 2026-11-17 | Workflow `Keep-alive` para evitar la pausa de los tiers gratuitos (`T007-25`) |

@@ -1,0 +1,67 @@
+# Mantiene con actividad los tiers gratuitos de InsForge y Render.
+#
+# InsForge pausa los proyectos Free tras 7 días sin peticiones; Render duerme el
+# Web Service tras 15 minutos sin tráfico. Dos ejecuciones semanales dejan un
+# hueco máximo de 3-4 días en InsForge y, de paso, sirven de prueba de vida a
+# Render.
+#
+# No se hacen deploys a propósito: Render no suspende por falta de despliegues,
+# solo por agotar las 750 h de instancia o el ancho de banda del plan Free.
+#
+# Configuración (GitHub -> Settings -> Secrets and variables -> Actions):
+#   Variable  INSFORGE_URL           https://<proyecto>.insforge.app
+#   Secreto   INSFORGE_DATABASE_URL  cadena Postgres de InsForge (opcional)
+#
+# Ver DEPLOY.md, sección 13.
+
+name: Keep-alive
+
+on:
+  schedule:
+    # Lunes y jueves a las 06:17 UTC. Evito el minuto :00 porque GitHub retrasa
+    # las ejecuciones en las horas en punto.
+    - cron: "17 6 * * 1,4"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: keepalive
+  cancel-in-progress: false
+
+jobs:
+  insforge:
+    name: Actividad en InsForge
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      # Opcional: si el secreto no existe, el paso de psql se omite.
+      DATABASE_URL: ${{ secrets.INSFORGE_DATABASE_URL }}
+    steps:
+      - name: Comprobar la API del proyecto
+        env:
+          INSFORGE_URL: ${{ vars.INSFORGE_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "${INSFORGE_URL}" ]; then
+            echo "::error::Falta la variable INSFORGE_URL del repositorio."
+            exit 1
+          fi
+          curl -fsS --retry 3 --retry-delay 10 --max-time 60 \
+            "${INSFORGE_URL%/}/api/health" -o /dev/null
+
+      - name: Consultar la base de datos
+        if: ${{ env.DATABASE_URL != '' }}
+        run: psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'select 1;' > /dev/null
+
+  render:
+    name: Prueba de vida de Render
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: GET /
+        run: |
+          # El primer request puede tardar ~1 minuto si el servicio está dormido.
+          curl -fsS --retry 3 --retry-connrefused --retry-delay 15 \
+            --max-time 120 -o /dev/null https://syntaxsprint.onrender.com/
