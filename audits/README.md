@@ -26,6 +26,8 @@ audits/
 4. **Nunca** incluir valores de secretos, contraseñas, tokens ni datos personales.
 5. Los hallazgos CRÍTICOS de seguridad se enlazan a su tarea de remediación.
 6. El informe se escribe en español.
+7. Los informes se publican junto al repositorio (que es público): no incluyen
+   valores de secretos, contraseñas, tokens ni PII directa (regla 4).
 
 ## Línea base
 
@@ -44,10 +46,10 @@ audits/
 | 2026-11-12 | Código | `code/2026-11-12-auditoria-arquitectura.md` | 8.6/10 (B); 0 ALTA, 2 MEDIA y 2 BAJA |
 | 2026-11-12 | Seguridad | `security/2026-11-12-auditoria-prepublicacion.md` | BAJO; 0 CRÍTICAS/ALTAS, 4 BAJAS (2 cerradas, 2 aceptadas) |
 
-> Informe interno; no exponer fuera del repositorio. El historial está purgado, el
-> repositorio es privado, Pages devuelve 404 y la `SECRET_KEY` de producción está
-> rotada. Quedan la revocación de API keys y el reset de contraseñas de los usuarios
-> afectados.
+> El historial está purgado, GitHub Pages devuelve 404 y la `SECRET_KEY` de producción
+> está rotada. Las API keys de Render e InsForge se revocaron el 2026-11-11 y el reset
+> de contraseñas no aplicaba (0 cuentas en producción). El repositorio es **público**
+> desde esa revisión y sus ajustes de GitHub se verificaron el 2026-11-17 (`T009-39`).
 >
 > Remediación 2026-11-11: SEC-016…SEC-021 y AUD-013…AUD-015 cerrados en el mismo día
 > del informe; queda AUD-016 (INFO). Después se añadieron caché compartida del rate

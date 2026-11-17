@@ -253,13 +253,18 @@ Referencia: `specs/009-cybersecurity/spec.md`
     y variantes `-wal`/`-shm` de SQLite (SEC-026). Verificado con `git check-ignore`.
   - DoD: los nombres de prueba quedan ignorados y `.env.example` sigue rastreado. ✅
 
-- [ ] **T009-39** Verificar los ajustes de GitHub antes de publicar.
+- [x] **T009-39** Verificar los ajustes de GitHub antes de publicar.
   - Requisitos: `RF-009-10`
   - Archivos: `.github/workflows/ci.yml`, configuración del repositorio
-  - Evidencia: API de GitHub devuelve 403 sin autenticación y Pages 404; el CI ya usa
-    `contents: read` (SEC-030).
+  - Evidencia (2026-11-17, `gh api`): visibilidad `public`; secret scanning y push
+    protection activos; Dependabot con 0 alertas abiertas (0 de 16 históricas) y
+    `secret-scanning/alerts` vacío; Pages responde 404; 0 releases; permisos por
+    defecto de Actions en `read`. Rotaciones confirmadas el 2026-11-11
+    (`audits/security/2026-11-11-verificacion.md`). Quedan `sha_pinning_required=false`
+    y `allowed_actions=all`: mitigado porque `ci.yml` fija las acciones por SHA y
+    `keepalive.yml` no usa acciones.
   - DoD: checklist firmado con secret scanning, push protection, Dependabot, permisos
-    de Actions, Pages deshabilitado, sin releases con datos y rotaciones confirmadas.
+    de Actions, Pages deshabilitado, sin releases con datos y rotaciones confirmadas. ✅
 
 ## Deuda técnica / Backlog
 
@@ -287,3 +292,4 @@ Referencia: `specs/009-cybersecurity/spec.md`
 | 2026-11-12 | Reauditoría de código: backlog de CSP y 2FA alineado (AUD-029, T009-36) |
 | 2026-11-12 | Auditoría prepublicación: BAJO; 0 críticas/altas y 4 bajas de PII/prevención |
 | 2026-11-12 | T009-37/38: PII decidida, captura fuera del árbol y `.gitignore` ampliado |
+| 2026-11-17 | T009-39 cerrada: ajustes de GitHub verificados y repositorio público |

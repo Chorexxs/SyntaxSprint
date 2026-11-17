@@ -170,7 +170,7 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
 
 ## Fase 5 — Auditoría de arquitectura (2026-11-12)
 
-- [ ] **T007-23** Dividir `tests.py` por dominio.
+- [ ] **T007-26** Dividir `tests.py` por dominio.
   - Requisitos: `RF-008-11`, `RNF-008-02`
   - Archivos: `backend/tests.py`, `backend/tests_auth.py`, `backend/tests_snippets.py`,
     `backend/tests_results.py`, `backend/tests_analytics.py`, `backend/tests_security.py`
@@ -178,6 +178,8 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
     (AUD-032, INFO tras la revisión de impacto: no afecta al producto; hacerlo solo si
     el archivo empieza a molestar). `tests_ratelimit.py` y `tests_totp.py` ya están
     separados.
+  - Nota: renumerada desde `T007-23`, que ya identificaba la tarea del runner de CI.
+    Las auditorías de 2026-11-12 la citan con el ID antiguo.
   - DoD: cada módulo ≤ 400 líneas, misma cobertura y `manage.py test` en verde.
 
 ## Deuda técnica / Backlog
@@ -200,5 +202,6 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
 | 2026-11-10 | Plan inicial; suite de tests vacía detectada |
 | 2026-11-10 | Verificación contra código: 26 tests en verde, `check` 0 issues, `isort` limpio; `T007-01`…`T007-03`, `T007-06`…`T007-10` y `T007-14`…`T007-16` cerradas |
 | 2026-11-10 | CI en GitHub Actions con isort, check, migraciones y tests (`T007-11`) |
-| 2026-11-12 | Auditoría de arquitectura: `tests.py` de 971 líneas (AUD-032, `T007-23`) |
+| 2026-11-12 | Auditoría de arquitectura: `tests.py` de 971 líneas (AUD-032, `T007-26`) |
 | 2026-11-17 | Workflow `Keep-alive` para evitar la pausa de los tiers gratuitos (`T007-25`) |
+| 2026-11-17 | Reunumerar la tarea de dividir `tests.py` como `T007-26` (antes `T007-23`, ID duplicado) |

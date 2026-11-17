@@ -1,6 +1,6 @@
 # Despliegue en Render
 
-Guía operativa de SyntaxSprint. El código vive en GitHub (privado) y la aplicación
+Guía operativa de SyntaxSprint. El código vive en GitHub (público) y la aplicación
 se ejecuta en **Render** como Web Service.
 
 ## 1. Stack y ubicación
@@ -13,7 +13,7 @@ se ejecuta en **Render** como Web Service.
 | Servidor | Gunicorn |
 | Base de datos | InsForge PostgreSQL (`eu-central`) |
 | Estáticos | WhiteNoise + `collectstatic` |
-| Repositorio | `Chorexxs/SyntaxSprint` (privado) |
+| Repositorio | `Chorexxs/SyntaxSprint` (público) |
 | Plan | Free (la instancia se duerme por inactividad) |
 
 > El DNS `syntaxsprint.onrender.com` apunta a Render. Si el servicio no responde,
@@ -218,7 +218,10 @@ Si devuelve 404:
 
 - No versionar `.env`, `db.sqlite3`, `staticfiles/`, `backup.json` ni `.insforge/`.
 - Rotar cualquier secreto que haya estado en un repo público.
-- Mantener el repositorio privado hasta que la rotación esté completa.
+- El repositorio es **público**: nunca subas secretos y, si se filtra uno, rota la
+  credencial; purgar el historial no recupera un secreto ya publicado.
+- Si hay una fuga activa, pasa el repositorio a privado hasta rotar y purgar, y no
+  publiques el informe (`specs/009-cybersecurity`).
 - Revisar `audits/security/` antes de cada despliegue grande.
 
 ### Activar la 2FA del admin

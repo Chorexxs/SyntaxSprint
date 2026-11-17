@@ -348,7 +348,9 @@ y las 6 cuentas más las 2 contraseñas hardcodeadas deben considerarse comprome
 > CRÍTICAS/ALTAS reales; 4 BAJAS de PII y prevención (SEC-023…026) con tareas
 > `T009-37`…`T009-39`. No hay secretos reales en el árbol ni en el historial.
 > SEC-025/026 quedaron cerradas y SEC-023/024 se aceptaron por decisión del responsable
-> (email ya público en GitHub); queda la verificación manual de GitHub (`T009-39`).
+> (email ya público en GitHub). La verificación de ajustes de GitHub (`T009-39`) se
+> cerró el 2026-11-17: el repositorio es público y mantiene secret scanning, push
+> protection y Dependabot activos.
 
 ## 14. Fuera de alcance
 

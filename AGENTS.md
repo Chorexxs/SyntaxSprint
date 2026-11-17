@@ -314,11 +314,12 @@ Al terminar:
 ## 8. Deuda técnica conocida (priorizada)
 
 Estado verificado el 2026-11-12: `manage.py check` 0 issues, `manage.py test` 88 tests
-(87 OK + 1 omitido en Windows por permisos POSIX), 14 tests JS, `isort --check-only`
-sin avisos, `pylint` 10.00/10, `code_metrics.py --strict` sin incumplimientos y
-`npm audit` sin avisos.
+(87 OK + 1 omitido en Windows por permisos POSIX), `isort --check-only` sin avisos,
+`pylint` 10.00/10, `code_metrics.py --strict` sin incumplimientos y `npm audit` sin
+avisos. El recuento de tests JS es **26** (verificado el 2026-11-17); la auditoría
+citaba 14.
 
-Hay deuda abierta sin impacto urgente: `AUD-030` (BAJA, motor JS) y `T007-23` (INFO,
+Hay deuda abierta sin impacto urgente: `AUD-030` (BAJA, motor JS) y `T007-26` (INFO,
 `tests.py`); `AUD-031` y `AUD-033` se corrigieron el mismo día (`T004-25`, `T004-26`) y
 se añadió la pausa por foco del input (`T004-27`). Evidencia:
 `audits/code/2026-11-12-auditoria-arquitectura.md`.
@@ -331,9 +332,9 @@ backlog de cada `tasks.md`. `T000-05` se aprobó y `T000-06` se cerró con
 > No quedan hallazgos **CRÍTICOS** ni **ALTOS** abiertos. Evidencia:
 > `audits/security/2026-11-11-verificacion.md`,
 > `audits/security/2026-11-12-auditoria-prepublicacion.md` y
-> `audits/code/2026-11-12-auditoria-arquitectura.md`. La prepublicación deja 4 BAJAS
-> de PII/prevención (`T009-37`…`T009-39`). La PII se decidió y `.gitignore` se amplió;
-> queda la verificación manual de GitHub (`T009-39`).
+> `audits/code/2026-11-12-auditoria-arquitectura.md`. Las 4 BAJAS de PII/prevención
+> (`T009-37`…`T009-39`) están cerradas: PII decidida, `.gitignore` ampliado y ajustes
+> de GitHub verificados (2026-11-17). El repositorio es público desde esa revisión.
 
 ## 9. Seguridad — reglas rápidas
 
