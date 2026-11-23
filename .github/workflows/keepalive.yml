@@ -1,16 +1,22 @@
 # Mantiene con actividad los tiers gratuitos de InsForge y Render.
 #
-# InsForge pausa los proyectos Free tras 7 días sin peticiones; Render duerme el
-# Web Service tras 15 minutos sin tráfico. Dos ejecuciones semanales dejan un
-# hueco máximo de 3-4 días en InsForge y, de paso, sirven de prueba de vida a
-# Render.
+# InsForge pausa los proyectos Free tras 7 días sin actividad real; Render duerme
+# el Web Service tras 15 minutos sin tráfico. Tres ejecuciones semanales dejan un
+# hueco máximo de 2-3 días, suficiente para absorber los retrasos de los crons de
+# GitHub (el run del 2026-11-19 llegó casi 10 h tarde).
+#
+# Aprendizaje del 2026-11-23: un GET a /api/health no reinicia el reloj de
+# inactividad de InsForge. Hace falta tráfico de la aplicación o de la base de
+# datos, por eso:
+#   - el job de Render llama a /healthz, que ejecuta un SELECT 1 en PostgreSQL;
+#   - el job de InsForge consulta la base con psql (secreto obligatorio).
 #
 # No se hacen deploys a propósito: Render no suspende por falta de despliegues,
 # solo por agotar las 750 h de instancia o el ancho de banda del plan Free.
 #
 # Configuración (GitHub -> Settings -> Secrets and variables -> Actions):
 #   Variable  INSFORGE_URL           https://<proyecto>.insforge.app
-#   Secreto   INSFORGE_DATABASE_URL  cadena Postgres de InsForge (opcional)
+#   Secreto   INSFORGE_DATABASE_URL  cadena Postgres de InsForge (obligatorio)
 #
 # Ver DEPLOY.md, sección 13.
 
@@ -18,9 +24,9 @@ name: Keep-alive
 
 on:
   schedule:
-    # Lunes y jueves a las 06:17 UTC. Evito el minuto :00 porque GitHub retrasa
-    # las ejecuciones en las horas en punto.
-    - cron: "17 6 * * 1,4"
+    # Lunes, miércoles y viernes a las 06:17 UTC. Evito el minuto :00 porque
+    # GitHub retrasa las ejecuciones en las horas en punto.
+    - cron: "17 6 * * 1,3,5"
   workflow_dispatch:
 
 permissions:
@@ -36,7 +42,6 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     env:
-      # Opcional: si el secreto no existe, el paso de psql se omite.
       DATABASE_URL: ${{ secrets.INSFORGE_DATABASE_URL }}
     steps:
       - name: Comprobar la API del proyecto
@@ -52,16 +57,27 @@ jobs:
             "${INSFORGE_URL%/}/api/health" -o /dev/null
 
       - name: Consultar la base de datos
-        if: ${{ env.DATABASE_URL != '' }}
-        run: psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'select 1;' > /dev/null
+        run: |
+          set -euo pipefail
+          if [ -z "${DATABASE_URL}" ]; then
+            echo "::error::Falta el secreto INSFORGE_DATABASE_URL."
+            echo "Sin una consulta real, InsForge no cuenta la ejecución como actividad."
+            exit 1
+          fi
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'select 1;' > /dev/null
 
   render:
     name: Prueba de vida de Render
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - name: GET /
+      - name: GET / y /healthz
         run: |
           # El primer request puede tardar ~1 minuto si el servicio está dormido.
           curl -fsS --retry 3 --retry-connrefused --retry-delay 15 \
             --max-time 120 -o /dev/null https://syntaxsprint.onrender.com/
+
+          # /healthz ejecuta SELECT 1: despierta Render y deja actividad real en
+          # la base de datos de InsForge.
+          curl -fsS --retry 3 --retry-connrefused --retry-delay 15 \
+            --max-time 120 https://syntaxsprint.onrender.com/healthz

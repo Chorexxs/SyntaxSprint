@@ -52,7 +52,7 @@ dependa de pasos manuales no documentados.
 | RF-007-09 | La portada debe inicializar el token CSRF para permitir el POST de snippets. | Alta |
 | RF-007-10 | El sistema debe servir estáticos en producción sin depender de `runserver`. | Alta |
 | RF-007-11 | El pipeline debe ejecutarse en cada push y PR a `main`. | Media |
-| RF-007-12 | El pipeline debe generar actividad periódica en InsForge y Render para evitar la pausa de los proyectos gratuitos. | Media |
+| RF-007-12 | El pipeline debe generar actividad periódica real (HTTP y base de datos) en InsForge y Render para evitar la pausa de los proyectos gratuitos. | Media |
 
 ## 5. Reglas de negocio y validaciones
 
@@ -71,7 +71,8 @@ dependa de pasos manuales no documentados.
 | --- | --- |
 | `backend/tests.py` | Tests de auth, snippets, resultados, perfil y rutas. |
 | `.github/workflows/ci.yml` | lint + check + migrations + tests. |
-| `.github/workflows/keepalive.yml` | actividad semanal en InsForge y Render. |
+| `.github/workflows/keepalive.yml` | actividad tres veces por semana en InsForge y Render, con consulta a la base. |
+| `GET /healthz` | Prueba de vida que ejecuta `SELECT 1`; responde 503 si la base falla. |
 | `.env.example` | Variables documentadas. |
 | `README.md` | Instalación, estructura y despliegue reales. |
 | `specs/traceability.md` | Requisito → tarea → prueba. |
@@ -94,7 +95,9 @@ dependa de pasos manuales no documentados.
 - **CA-007-05** Dado un cuerpo JSON inválido en ambos endpoints, entonces la respuesta es 400.
 - **CA-007-06** Dado `makemigrations --check`, entonces no hay migraciones pendientes.
 - **CA-007-07** Dado el README, entonces la estructura descrita existe en el repo.
-- **CA-007-08** Dado el workflow `Keep-alive`, cuando se ejecuta por cron o manualmente, entonces InsForge recibe al menos dos peticiones por semana y `GET /` de Render responde 200.
+- **CA-007-08** Dado el workflow `Keep-alive`, cuando se ejecuta por cron o manualmente,
+  entonces InsForge recibe al menos dos consultas a la base por semana, `GET /` y
+  `GET /healthz` de Render responden 200 y el proyecto sigue `active`.
 
 ## 9. Fuera de alcance
 

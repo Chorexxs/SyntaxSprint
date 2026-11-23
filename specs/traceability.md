@@ -134,7 +134,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-007-09 | T004-08, T007-06 | POST 200 | ✅ |
 | RF-007-10 | T007-09 | CA-007-04 | ✅ |
 | RF-007-11 | T007-11 | CI | ✅ |
-| RF-007-12 | T007-25 | CA-007-08 | ✅ |
+| RF-007-12 | T007-25, T007-27, T007-28 | CA-007-08 | ✅ |
 
 ## 008 — Auditoría de código
 
@@ -220,7 +220,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | Comprobación | Comando | Resultado |
 | --- | --- | --- |
 | Sistema | `manage.py check` | 0 issues |
-| Pruebas | `manage.py test` | 88 tests (87 OK + 1 omitido en Windows por permisos POSIX) |
+| Pruebas | `manage.py test` | 90 tests (89 OK + 1 omitido en Windows por permisos POSIX) |
 | Pruebas JS | `npm run test:js` | 26 tests OK (Vitest + jsdom: fórmulas, contadores, DOM, eventos, Enter/Tab, pausa, IME y arranque) |
 | Imports | `isort --check-only syntax_sprint/` | Sin avisos |
 | Lint | `pylint backend --rcfile=../.pylintrc` | 10.00/10 |

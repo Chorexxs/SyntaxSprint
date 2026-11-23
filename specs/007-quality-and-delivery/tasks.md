@@ -114,6 +114,21 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
     (`GET /api/health` y, si existe el secreto, `select 1` por `psql`) y job de
     Render (`GET /`). Configuración y límites en `DEPLOY.md` §13.
 
+- [x] **T007-27** Añadir `/healthz` con consulta a la base y usarlo como health check.
+  - Requisito: `RF-007-12`
+  - Archivos: `backend/views.py`, `backend/urls.py`, `backend/tests.py`, `render.yaml`
+  - DoD: `GET /healthz` ejecuta `SELECT 1`, responde 200 y devuelve 503 si la base falla.
+  - Evidencia: `HealthTests` cubre el 200 con `Cache-Control: no-store` y el 503;
+    `render.yaml` usa `healthCheckPath: /healthz`.
+
+- [x] **T007-28** Reforzar el keep-alive para que genere actividad real en la base.
+  - Requisito: `RF-007-12`, `CA-007-08`
+  - Archivos: `.github/workflows/keepalive.yml`, `DEPLOY.md`
+  - DoD: cron de tres días por semana; el job de InsForge exige
+    `INSFORGE_DATABASE_URL` y ejecuta `select 1`; el de Render llama a `/` y `/healthz`.
+  - Evidencia: el health check aislado no reiniciaba el reloj de InsForge (aviso de
+    pausa del 2026-11-23); ejecución manual en verde tras el cambio.
+
 ## Fase 5 — Documentación
 
 - [x] **T007-14** Corregir el árbol de directorios del README y la versión de Django.
@@ -205,3 +220,5 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
 | 2026-11-12 | Auditoría de arquitectura: `tests.py` de 971 líneas (AUD-032, `T007-26`) |
 | 2026-11-17 | Workflow `Keep-alive` para evitar la pausa de los tiers gratuitos (`T007-25`) |
 | 2026-11-17 | Reunumerar la tarea de dividir `tests.py` como `T007-26` (antes `T007-23`, ID duplicado) |
+| 2026-11-23 | `/healthz` con `SELECT 1` y `healthCheckPath` en Render (`T007-27`) |
+| 2026-11-23 | Keep-alive tres veces por semana con consulta real a la base (`T007-28`) |

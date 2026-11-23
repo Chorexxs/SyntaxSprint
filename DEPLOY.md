@@ -206,7 +206,7 @@ Si devuelve 404:
 | `connection refused` a InsForge | `DATABASE_URL` incorrecta | Usar la cadena de `db connection-string` (CLI >= 0.2.8) |
 | `password authentication failed` | Credenciales InsForge obsoletas | Actualizar la CLI a 0.2.8+, re-link o copiar la cadena del dashboard |
 | Servicio no responde | Free dormido, crash o suspendido | Revisar Logs/Events |
-| InsForge: proyecto pausado | 7 días sin peticiones o límite de uso del plan Free | **Restore Project** en el dashboard; el workflow keep-alive lo evita |
+| InsForge: proyecto pausado | 7 días sin actividad real (API o base de datos) o límite de uso del plan Free | **Restore Project** en el dashboard o `npx -y @insforge/cli@latest projects restore`; el keep-alive lo evita si toca la base |
 
 ## 10. Rollback
 
@@ -286,15 +286,21 @@ Vercel detecta Django por `syntax_sprint/manage.py` y resuelve la entrada desde
 
 ## 13. Keep-alive de los tiers gratuitos
 
-InsForge pausa los proyectos Free tras **7 días sin peticiones** y Render duerme
+InsForge pausa los proyectos Free tras **7 días sin actividad real** y Render duerme
 el Web Service tras **15 minutos sin tráfico**. El workflow
-`.github/workflows/keepalive.yml` genera actividad dos veces por semana (lunes y
-jueves a las 06:17 UTC) para que el proyecto de InsForge no se pause.
+`.github/workflows/keepalive.yml` genera actividad tres veces por semana (lunes,
+miércoles y viernes a las 06:17 UTC) para que el proyecto de InsForge no se pause.
+
+> **Lección del 2026-11-23:** un `GET /api/health` no reinicia el reloj de inactividad
+> de InsForge. La ejecución del 2026-11-19 terminó en verde pero no dejó actividad en
+> la base, y el aviso de pausa llegó igualmente. Por eso el keep-alive **debe tocar la
+> base de datos**: `/healthz` ejecuta `SELECT 1` y el job de InsForge consulta con
+> `psql`.
 
 | Job | Qué hace | Requisito |
 | --- | --- | --- |
-| `Actividad en InsForge` | `GET /api/health` del proyecto y, si existe el secreto, un `select 1` por `psql` | variable `INSFORGE_URL`; secreto opcional `INSFORGE_DATABASE_URL` |
-| `Prueba de vida de Render` | `GET /` a la URL de producción | ninguno |
+| `Actividad en InsForge` | `GET /api/health` y `select 1` por `psql` | variable `INSFORGE_URL`; secreto **obligatorio** `INSFORGE_DATABASE_URL` |
+| `Prueba de vida de Render` | `GET /` y `GET /healthz`, que consulta la base | ninguno |
 
 ### Configuración (una sola vez)
 
@@ -302,13 +308,16 @@ jueves a las 06:17 UTC) para que el proyecto de InsForge no se pause.
    `INSFORGE_URL` con la URL base del proyecto (`https://<proyecto>.insforge.app`,
    sin barra final). Es la misma que se usa como `baseUrl` del SDK; aparece en el
    dashboard (Project Settings → Connect) y no es un secreto.
-2. Opcional: en **Secrets**, crea `INSFORGE_DATABASE_URL` con la cadena Postgres
-   de InsForge (la misma que `DATABASE_URL` en Render). Añade una consulta real
-   además del *health check*.
+2. En **Secrets**, crea `INSFORGE_DATABASE_URL` con la cadena Postgres de InsForge
+   (la misma que `DATABASE_URL` en Render). Puedes obtenerla sin imprimirla:
+   `npx -y @insforge/cli@latest db connection-string | gh secret set INSFORGE_DATABASE_URL`.
+   Sin este secreto el job falla a propósito en lugar de omitir la consulta.
 3. Actions → **Keep-alive** → **Run workflow** para la primera ejecución manual.
 
 Si un job falla, GitHub avisa por email al autor del cron y el fallo queda en
 **Actions**. Ese aviso es la señal de que el keep-alive ha dejado de funcionar.
+GitHub puede retrasar los crons varias horas (el 2026-11-19 se ejecutó a las 15:50
+UTC, casi 10 h después de lo previsto); por eso hay tres ejecuciones semanales.
 
 ### Qué no hace
 
@@ -320,5 +329,5 @@ Si un job falla, GitHub avisa por email al autor del cron y el fallo queda en
 - No sustituye a `purge_analytics` si la base se acerca a los 500 MB del plan
   Free. Comprueba el uso con `npx @insforge/cli usage`.
 - Si el proyecto ya está pausado, este workflow no lo reactiva: usa **Restore
-  Project** en el dashboard de InsForge.
+  Project** en el dashboard o `npx -y @insforge/cli@latest projects restore`.
 
