@@ -109,6 +109,16 @@ Referencia: `specs/010-dependencies/spec.md`
   - DoD: Render, CI y Vercel comparten la minor 3.12 y `manage.py check --deploy` en
     verde. ✅
 
+## Fase 5 — Parches 2026-11-23
+
+- [x] **T010-13** Aplicar el grupo de parches del PR #7 (`psycopg`, `coverage`, `pylint`).
+  - Requisitos: `RF-010-06`, `RF-010-08`, `RF-010-10`
+  - Archivos: `requirements.txt`, `requirements-dev.txt`
+  - DoD: CI en verde, verificación local completa e informe con antes/después.
+  - Evidencia: PR #7 mergeado como `729bb5c`; `check` 0 issues, migraciones sin cambios,
+    87 tests OK + 1 omitido, `isort` limpio, `pylint` 10.00/10 y `pip-audit` sin
+    vulnerabilidades. Informe: `audits/dependencies/2026-11-23-actualizacion.md`.
+
 ## Deuda técnica / Backlog
 
 - [ ] Evaluar Vitest 5 cuando el CI migre a Node 22 (exige Node ≥ 22.12).
@@ -128,3 +138,4 @@ Referencia: `specs/010-dependencies/spec.md`
 | 2026-11-10 | Creación de la spec, el plan y el inventario inicial |
 | 2026-11-10 | Primera ejecución: requirements separados, `requests` eliminado, Tailwind fijado y Dependabot activado |
 | 2026-11-12 | T010-12: Python 3.12 minor, WSGI y hosts de Vercel |
+| 2026-11-23 | T010-13: parches de `psycopg` 3.3.9, `coverage` 7.17.3 y `pylint` 4.1.4 |

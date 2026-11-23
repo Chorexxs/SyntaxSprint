@@ -178,14 +178,14 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | --- | --- | --- | --- |
 | RF-010-01 | T010-01 | procedimiento bajo demanda | ✅ |
 | RF-010-02 | T010-02 | CA-010-01 | ✅ |
-| RF-010-03 | T010-10 | comparar con última versión | ✅ |
-| RF-010-04 | T010-09, T010-10 | `pip-audit` | ✅ |
+| RF-010-03 | T010-10, T010-13 | comparar con última versión | ✅ |
+| RF-010-04 | T010-09, T010-10, T010-13 | `pip-audit` | ✅ |
 | RF-010-05 | T010-01 | clasificación por tipo | ✅ |
-| RF-010-06 | T010-05, T010-06 | CA-010-02 | ✅ |
+| RF-010-06 | T010-05, T010-06, T010-13 | CA-010-02 | ✅ |
 | RF-010-07 | T010-01 | CA-010-04 | ✅ |
-| RF-010-08 | T010-01 | CA-010-02 | ✅ |
+| RF-010-08 | T010-01, T010-13 | CA-010-02 | ✅ |
 | RF-010-09 | T010-01 | CA-010-03 | ✅ |
-| RF-010-10 | T010-04 | CA-010-05 | ✅ |
+| RF-010-10 | T010-04, T010-13 | CA-010-05 | ✅ |
 | RF-010-11 | T010-01 | CA-010-06 | ✅ |
 | RF-010-12 | T010-05, T010-06 | requirements exacto | ✅ |
 
