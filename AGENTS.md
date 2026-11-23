@@ -20,7 +20,7 @@ historial del usuario y calcula promedios.
 | JavaScript | Vanilla ES6+ (clase `TypingTest`); jQuery 3.x permitido |
 | Servidor | Gunicorn (`syntax_sprint.wsgi`) |
 | Configuración | `python-decouple` + `.env` |
-| Pruebas | `django.test.TestCase` (88 tests) y Vitest (26 tests JS) |
+| Pruebas | `django.test.TestCase` (90 tests) y Vitest (26 tests JS) |
 | Lint | `pylint`, `isort` |
 | App principal | `backend` |
 
@@ -116,6 +116,7 @@ gunicorn syntax_sprint.wsgi:application --bind 0.0.0.0:8000
 | Método | Ruta | Vista | Auth | Respuesta |
 | --- | --- | --- | --- | --- |
 | GET | `/` | `index` | No | `index.html` |
+| GET | `/healthz` | `healthz` | No | `{status: ok}` · 503 si falla la BD |
 | GET/POST | `/get_python_function` | `get_python_function` | No | `{name, code}` · 429 si se abusa |
 | GET/POST | `/signup` | `signup` | No | HTML / 302 |
 | GET/POST | `/login` | `login` | No | HTML / 302 |
@@ -313,8 +314,8 @@ Al terminar:
 
 ## 8. Deuda técnica conocida (priorizada)
 
-Estado verificado el 2026-11-12: `manage.py check` 0 issues, `manage.py test` 88 tests
-(87 OK + 1 omitido en Windows por permisos POSIX), `isort --check-only` sin avisos,
+Estado verificado el 2026-11-23: `manage.py check` 0 issues, `manage.py test` 90 tests
+(89 OK + 1 omitido en Windows por permisos POSIX), `isort --check-only` sin avisos,
 `pylint` 10.00/10, `code_metrics.py --strict` sin incumplimientos y `npm audit` sin
 avisos. El recuento de tests JS es **26** (verificado el 2026-11-17); la auditoría
 citaba 14.

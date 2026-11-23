@@ -6,6 +6,7 @@ from . import auth_views, result_views, snippet_views, views
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("healthz", views.healthz, name="healthz"),
     path(
         "get_python_function",
         snippet_views.get_python_function,

@@ -969,3 +969,24 @@ class TwoFactorTests(TestCase):
                 user.username,
                 stdout=StringIO(),
             )
+
+
+class HealthTests(TestCase):
+    """Prueba de vida para Render y el keep-alive."""
+
+    def test_healthz_queries_database(self):
+        response = self.client.get(reverse("healthz"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"status": "ok"})
+        self.assertEqual(response["Cache-Control"], "no-store")
+
+    def test_healthz_reports_database_failure(self):
+        with mock.patch(
+            "backend.views._database_ping",
+            side_effect=DatabaseError("caída"),
+        ):
+            response = self.client.get(reverse("healthz"))
+
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.json(), {"status": "error"})
