@@ -79,8 +79,8 @@ npm se usa solo para el build de Tailwind y para las pruebas de frontend
 | Render | 3.12 | `render.yaml`, validado por el verificador |
 | `actions/checkout` | v4 | `.github/workflows/ci.yml` |
 | `actions/setup-python` | v5 | `.github/workflows/ci.yml` |
-| PostgreSQL | InsForge | `DATABASE_URL` |
-| InsForge CLI | `>= 0.2.8` | `npx @insforge/cli` (documentado) |
+| PostgreSQL | Neon | `DATABASE_URL` (agrupada) y `DATABASE_URL_UNPOOLED` |
+| Neon CLI | `9.x` | `neon env pull`, `neon deploy` (documentado) |
 
 ## 4. Procedimiento
 

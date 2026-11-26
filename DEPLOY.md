@@ -11,7 +11,7 @@ se ejecuta en **Render** como Web Service.
 | Región | `gcp-us-west1` (Oregón) |
 | Runtime | Python 3.12 |
 | Servidor | Gunicorn |
-| Base de datos | InsForge PostgreSQL (`eu-central`) |
+| Base de datos | Neon PostgreSQL (`eu-central`) |
 | Estáticos | WhiteNoise + `collectstatic` |
 | Repositorio | `Chorexxs/SyntaxSprint` (público) |
 | Plan | Free (la instancia se duerme por inactividad) |
@@ -31,7 +31,8 @@ Render Dashboard → servicio `syntaxsprint` → **Environment**.
 | `ALLOWED_HOSTS` | `syntaxsprint.onrender.com` | Sí |
 | `CSRF_TRUSTED_ORIGINS` | `https://syntaxsprint.onrender.com` | Sí |
 | `TRUST_PROXY_HEADERS` | `True` | Sí |
-| `DATABASE_URL` | Cadena Postgres de InsForge (`sslmode=require`) | Sí |
+| `DATABASE_URL` | Cadena Postgres agrupada de Neon (`sslmode=require`) | Sí |
+| `DATABASE_URL_UNPOOLED` | Cadena directa de Neon (migraciones y `createcachetable`) | Sí |
 | `RATE_LIMIT_CACHE_ALIAS` | `shared` (caché de BD entre workers) | Recomendada |
 | `SNIPPET_RATE_LIMIT_CACHE_ALIAS` | `default` (LocMem por worker) | Opcional |
 | `ADMIN_TOTP_REQUIRED` | `False` hasta enrolar el admin | Opcional |
@@ -60,24 +61,35 @@ Reglas:
 La `SECRET_KEY` invalida tokens firmados, pero **no** borra las sesiones guardadas
 en la base de datos: hay que eliminarlas aparte.
 
-## 4. Base de datos (InsForge PostgreSQL)
+## 4. Base de datos (Neon PostgreSQL)
 
-La base de datos es un proyecto de **InsForge** en la región `eu-central`.
+La base de datos es el proyecto **SyntaxSprint** de **Neon**
+(`flat-silence-32183356`, rama `production`, región `eu-central`), declarado en
+`neon.ts` y provisionado con `neon deploy`.
 
-1. Obtén la cadena de conexión con la CLI actualizada (>= 0.2.8):
+Neon entrega dos cadenas para la misma base:
+
+| Variable | Tipo | Uso |
+| --- | --- | --- |
+| `DATABASE_URL` | Agrupada (`-pooler`, PgBouncer) | Tráfico de la aplicación |
+| `DATABASE_URL_UNPOOLED` | Directa | `migrate`, `test`, `flush`, `dbshell`, `createcachetable` |
+
+`settings.py` elige la directa sola cuando el comando de `manage.py` está en
+`DIRECT_DB_COMMANDS`; PgBouncer en modo transacción no conserva estado de sesión y
+puede romper migraciones y dumps.
+
+1. Vuelca las variables del proyecto vinculado (`.neon`):
 
    ```bash
-   npx -y @insforge/cli@latest db connection-string
+   neon env pull
    ```
 
-   > La versión 0.1.x devolvía una contraseña inválida para `postgres`.
-   > Si no conecta, actualiza la CLI o copia la cadena desde el dashboard de
-   > InsForge (Database → Connect).
+   Escribe `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `NEON_BRANCH` y
+   `NEON_BRANCH_ID` en `.env` (ignorado por git). Cópialas a Render →
+   **Environment** como `DATABASE_URL` y `DATABASE_URL_UNPOOLED`; nunca las subas
+   al repositorio.
 
-2. Añádela en Render → servicio `syntaxsprint` → **Environment** como
-   `DATABASE_URL`. Debe incluir `?sslmode=require`.
-
-3. El Start Command ejecuta `migrate` y `createcachetable` en cada deploy (la tabla
+2. El Start Command ejecuta `migrate` y `createcachetable` en cada deploy (la tabla
    de caché compartida del rate limiting). También puedes hacerlo a mano:
 
    ```bash
@@ -85,11 +97,13 @@ La base de datos es un proyecto de **InsForge** en la región `eu-central`.
    python syntax_sprint/manage.py createcachetable
    ```
 
-4. Verifica las tablas:
+3. Verifica las tablas:
 
    ```bash
-   npx -y @insforge/cli@latest db tables
+   psql "$DATABASE_URL_UNPOOLED" -c '\dt'
    ```
+
+   o `neon inspect db table-sizes`.
 
 ### Migrar datos desde SQLite
 
@@ -98,7 +112,7 @@ La base de datos es un proyecto de **InsForge** en la región `eu-central`.
 python syntax_sprint/manage.py dumpdata --natural-foreign --natural-primary \
   -e contenttypes -e auth.Permission > backup.json
 
-# 2. Configura DATABASE_URL (InsForge) y aplica migraciones
+# 2. Configura DATABASE_URL / DATABASE_URL_UNPOOLED (Neon) y aplica migraciones
 python syntax_sprint/manage.py migrate --noinput
 python syntax_sprint/manage.py createcachetable
 
@@ -108,10 +122,10 @@ python syntax_sprint/manage.py loaddata backup.json
 
 > `backup.json` contiene usuarios y hashes de contraseña. No lo subas a GitHub.
 > La app también puede usar SQLite en local (`DB_PATH`), pero producción usa
-> InsForge.
+> Neon.
 
-> Latencia: Render está en `oregon` e InsForge en `eu-central`. Si importa,
-> mueve el Web Service a una región europea.
+> Latencia: Render está en `oregon` y Neon en `eu-central`. Si importa, mueve el
+> Web Service a una región europea.
 
 ## 5. Build y arranque
 
@@ -183,7 +197,7 @@ Si devuelve 404:
 - [ ] `ALLOWED_HOSTS` sin esquema ni barra final.
 - [ ] `CSRF_TRUSTED_ORIGINS` con `https://`.
 - [ ] `TRUST_PROXY_HEADERS=True`.
-- [ ] `DATABASE_URL` de InsForge.
+- [ ] `DATABASE_URL` y `DATABASE_URL_UNPOOLED` de Neon.
 - [ ] `collectstatic` en el build.
 - [ ] Migraciones aplicadas.
 - [ ] Sesiones borradas.
@@ -202,11 +216,12 @@ Si devuelve 404:
 | `CSRF verification failed` | Origen no confiable | `CSRF_TRUSTED_ORIGINS=https://...` |
 | Bucle de redirección HTTPS | Proxy no reconocido | `TRUST_PROXY_HEADERS=True` |
 | CSS/JS 404 | Sin `collectstatic` o sin WhiteNoise | Revisar build y middleware |
-| Datos desaparecen tras deploy | `DATABASE_URL` no configurada | Configurar InsForge |
-| `connection refused` a InsForge | `DATABASE_URL` incorrecta | Usar la cadena de `db connection-string` (CLI >= 0.2.8) |
-| `password authentication failed` | Credenciales InsForge obsoletas | Actualizar la CLI a 0.2.8+, re-link o copiar la cadena del dashboard |
+| Datos desaparecen tras deploy | `DATABASE_URL` no configurada | Configurar Neon |
+| `connection refused` a Neon | `DATABASE_URL` incorrecta o compute suspendido | `neon env pull` y revisar `neon postgres computes list` |
+| `password authentication failed` | Credenciales de Neon obsoletas | Volver a ejecutar `neon env pull` y actualizar Render |
+| `prepared statement ... already exists` o `relation ... does not exist` en migraciones | Migración por la conexión agrupada | Configurar `DATABASE_URL_UNPOOLED` |
+| `remaining connection slots are reserved` | Demasiadas conexiones directas | Usar la cadena agrupada (`-pooler`) en `DATABASE_URL` |
 | Servicio no responde | Free dormido, crash o suspendido | Revisar Logs/Events |
-| InsForge: proyecto pausado | 7 días sin actividad real (API o base de datos) o límite de uso del plan Free | **Restore Project** en el dashboard o `npx -y @insforge/cli@latest projects restore`; el keep-alive lo evita si toca la base |
 
 ## 10. Rollback
 
@@ -216,7 +231,7 @@ Si devuelve 404:
 
 ## 11. Seguridad
 
-- No versionar `.env`, `db.sqlite3`, `staticfiles/`, `backup.json` ni `.insforge/`.
+- No versionar `.env`, `db.sqlite3`, `staticfiles/`, `backup.json`, `.neon` ni `.insforge/`.
 - Rotar cualquier secreto que haya estado en un repo público.
 - El repositorio es **público**: nunca subas secretos y, si se filtra uno, rota la
   credencial; purgar el historial no recupera un secreto ya publicado.
@@ -256,7 +271,7 @@ Vercel detecta Django por `syntax_sprint/manage.py` y resuelve la entrada desde
 1. `.python-version` debe ser `3.12` (Vercel no dispone del parche exacto `3.12.1`).
 2. En Vercel → Settings → Environment Variables:
    - `SECRET_KEY` y `DEBUG=False`.
-   - `DATABASE_URL` de InsForge.
+   - `DATABASE_URL` y `DATABASE_URL_UNPOOLED` de Neon.
    - `CSRF_TRUSTED_ORIGINS=https://<dominio>.vercel.app`.
    - `TRUST_PROXY_HEADERS=True` y `RATE_LIMIT_CACHE_ALIAS=shared`.
    - `SNIPPET_RATE_LIMIT_CACHE_ALIAS=default` y `ADMIN_TOTP_REQUIRED=False`.
@@ -277,42 +292,30 @@ Vercel detecta Django por `syntax_sprint/manage.py` y resuelve la entrada desde
 6. En Vercel las conexiones no se reutilizan (`conn_max_age=0`) para no agotar el
    pool de PostgreSQL.
 7. Los despliegues con **Vercel CLI** (`vercel deploy`) **no aplican `.gitignore`**:
-   suben `.env`, `.insforge/` y `*.sqlite3` si no están excluidos. El repositorio
-   incluye un `.vercelignore` para impedirlo; no lo elimines. Antes de desplegar,
-   comprueba que no se cuelan secretos:
-   `vercel deploy --dry --json` no debe listar `.env`, `.insforge` ni bases SQLite.
-   Los despliegues desde Git (ramas y PRs) sí respetan `.gitignore`, y por eso
-   Preview necesita sus propias variables de entorno.
+   suben `.env`, `.neon`, `.insforge/` y `*.sqlite3` si no están excluidos. El
+   repositorio incluye un `.vercelignore` para impedirlo; no lo elimines. Antes de
+   desplegar, comprueba que no se cuelan secretos:
+   `vercel deploy --dry --json` no debe listar `.env`, `.neon`, `.insforge` ni bases
+   SQLite. Los despliegues desde Git (ramas y PRs) sí respetan `.gitignore`, y por
+   eso Preview necesita sus propias variables de entorno.
 
-## 13. Keep-alive de los tiers gratuitos
+## 13. Keep-alive del tier gratuito de Render
 
-InsForge pausa los proyectos Free tras **7 días sin actividad real** y Render duerme
-el Web Service tras **15 minutos sin tráfico**. El workflow
+Render duerme el Web Service tras **15 minutos sin tráfico**. El workflow
 `.github/workflows/keepalive.yml` genera actividad tres veces por semana (lunes,
-miércoles y viernes a las 06:17 UTC) para que el proyecto de InsForge no se pause.
+miércoles y viernes a las 06:17 UTC) para que el servicio no acumule días dormido.
 
-> **Lección del 2026-11-23:** un `GET /api/health` no reinicia el reloj de inactividad
-> de InsForge. La ejecución del 2026-11-19 terminó en verde pero no dejó actividad en
-> la base, y el aviso de pausa llegó igualmente. Por eso el keep-alive **debe tocar la
-> base de datos**: `/healthz` ejecuta `SELECT 1` y el job de InsForge consulta con
-> `psql`.
+Neon **no necesita keep-alive**: su compute se suspende por inactividad y se
+reanuda solo con la siguiente consulta, sin pausar el proyecto ni borrar datos.
+Por eso el workflow ya no consulta la base por `psql`.
 
 | Job | Qué hace | Requisito |
 | --- | --- | --- |
-| `Actividad en InsForge` | `GET /api/health` y `select 1` por `psql` | variable `INSFORGE_URL`; secreto **obligatorio** `INSFORGE_DATABASE_URL` |
-| `Prueba de vida de Render` | `GET /` y `GET /healthz`, que consulta la base | ninguno |
+| `Prueba de vida de Render` | `GET /` y `GET /healthz`, que ejecuta `SELECT 1` | ninguno |
 
 ### Configuración (una sola vez)
 
-1. GitHub → **Settings → Secrets and variables → Actions → Variables**: crea
-   `INSFORGE_URL` con la URL base del proyecto (`https://<proyecto>.insforge.app`,
-   sin barra final). Es la misma que se usa como `baseUrl` del SDK; aparece en el
-   dashboard (Project Settings → Connect) y no es un secreto.
-2. En **Secrets**, crea `INSFORGE_DATABASE_URL` con la cadena Postgres de InsForge
-   (la misma que `DATABASE_URL` en Render). Puedes obtenerla sin imprimirla:
-   `npx -y @insforge/cli@latest db connection-string | gh secret set INSFORGE_DATABASE_URL`.
-   Sin este secreto el job falla a propósito en lugar de omitir la consulta.
-3. Actions → **Keep-alive** → **Run workflow** para la primera ejecución manual.
+1. Actions → **Keep-alive** → **Run workflow** para la primera ejecución manual.
 
 Si un job falla, GitHub avisa por email al autor del cron y el fallo queda en
 **Actions**. Ese aviso es la señal de que el keep-alive ha dejado de funcionar.
@@ -326,8 +329,8 @@ UTC, casi 10 h después de lo previsto); por eso hay tres ejecuciones semanales.
   el consumo en Render → **Billing → Monthly Included Usage**.
 - No mantiene Render despierto: el servicio vuelve a dormirse a los 15 minutos.
   Es lo esperado; la primera visita tarda ~1 minuto en despertarlo.
-- No sustituye a `purge_analytics` si la base se acerca a los 500 MB del plan
-  Free. Comprueba el uso con `npx @insforge/cli usage`.
-- Si el proyecto ya está pausado, este workflow no lo reactiva: usa **Restore
-  Project** en el dashboard o `npx -y @insforge/cli@latest projects restore`.
+- No sustituye a `purge_analytics` si la base se acerca al límite de almacenamiento
+  del plan Free de Neon. Comprueba el uso con `neon inspect db table-sizes`.
+- No reactiva un compute suspendido por cuota agotada: revisa **Billing** en Neon
+  y espera al siguiente ciclo o cambia de plan.
 

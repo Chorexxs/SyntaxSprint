@@ -134,7 +134,7 @@ Leyenda de estado: ✅ implementado · 🟡 parcial · ⬜ pendiente
 | RF-007-09 | T004-08, T007-06 | POST 200 | ✅ |
 | RF-007-10 | T007-09 | CA-007-04 | ✅ |
 | RF-007-11 | T007-11 | CI | ✅ |
-| RF-007-12 | T007-25, T007-27, T007-28 | CA-007-08 | ✅ |
+| RF-007-12 | T007-25, T007-27, T007-28, T007-29 | CA-007-08 | ✅ |
 
 ## 008 — Auditoría de código
 

@@ -99,7 +99,8 @@ SyntaxSprint/
 | ADR-01 | Vistas función en lugar de CBV | Simplicidad y tamaño del proyecto | Repetición de `login_required` |
 | ADR-02 | Catálogo de snippets en memoria (`backend/snippets.py`) | Evitar BD para contenido estático | Un módulo de datos grande; se mantiene aparte de las vistas |
 | ADR-03 | Cálculo de WPM en cliente | Feedback en tiempo real | Resultado manipulable; validar en servidor |
-| ADR-04 | SQLite en local; PostgreSQL (InsForge) en producción | Simplicidad en desarrollo y persistencia real | Dos motores que deben comportarse igual; lo cubren los tests |
+| ADR-04 | SQLite en local; PostgreSQL (Neon desde 2026-11-26) en producción | Simplicidad en desarrollo y persistencia real | Dos motores que deben comportarse igual; lo cubren los tests |
+| ADR-08 | Conexión agrupada de Neon para la app y directa (`DATABASE_URL_UNPOOLED`) para migraciones | PgBouncer no conserva estado de sesión | `settings.py` elige la directa para `migrate`, `test`, `flush`, `dbshell` y `createcachetable` |
 | ADR-05 | Tailwind por CDN (sustituido por build local el 2026-11-11) | Sin paso de build | Dependencia de red; versión fijada en 3.4.17 |
 | ADR-06 | Sesiones de Django | Stack nativo | Sin API tokens |
 | ADR-07 | Analítica propia en PostgreSQL | Sin cookies de terceros ni dependencias nuevas | Hay que mantener el modelo, la purga y los comandos |

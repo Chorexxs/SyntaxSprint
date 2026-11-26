@@ -1,22 +1,15 @@
-# Mantiene con actividad los tiers gratuitos de InsForge y Render.
+# Mantiene con actividad el tier gratuito de Render.
 #
-# InsForge pausa los proyectos Free tras 7 días sin actividad real; Render duerme
-# el Web Service tras 15 minutos sin tráfico. Tres ejecuciones semanales dejan un
-# hueco máximo de 2-3 días, suficiente para absorber los retrasos de los crons de
-# GitHub (el run del 2026-11-19 llegó casi 10 h tarde).
+# Render duerme el Web Service tras 15 minutos sin tráfico. Tres ejecuciones
+# semanales dejan un hueco máximo de 2-3 días, suficiente para absorber los retrasos
+# de los crons de GitHub (el run del 2026-11-19 llegó casi 10 h tarde).
 #
-# Aprendizaje del 2026-11-23: un GET a /api/health no reinicia el reloj de
-# inactividad de InsForge. Hace falta tráfico de la aplicación o de la base de
-# datos, por eso:
-#   - el job de Render llama a /healthz, que ejecuta un SELECT 1 en PostgreSQL;
-#   - el job de InsForge consulta la base con psql (secreto obligatorio).
+# Neon no necesita keep-alive: el compute se suspende por inactividad y se reanuda
+# solo con la siguiente consulta. Basta con /healthz, que ejecuta un SELECT 1 y deja
+# actividad real en la base de datos.
 #
 # No se hacen deploys a propósito: Render no suspende por falta de despliegues,
 # solo por agotar las 750 h de instancia o el ancho de banda del plan Free.
-#
-# Configuración (GitHub -> Settings -> Secrets and variables -> Actions):
-#   Variable  INSFORGE_URL           https://<proyecto>.insforge.app
-#   Secreto   INSFORGE_DATABASE_URL  cadena Postgres de InsForge (obligatorio)
 #
 # Ver DEPLOY.md, sección 13.
 
@@ -37,35 +30,6 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  insforge:
-    name: Actividad en InsForge
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    env:
-      DATABASE_URL: ${{ secrets.INSFORGE_DATABASE_URL }}
-    steps:
-      - name: Comprobar la API del proyecto
-        env:
-          INSFORGE_URL: ${{ vars.INSFORGE_URL }}
-        run: |
-          set -euo pipefail
-          if [ -z "${INSFORGE_URL}" ]; then
-            echo "::error::Falta la variable INSFORGE_URL del repositorio."
-            exit 1
-          fi
-          curl -fsS --retry 3 --retry-delay 10 --max-time 60 \
-            "${INSFORGE_URL%/}/api/health" -o /dev/null
-
-      - name: Consultar la base de datos
-        run: |
-          set -euo pipefail
-          if [ -z "${DATABASE_URL}" ]; then
-            echo "::error::Falta el secreto INSFORGE_DATABASE_URL."
-            echo "Sin una consulta real, InsForge no cuenta la ejecución como actividad."
-            exit 1
-          fi
-          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -c 'select 1;' > /dev/null
-
   render:
     name: Prueba de vida de Render
     runs-on: ubuntu-24.04
@@ -78,6 +42,6 @@ jobs:
             --max-time 120 -o /dev/null https://syntaxsprint.onrender.com/
 
           # /healthz ejecuta SELECT 1: despierta Render y deja actividad real en
-          # la base de datos de InsForge.
+          # la base de datos de Neon.
           curl -fsS --retry 3 --retry-connrefused --retry-delay 15 \
             --max-time 120 https://syntaxsprint.onrender.com/healthz

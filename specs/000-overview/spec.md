@@ -24,7 +24,7 @@ usuario para medir su progreso.
 2. Medir WPM y precisión de forma consistente y comprensible.
 3. Persistir cada resultado y mostrar historial y promedios por usuario.
 4. Ofrecer una experiencia minimalista, rápida y con tema claro/oscuro.
-5. Funcionar con una pila sencilla y desplegable: Django + PostgreSQL (InsForge) + Gunicorn.
+5. Funcionar con una pila sencilla y desplegable: Django + PostgreSQL (Neon) + Gunicorn.
 
 ### No objetivos
 

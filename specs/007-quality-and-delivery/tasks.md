@@ -128,6 +128,18 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
     `INSFORGE_DATABASE_URL` y ejecuta `select 1`; el de Render llama a `/` y `/healthz`.
   - Evidencia: el health check aislado no reiniciaba el reloj de InsForge (aviso de
     pausa del 2026-11-23); ejecución manual en verde tras el cambio.
+  - Nota: el job de InsForge se retiró el 2026-11-26 con la migración a Neon
+    (`T007-29`).
+
+- [x] **T007-29** Migrar la base de datos a Neon y retirar el keep-alive de InsForge.
+  - Requisitos: `RF-007-12`, `ADR-04`, `ADR-08`
+  - Archivos: `neon.ts`, `syntax_sprint/syntax_sprint/settings.py`, `.env.example`,
+    `render.yaml`, `.github/workflows/keepalive.yml`, `DEPLOY.md`
+  - DoD: `neon deploy` provisiona Postgres; `migrate` y `createcachetable` usan la
+    conexión directa; la suite pasa contra Neon; el workflow solo mantiene Render
+    activo.
+  - Evidencia: verificación del 2026-11-26 (`manage.py test` → 90 tests, 89 OK +
+    1 omitido) y E2E de signup, login, resultado y perfil sobre Neon.
 
 ## Fase 5 — Documentación
 

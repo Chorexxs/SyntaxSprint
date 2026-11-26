@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 
 import dj_database_url
@@ -136,10 +137,33 @@ DATABASES = {
 }
 
 DATABASE_URL = config("DATABASE_URL", default="")
+
+# Neon entrega dos cadenas para la misma base: la agrupada (PgBouncer) para el
+# tráfico de la aplicación y la directa para migraciones, dumps y administración.
+# PgBouncer en modo transacción no conserva estado de sesión, así que las tareas
+# que crean o alteran esquema deben usar la conexión directa.
+DATABASE_URL_UNPOOLED = config("DATABASE_URL_UNPOOLED", default="")
+DIRECT_DB_COMMANDS = frozenset(
+    {"migrate", "test", "flush", "dbshell", "createcachetable"}
+)
+
+
+def _is_direct_db_command() -> bool:
+    """Indica si el comando de gestión en curso necesita la conexión directa."""
+    if len(sys.argv) < 2:
+        return False
+    if Path(sys.argv[0]).stem not in {"manage", "django-admin"}:
+        return False
+    return sys.argv[1] in DIRECT_DB_COMMANDS
+
+
 if DATABASE_URL:
+    database_url = DATABASE_URL
+    if DATABASE_URL_UNPOOLED and _is_direct_db_command():
+        database_url = DATABASE_URL_UNPOOLED
     # En Vercel (serverless) no conviene mantener conexiones entre invocaciones.
     conn_max_age = 0 if os.environ.get("VERCEL") else 600
-    DATABASES["default"] = dj_database_url.parse(DATABASE_URL, conn_max_age=conn_max_age)
+    DATABASES["default"] = dj_database_url.parse(database_url, conn_max_age=conn_max_age)
     if DATABASES["default"]["ENGINE"].endswith("postgresql"):
         DATABASES["default"].setdefault("OPTIONS", {}).setdefault(
             "connect_timeout", 5

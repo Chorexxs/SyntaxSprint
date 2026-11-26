@@ -158,7 +158,7 @@ La app se despliega en Render (`syntaxsprint.onrender.com`). Cambios de esta fas
 | `DB_PATH` | Permitir SQLite en un disco persistente |
 | `DATABASE_URL` + `dj-database-url` | Usar PostgreSQL gestionado y evitar SQLite efímero |
 | `render.yaml` | Blueprint reproducible con build/start/variables |
-| `/healthz` + `healthCheckPath` | Prueba de vida que ejecuta `SELECT 1`: despertar Render también deja actividad en InsForge |
+| `/healthz` + `healthCheckPath` | Prueba de vida que ejecuta `SELECT 1`: despertar Render también deja actividad en la base de datos |
 | `DEPLOY.md` | Runbook de rotación, backup, migración y rollback |
 
 Comandos:

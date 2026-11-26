@@ -2,9 +2,10 @@
 # Uso: Render Dashboard -> New -> Blueprint -> selecciona este repositorio.
 # Si el servicio ya existe, revisa que estas variables coincidan con el dashboard.
 #
-# La base de datos es PostgreSQL de InsForge. Configura DATABASE_URL con:
-#   npx -y @insforge/cli@latest db connection-string
-# No la guardes en el repositorio: usa la variable de entorno de Render.
+# La base de datos es PostgreSQL de Neon. Configura DATABASE_URL y
+# DATABASE_URL_UNPOOLED con las cadenas del proyecto (pooled y directa):
+#   neon env pull
+# No las guardes en el repositorio: usa las variables de entorno de Render.
 
 services:
   - type: web
@@ -39,4 +40,6 @@ services:
         # Debe coincidir con .python-version; lo valida specs/tools/check_dependencies.py.
         value: "3.12"
       - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_URL_UNPOOLED
         sync: false

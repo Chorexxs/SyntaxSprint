@@ -15,7 +15,7 @@ historial del usuario y calcula promedios.
 | Aspecto | Valor |
 | --- | --- |
 | Framework | Django 5.x (MVT) |
-| Base de datos | InsForge PostgreSQL (`DATABASE_URL`) |
+| Base de datos | Neon PostgreSQL (`DATABASE_URL` agrupada + `DATABASE_URL_UNPOOLED`) |
 | Frontend | Plantillas Django + Tailwind compilado + CSS propio |
 | JavaScript | Vanilla ES6+ (clase `TypingTest`); jQuery 3.x permitido |
 | Servidor | Gunicorn (`syntax_sprint.wsgi`) |
@@ -77,6 +77,10 @@ python ../specs/tools/check_dependencies.py --strict
 python manage.py makemigrations
 python manage.py migrate
 python manage.py makemigrations --check --dry-run
+
+# Base de datos Neon: vuelca las variables de la rama vinculada y reconcilia neon.ts
+neon env pull
+neon deploy
 
 # Pruebas
 python manage.py test
@@ -387,7 +391,7 @@ cd syntax_sprint && python manage.py check --deploy
 | URL | `https://syntaxsprint.onrender.com/` |
 | Estado | Live verificado (2026-11-10) |
 | Región | `gcp-us-west1` (Oregón) |
-| Base de datos | InsForge PostgreSQL (`eu-central`) vía `DATABASE_URL` |
+| Base de datos | Neon PostgreSQL (`eu-central`) vía `DATABASE_URL` |
 | Estáticos | WhiteNoise + `collectstatic` |
 | Build | `pip install -r requirements.txt && python syntax_sprint/manage.py collectstatic --noinput` |
 | Start | `python syntax_sprint/manage.py migrate --noinput && gunicorn --chdir syntax_sprint syntax_sprint.wsgi:application --bind 0.0.0.0:$PORT` |
