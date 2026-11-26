@@ -60,5 +60,3 @@ htmlcov/
 node_modules/
 .vercel
 .neon
-
-.env*
