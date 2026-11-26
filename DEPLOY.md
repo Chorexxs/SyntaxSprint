@@ -300,8 +300,9 @@ Vercel detecta Django por `syntax_sprint/manage.py` y resuelve la entrada desde
 3. Vercel añade solo `VERCEL_URL` y el dominio de producción a `ALLOWED_HOSTS` y
    `CSRF_TRUSTED_ORIGINS`.
 4. `collectstatic` se ejecuta automáticamente al detectar `STATIC_ROOT`.
-5. Las migraciones no se ejecutan en el build: aplícalas antes con la `DATABASE_URL`
-   de producción (`vercel env pull` y `python syntax_sprint/manage.py migrate`).
+5. Las migraciones no se ejecutan en el build: aplícalas antes con la
+   `DATABASE_URL_UNPOOLED` de Neon (desde local con tu `.env` o desde la Shell de
+   Render). `vercel env pull` no sirve para esto porque los valores son Secret.
 6. En Vercel las conexiones no se reutilizan (`conn_max_age=0`) para no agotar el
    pool de PostgreSQL.
 7. Los despliegues con **Vercel CLI** (`vercel deploy`) **no aplican `.gitignore`**:
@@ -311,6 +312,28 @@ Vercel detecta Django por `syntax_sprint/manage.py` y resuelve la entrada desde
    `vercel deploy --dry --json` no debe listar `.env`, `.neon`, `.insforge` ni bases
    SQLite. Los despliegues desde Git (ramas y PRs) sí respetan `.gitignore`, y por
    eso Preview necesita sus propias variables de entorno.
+
+### Estado y actualización (2026-11-26)
+
+Las variables de `Production` se migraron de InsForge a Neon el **2026-11-26** y se
+verificaron con una prueba real contra `https://syntax-sprint-ten.vercel.app`
+(signup, resultado, perfil, logout y `/healthz`). El usuario de prueba se creó en
+Neon y se borró al terminar.
+
+Las variables están guardadas como **Secret**: `vercel env pull` escribe
+`[SENSITIVE]` en lugar del valor, así que no se pueden leer desde la CLI. Para
+rotarlas sin exponerlas en la línea de comandos, pasa el valor por stdin:
+
+```bash
+vercel env add DATABASE_URL --environment production --force --sensitive
+# pega el valor o redirige desde tu .env local
+```
+
+Un cambio de variables **no se aplica solo**: hace falta un despliegue nuevo
+(`git push` a `main` o `vercel redeploy <deployment-url> --environment production`).
+El entorno `Preview` solo tiene `SECRET_KEY` y usa SQLite efímero; si un Preview
+necesita base de datos, añade allí sus propias `DATABASE_URL` y
+`DATABASE_URL_UNPOOLED`.
 
 ## 13. Keep-alive del tier gratuito de Render
 

@@ -152,6 +152,16 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
     `/healthz` y `createcachetable` en el Start Command), deploy
     `dep-dc41hqqjnfac73b7lc60` en `live` y `/healthz` → `{"status": "ok"}`.
 
+- [x] **T007-31** Migrar el despliegue de Vercel a Neon y verificarlo en vivo.
+  - Requisitos: `RF-007-07`, `RF-007-12`
+  - Archivos: `DEPLOY.md` (sección 12), variables de Vercel
+  - DoD: `DATABASE_URL` y `DATABASE_URL_UNPOOLED` apuntan a Neon en `Production`;
+    el E2E web pasa y las filas creadas aparecen en Neon.
+  - Evidencia: variables actualizadas el 2026-11-26 y redeploy
+    `https://syntax-sprint-77q7bm6x1-chorexxs-projects.vercel.app`; E2E 10/10 OK
+    contra `https://syntax-sprint-ten.vercel.app` y usuario de prueba visible en
+    Neon (borrado después).
+
 ## Fase 5 — Documentación
 
 - [x] **T007-14** Corregir el árbol de directorios del README y la versión de Django.
