@@ -9,6 +9,10 @@ export default defineConfig({
       // Default branch: no overrides, uses project defaults
       return {};
     }
+    if (branch.name === "preview") {
+      // Rama compartida por los despliegues de Preview de Vercel: no caduca.
+      return {};
+    }
     if (!branch.exists) {
       // New non-default branches: auto-expire
       // Run `neon checkout <name>` to create a new branch with these settings

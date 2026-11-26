@@ -356,6 +356,9 @@ La rama copia esquema y datos de `production` en el momento de crearse; no hace
 falta migrar. Un `git push` solo actualiza producción: para ver los cambios en un
 Preview hay que desplegar (`vercel deploy`) o abrir un PR.
 
+`neon.ts` exceptúa a `preview` de la caducidad de 7 días que aplica al resto de ramas
+nuevas, para que la base de los Preview no desaparezca sola.
+
 > Los Preview están protegidos por **Vercel Authentication**. Para probarlos por HTTP
 > usa `vercel curl <url>` o ejecuta el cliente dentro de `vercel env run` y envía el
 > header `x-vercel-trusted-oidc-idp-token` con `VERCEL_OIDC_TOKEN` (el de
