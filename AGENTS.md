@@ -389,12 +389,13 @@ cd syntax_sprint && python manage.py check --deploy
 | --- | --- |
 | Hosting | Render Web Service |
 | URL | `https://syntaxsprint.onrender.com/` |
-| Estado | Live verificado (2026-11-10) |
+| Estado | Live verificado (2026-11-26, Neon) |
 | Región | `gcp-us-west1` (Oregón) |
 | Base de datos | Neon PostgreSQL (`eu-central`) vía `DATABASE_URL` |
 | Estáticos | WhiteNoise + `collectstatic` |
 | Build | `pip install -r requirements.txt && python syntax_sprint/manage.py collectstatic --noinput` |
-| Start | `python syntax_sprint/manage.py migrate --noinput && gunicorn --chdir syntax_sprint syntax_sprint.wsgi:application --bind 0.0.0.0:$PORT` |
+| Start | `python syntax_sprint/manage.py migrate --noinput && python syntax_sprint/manage.py createcachetable && gunicorn --chdir syntax_sprint syntax_sprint.wsgi:application --bind 0.0.0.0:$PORT` |
+| Health check | `/healthz` (ejecuta `SELECT 1`; 503 si la base falla) |
 | Guía | `DEPLOY.md` |
 | Blueprint | `render.yaml` |
 

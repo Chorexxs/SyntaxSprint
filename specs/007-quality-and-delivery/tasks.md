@@ -141,6 +141,17 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
   - Evidencia: verificación del 2026-11-26 (`manage.py test` → 90 tests, 89 OK +
     1 omitido) y E2E de signup, login, resultado y perfil sobre Neon.
 
+- [x] **T007-30** Reconciliar el servicio de Render con `render.yaml`: health check
+  y Start Command.
+  - Requisitos: `RF-007-07`, `RF-007-12`
+  - Archivos: `render.yaml`, `DEPLOY.md`, `AGENTS.md`
+  - DoD: `healthCheckPath` es `/healthz`; el Start Command ejecuta `migrate` y
+    `createcachetable`; el deploy deja el servicio en `live` y `/healthz` responde
+    200.
+  - Evidencia: PATCH a la API de Render el 2026-11-26 (`healthCheckPath` de `/` a
+    `/healthz` y `createcachetable` en el Start Command), deploy
+    `dep-dc41hqqjnfac73b7lc60` en `live` y `/healthz` → `{"status": "ok"}`.
+
 ## Fase 5 — Documentación
 
 - [x] **T007-14** Corregir el árbol de directorios del README y la versión de Django.

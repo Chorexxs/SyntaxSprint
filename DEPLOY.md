@@ -135,10 +135,20 @@ En Render → **Settings**:
 | --- | --- |
 | Build Command | `pip install -r requirements.txt && python syntax_sprint/manage.py collectstatic --noinput` |
 | Start Command | `python syntax_sprint/manage.py migrate --noinput && python syntax_sprint/manage.py createcachetable && gunicorn --chdir syntax_sprint syntax_sprint.wsgi:application --bind 0.0.0.0:$PORT` |
-| Health Check Path | `/` |
+| Health Check Path | `/healthz` |
 
 El repositorio incluye `render.yaml` como blueprint. Si el servicio ya existe, el
-blueprint no se aplica solo: revisa que los comandos y variables coincidan.
+blueprint no se aplica solo: revisa que los comandos y variables coincidan. El
+servicio de producción se reconcilió a mano el **2026-11-26**: `healthCheckPath`
+pasó de `/` a `/healthz` y el Start Command incorporó `createcachetable`.
+
+> `createcachetable` es idempotente: si la tabla ya existe imprime
+> `Cache table 'syntax_sprint_cache' already exists.` y termina con código 0, así
+> que no rompe el arranque. La tabla la usa `RATE_LIMIT_CACHE_ALIAS=shared`.
+>
+> `/healthz` ejecuta `SELECT 1` y devuelve 503 si la base no responde. Como es el
+> health check de Render, un deploy que no pueda hablar con Neon no llega a `live`
+> y se revierte solo, en lugar de dejar el servicio en verde sin base de datos.
 
 > Las migraciones se ejecutan en el Start Command. No se ejecutan al importar
 > `wsgi.py` para evitar que el worker se quede bloqueado si la base de datos no
@@ -199,6 +209,7 @@ Si devuelve 404:
 - [ ] `TRUST_PROXY_HEADERS=True`.
 - [ ] `DATABASE_URL` y `DATABASE_URL_UNPOOLED` de Neon.
 - [ ] `collectstatic` en el build.
+- [ ] `healthCheckPath` = `/healthz` (consulta la base).
 - [ ] Migraciones aplicadas.
 - [ ] Sesiones borradas.
 - [ ] Contraseñas reseteadas.
@@ -221,6 +232,8 @@ Si devuelve 404:
 | `password authentication failed` | Credenciales de Neon obsoletas | Volver a ejecutar `neon env pull` y actualizar Render |
 | `prepared statement ... already exists` o `relation ... does not exist` en migraciones | Migración por la conexión agrupada | Configurar `DATABASE_URL_UNPOOLED` |
 | `remaining connection slots are reserved` | Demasiadas conexiones directas | Usar la cadena agrupada (`-pooler`) en `DATABASE_URL` |
+| El deploy no llega a `live` y el log repite `health check` | `/healthz` devuelve 503 porque la base no responde | Revisar `DATABASE_URL`, la suspensión del compute en Neon y los logs del servicio |
+| `createcachetable` falla en el arranque | Sin permisos DDL o conexión agrupada | Ejecutarlo con `DATABASE_URL_UNPOOLED`; en Render basta con tenerla configurada |
 | Servicio no responde | Free dormido, crash o suspendido | Revisar Logs/Events |
 
 ## 10. Rollback
