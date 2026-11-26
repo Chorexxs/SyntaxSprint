@@ -295,8 +295,8 @@ Vercel detecta Django por `syntax_sprint/manage.py` y resuelve la entrada desde
      Preview, así que la variable debe existir en `Production` y en `Preview`
      por separado. Usa una clave distinta para Preview:
      `python -c "import secrets;print(secrets.token_urlsafe(64))" | vercel env add SECRET_KEY preview`.
-     Si el Preview debe ser funcional, añade también su propio `DATABASE_URL`
-     (no compartas la base de producción con ramas no revisadas).
+     Los Preview usan una rama de Neon propia (ver más abajo), nunca la base de
+     producción.
 3. Vercel añade solo `VERCEL_URL` y el dominio de producción a `ALLOWED_HOSTS` y
    `CSRF_TRUSTED_ORIGINS`.
 4. `collectstatic` se ejecuta automáticamente al detectar `STATIC_ROOT`.
@@ -331,9 +331,36 @@ vercel env add DATABASE_URL --environment production --force --sensitive
 
 Un cambio de variables **no se aplica solo**: hace falta un despliegue nuevo
 (`git push` a `main` o `vercel redeploy <deployment-url> --environment production`).
-El entorno `Preview` solo tiene `SECRET_KEY` y usa SQLite efímero; si un Preview
-necesita base de datos, añade allí sus propias `DATABASE_URL` y
-`DATABASE_URL_UNPOOLED`.
+
+### Preview con base de datos propia (rama de Neon)
+
+Los despliegues de Preview usan una rama de Neon independiente para no escribir en
+los datos de producción: rama **`preview`** (`br-mute-voice-bg3gzv33`), hija de
+`production`. Desde el 2026-11-26 el entorno `Preview` de Vercel tiene
+`DATABASE_URL` (agrupada) y `DATABASE_URL_UNPOOLED` (directa) apuntando a esa rama,
+ambas como Secret.
+
+Para recrearla o refrescarla:
+
+```bash
+neon branch create --name preview --parent production --no-secrets
+neon env pull --branch preview --env DATABASE_URL --env DATABASE_URL_UNPOOLED \
+  --file /tmp/neon_preview.env
+grep '^DATABASE_URL=' /tmp/neon_preview.env | cut -d= -f2- \
+  | vercel env add DATABASE_URL --environment preview --force --sensitive
+grep '^DATABASE_URL_UNPOOLED=' /tmp/neon_preview.env | cut -d= -f2- \
+  | vercel env add DATABASE_URL_UNPOOLED --environment preview --force --sensitive
+```
+
+La rama copia esquema y datos de `production` en el momento de crearse; no hace
+falta migrar. Un `git push` solo actualiza producción: para ver los cambios en un
+Preview hay que desplegar (`vercel deploy`) o abrir un PR.
+
+> Los Preview están protegidos por **Vercel Authentication**. Para probarlos por HTTP
+> usa `vercel curl <url>` o ejecuta el cliente dentro de `vercel env run` y envía el
+> header `x-vercel-trusted-oidc-idp-token` con `VERCEL_OIDC_TOKEN` (el de
+> `.env.local`, que se refresca con `vercel env pull .env.local --yes`). No desactives
+> Deployment Protection para que pasen las pruebas.
 
 ## 13. Keep-alive del tier gratuito de Render
 

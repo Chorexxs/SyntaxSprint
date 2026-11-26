@@ -162,6 +162,16 @@ Referencia: `specs/007-quality-and-delivery/spec.md`
     contra `https://syntax-sprint-ten.vercel.app` y usuario de prueba visible en
     Neon (borrado después).
 
+- [x] **T007-32** Dar a los Preview de Vercel una rama de Neon propia.
+  - Requisitos: `RF-007-07`
+  - Archivos: `DEPLOY.md` (sección 12), rama `preview` de Neon, variables de Vercel
+  - DoD: el entorno `Preview` usa `DATABASE_URL` y `DATABASE_URL_UNPOOLED` de la
+    rama `preview`; el E2E pasa en un Preview y los datos no tocan producción.
+  - Evidencia: rama `preview` (`br-mute-voice-bg3gzv33`, hija de `production`),
+    preview deploy `https://syntax-sprint-d5fwawse8-chorexxs-projects.vercel.app`
+    con E2E 10/10, usuario de prueba solo en la rama `preview` (14 snippet requests
+    frente a 13 en producción) y borrado después.
+
 ## Fase 5 — Documentación
 
 - [x] **T007-14** Corregir el árbol de directorios del README y la versión de Django.
